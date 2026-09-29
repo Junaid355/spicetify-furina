@@ -166,6 +166,14 @@ class FurinaAudioEngine {
       this.queueIndex = this.queue.findIndex(t => t.id === track.id);
     }
 
+    // Normalize track metadata
+    track.coverUrl = track.cover_url || track.coverUrl || './icons/app-icon.jpg';
+    track.cover_url = track.coverUrl;
+    track.durationMs = track.duration_ms || track.durationMs || 180000;
+    track.duration_ms = track.durationMs;
+    track.streamUrl = track.stream_url || track.streamUrl;
+    track.stream_url = track.streamUrl;
+
     this.currentTrack = track;
     this.updateMediaSessionMetadata(track);
 
@@ -187,7 +195,7 @@ class FurinaAudioEngine {
     }
 
     // Multi-source playback routing with dynamic stream resolver
-    let streamToPlay = track.streamUrl;
+    let streamToPlay = track.streamUrl || track.stream_url;
 
     if (!streamToPlay && track.title) {
       try {
@@ -198,23 +206,46 @@ class FurinaAudioEngine {
           if (resolved?.streamUrl) {
             streamToPlay = resolved.streamUrl;
             track.streamUrl = streamToPlay;
+            track.stream_url = streamToPlay;
           }
         }
       } catch (_) {}
+
+      // Direct fallback to Apple Music public catalog if backend proxy is unreachable
+      if (!streamToPlay) {
+        try {
+          const itRes = await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(`${track.title} ${track.artist || ''}`)}&entity=song&limit=1`);
+          if (itRes.ok) {
+            const itData = await itRes.json();
+            if (itData.results?.[0]?.previewUrl) {
+              streamToPlay = itData.results[0].previewUrl;
+              track.streamUrl = streamToPlay;
+              track.stream_url = streamToPlay;
+            }
+          }
+        } catch (_) {}
+      }
     }
 
     if (track.provider === 'spotify' && window.spotifyClient && window.spotifyClient.isReady && track.spotifyUri) {
       console.log(`[AudioEngine] Delegating playback to Spotify Web Playback SDK: ${track.spotifyUri}`);
       await window.spotifyClient.playUri(track.spotifyUri);
     } else {
-      this.audioElement.src = streamToPlay || '/audio/la_vaguelette.wav';
+      const finalAudioUrl = streamToPlay || './audio/la_vaguelette.wav';
+      this.audioElement.src = finalAudioUrl;
+      this.audioElement.load();
       try {
-        await this.audioElement.play();
+        const playPromise = this.audioElement.play();
+        if (playPromise !== undefined) {
+          await playPromise;
+        }
       } catch (err) {
-        console.warn('[AudioEngine] Play failed, attempting fallback resolver:', err.message);
-        // Fallback to Fontaine theme if browser blocked autoplay or stream expired
-        this.audioElement.src = '/audio/la_vaguelette.wav';
-        await this.audioElement.play();
+        console.warn('[AudioEngine] Play notice:', err.message);
+        if (finalAudioUrl !== './audio/la_vaguelette.wav') {
+          this.audioElement.src = './audio/la_vaguelette.wav';
+          this.audioElement.load();
+          await this.audioElement.play().catch(e => console.warn('[AudioEngine] Autoplay requires gesture:', e.message));
+        }
       }
     }
 

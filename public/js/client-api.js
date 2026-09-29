@@ -83,9 +83,12 @@
           title: t.title,
           artist: t.artist,
           album: t.album,
-          duration_ms: t.duration_ms,
-          coverUrl: t.cover_url,
-          streamUrl: t.stream_url,
+          durationMs: t.duration_ms || t.durationMs || 180000,
+          duration_ms: t.duration_ms || t.durationMs || 180000,
+          coverUrl: t.cover_url || t.coverUrl || './icons/app-icon.jpg',
+          cover_url: t.cover_url || t.coverUrl || './icons/app-icon.jpg',
+          streamUrl: t.stream_url || t.streamUrl || './audio/la_vaguelette.wav',
+          stream_url: t.stream_url || t.streamUrl || './audio/la_vaguelette.wav',
           provider: t.provider,
           codec: t.codec,
           bitrate: t.bitrate,
@@ -100,8 +103,10 @@
             id: c.track_id,
             title: c.title,
             artist: c.artist,
-            coverUrl: c.cover_url,
-            streamUrl: c.stream_url
+            coverUrl: c.cover_url || './icons/app-icon.jpg',
+            cover_url: c.cover_url || './icons/app-icon.jpg',
+            streamUrl: c.stream_url || './audio/la_vaguelette.wav',
+            stream_url: c.stream_url || './audio/la_vaguelette.wav'
           }
         })),
         globalTrending: tracks.filter(t => t.stream_url).slice(0, 12).map(t => ({
@@ -109,8 +114,12 @@
           title: t.title,
           artist: t.artist,
           album: t.album,
-          coverUrl: t.cover_url,
+          durationMs: t.duration_ms || 180000,
+          duration_ms: t.duration_ms || 180000,
+          coverUrl: t.cover_url || './icons/app-icon.jpg',
+          cover_url: t.cover_url || './icons/app-icon.jpg',
           streamUrl: t.stream_url,
+          stream_url: t.stream_url,
           provider: t.provider
         }))
       });
@@ -128,7 +137,7 @@
         id: playlistId,
         name: 'Fontaine Selection',
         description: 'Imported music collection',
-        cover_url: './images/furina_opera_tears.jpg'
+        cover_url: './icons/app-icon.jpg'
       };
 
       const tracks = catalog?.playlistTracks?.filter(pt => pt.playlist_id === playlistId) || 
@@ -141,9 +150,12 @@
           title: t.title,
           artist: t.artist,
           album: t.album,
-          duration_ms: t.duration_ms,
-          cover_url: t.cover_url,
-          stream_url: t.stream_url,
+          durationMs: t.duration_ms || t.durationMs || 180000,
+          duration_ms: t.duration_ms || t.durationMs || 180000,
+          coverUrl: t.cover_url || t.coverUrl || './icons/app-icon.jpg',
+          cover_url: t.cover_url || t.coverUrl || './icons/app-icon.jpg',
+          streamUrl: t.stream_url || t.streamUrl,
+          stream_url: t.stream_url || t.streamUrl,
           provider: t.provider || 'spotify',
           codec: t.codec || 'OGG Vorbis',
           bitrate: t.bitrate || '320 kbps'

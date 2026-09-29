@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-29T14:18:49.074Z",
+  "generatedAt": "2026-09-29T14:43:31.958Z",
   "tracks": [
     {
       "id": "furina_vaguelette",
@@ -7,8 +7,8 @@
       "artist": "Furina de Fontaine",
       "album": "La Vaguelette — Fontaine Opera Suites",
       "duration_ms": 180000,
-      "cover_url": "/images/furina_opera_tears.jpg",
-      "stream_url": "/audio/la_vaguelette.wav",
+      "cover_url": "./images/furina_opera_tears.jpg",
+      "stream_url": "./audio/la_vaguelette.wav",
       "provider": "furina",
       "provider_track_id": "furina_001",
       "playback_type": "furina",
@@ -18,7 +18,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 1,
       "popularity": 99,
-      "created_at": "2026-09-29 12:06:33"
+      "created_at": "2026-09-29 12:06:33",
+      "coverUrl": "./images/furina_opera_tears.jpg",
+      "streamUrl": "./audio/la_vaguelette.wav",
+      "durationMs": 180000
     },
     {
       "id": "furina_hydro_solitaire",
@@ -26,8 +29,8 @@
       "artist": "Salon Solitaire Ensemble",
       "album": "Hydro Solitaire & Court Minuets",
       "duration_ms": 172000,
-      "cover_url": "/images/furina_salon_music.jpg",
-      "stream_url": "/audio/hydro_solitaire.wav",
+      "cover_url": "./images/furina_salon_music.jpg",
+      "stream_url": "./audio/hydro_solitaire.wav",
       "provider": "furina",
       "provider_track_id": "furina_002",
       "playback_type": "furina",
@@ -37,7 +40,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 1,
       "popularity": 94,
-      "created_at": "2026-09-29 12:06:33"
+      "created_at": "2026-09-29 12:06:33",
+      "coverUrl": "./images/furina_salon_music.jpg",
+      "streamUrl": "./audio/hydro_solitaire.wav",
+      "durationMs": 172000
     },
     {
       "id": "furina_fontaine_waltz",
@@ -45,8 +51,8 @@
       "artist": "Fontaine Philharmonic Orchestra",
       "album": "All The World's A Stage",
       "duration_ms": 165000,
-      "cover_url": "/images/furina_ocean_abyss.jpg",
-      "stream_url": "/audio/fontaine_waltz.wav",
+      "cover_url": "./images/furina_ocean_abyss.jpg",
+      "stream_url": "./audio/fontaine_waltz.wav",
       "provider": "furina",
       "provider_track_id": "furina_003",
       "playback_type": "furina",
@@ -56,7 +62,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 1,
       "popularity": 91,
-      "created_at": "2026-09-29 12:06:33"
+      "created_at": "2026-09-29 12:06:33",
+      "coverUrl": "./images/furina_ocean_abyss.jpg",
+      "streamUrl": "./audio/fontaine_waltz.wav",
+      "durationMs": 165000
     },
     {
       "id": "furina_stage_glory",
@@ -64,8 +73,8 @@
       "artist": "Furina de Fontaine",
       "album": "All The World's A Stage",
       "duration_ms": 195000,
-      "cover_url": "/images/furina_pure_hydro.jpg",
-      "stream_url": "/audio/fontaine_waltz.wav",
+      "cover_url": "./images/furina_pure_hydro.jpg",
+      "stream_url": "./audio/fontaine_waltz.wav",
       "provider": "furina",
       "provider_track_id": "furina_004",
       "playback_type": "furina",
@@ -75,7 +84,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 1,
       "popularity": 96,
-      "created_at": "2026-09-29 12:06:33"
+      "created_at": "2026-09-29 12:06:33",
+      "coverUrl": "./images/furina_pure_hydro.jpg",
+      "streamUrl": "./audio/fontaine_waltz.wav",
+      "durationMs": 195000
     },
     {
       "id": "furina_melancholy_tears",
@@ -83,8 +95,8 @@
       "artist": "Furina de Fontaine",
       "album": "La Vaguelette — Fontaine Opera Suites",
       "duration_ms": 154000,
-      "cover_url": "/images/furina_melancholy_swing.jpg",
-      "stream_url": "/audio/la_vaguelette.wav",
+      "cover_url": "./images/furina_melancholy_swing.jpg",
+      "stream_url": "./audio/la_vaguelette.wav",
       "provider": "furina",
       "provider_track_id": "furina_005",
       "playback_type": "furina",
@@ -94,7 +106,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 1,
       "popularity": 88,
-      "created_at": "2026-09-29 12:06:33"
+      "created_at": "2026-09-29 12:06:33",
+      "coverUrl": "./images/furina_melancholy_swing.jpg",
+      "streamUrl": "./audio/la_vaguelette.wav",
+      "durationMs": 154000
     },
     {
       "id": "track_sp_sp_clavier_bien_tempere",
@@ -102,8 +117,8 @@
       "artist": "Johann Sebastian Bach, Fontaine Keyboard Virtuosi",
       "album": "Baroque Essentials",
       "duration_ms": 154000,
-      "cover_url": "/images/furina_salon_music.jpg",
-      "stream_url": "/audio/hydro_solitaire.wav",
+      "cover_url": "./images/furina_salon_music.jpg",
+      "stream_url": "./audio/hydro_solitaire.wav",
       "provider": "spotify",
       "provider_track_id": "sp_clavier_bien_tempere",
       "playback_type": "spotify",
@@ -113,7 +128,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 12:06:33"
+      "created_at": "2026-09-29 12:06:33",
+      "coverUrl": "./images/furina_salon_music.jpg",
+      "streamUrl": "./audio/hydro_solitaire.wav",
+      "durationMs": 154000
     },
     {
       "id": "track_sp_sp_claire_de_lune",
@@ -121,8 +139,8 @@
       "artist": "Claude Debussy",
       "album": "Impressionist Waters",
       "duration_ms": 302000,
-      "cover_url": "/images/furina_ocean_abyss.jpg",
-      "stream_url": "/audio/fontaine_waltz.wav",
+      "cover_url": "./images/furina_ocean_abyss.jpg",
+      "stream_url": "./audio/fontaine_waltz.wav",
       "provider": "spotify",
       "provider_track_id": "sp_claire_de_lune",
       "playback_type": "spotify",
@@ -132,7 +150,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 12:06:33"
+      "created_at": "2026-09-29 12:06:33",
+      "coverUrl": "./images/furina_ocean_abyss.jpg",
+      "streamUrl": "./audio/fontaine_waltz.wav",
+      "durationMs": 302000
     },
     {
       "id": "track_sp_sp_gymnopedie",
@@ -140,8 +161,8 @@
       "artist": "Erik Satie",
       "album": "Quiet Reflections",
       "duration_ms": 198000,
-      "cover_url": "/images/furina_melancholy_swing.jpg",
-      "stream_url": "/audio/la_vaguelette.wav",
+      "cover_url": "./images/furina_melancholy_swing.jpg",
+      "stream_url": "./audio/la_vaguelette.wav",
       "provider": "spotify",
       "provider_track_id": "sp_gymnopedie",
       "playback_type": "spotify",
@@ -151,7 +172,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 12:06:33"
+      "created_at": "2026-09-29 12:06:33",
+      "coverUrl": "./images/furina_melancholy_swing.jpg",
+      "streamUrl": "./audio/la_vaguelette.wav",
+      "durationMs": 198000
     },
     {
       "id": "track_sp_70cHKK8bHAfJrOGVnfRG9J",
@@ -170,7 +194,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 13:00:41"
+      "created_at": "2026-09-29 13:00:41",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/68bc3cb0611cfe6569ce56eeb025359233168a69",
+      "durationMs": 181270
     },
     {
       "id": "track_sp_11hcBLPtbMp4aQI6zGQLub",
@@ -189,7 +216,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 13:00:41"
+      "created_at": "2026-09-29 13:00:41",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/3b622221c4b4a6c28ef70ed256b47ef825108142",
+      "durationMs": 225868
     },
     {
       "id": "track_sp_3h5T5JypYU7huFiVYhv1dr",
@@ -208,7 +238,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 13:00:41"
+      "created_at": "2026-09-29 13:00:41",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/f6ab45a8375c5bcf6f03161edd9f44c1fad501c8",
+      "durationMs": 225834
     },
     {
       "id": "track_sp_0eAuGrXyGFYwur9ARUe7LJ",
@@ -227,7 +260,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 13:00:41"
+      "created_at": "2026-09-29 13:00:41",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/20a1469df9f65a51878811bbe49979c418abc1b7",
+      "durationMs": 151500
     },
     {
       "id": "track_sp_20jbSiX29FDX4oQxBXyUEi",
@@ -246,7 +282,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 13:00:41"
+      "created_at": "2026-09-29 13:00:41",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/9fb8e09c9facc2d9443b6e57ae36d47bf83c01b8",
+      "durationMs": 197949
     },
     {
       "id": "track_sp_7bxaFZ1O3cHkgLKMsdC3xR",
@@ -265,7 +304,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 13:00:41"
+      "created_at": "2026-09-29 13:00:41",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/0015e9347a45b62215447eba657b2fc3ce279d2d",
+      "durationMs": 223069
     },
     {
       "id": "track_sp_0kosUz0jePvjiz4ctmR6wL",
@@ -284,7 +326,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 13:00:42"
+      "created_at": "2026-09-29 13:00:42",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/a6955a6725dcf614e9915396987847ea0b509580",
+      "durationMs": 223448
     },
     {
       "id": "track_sp_4EoJ151oQ5jY48z4RhSE96",
@@ -303,7 +348,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 13:00:42"
+      "created_at": "2026-09-29 13:00:42",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/7559346825a2233855b5fc77e84a954606de3444",
+      "durationMs": 297090
     },
     {
       "id": "track_sp_3ouNEk0tv5TTi8VWMe1xbX",
@@ -322,7 +370,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 13:00:42"
+      "created_at": "2026-09-29 13:00:42",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/65040556453e4f1c76bcefebf54a718521588331",
+      "durationMs": 158494
     },
     {
       "id": "track_sp_2FZcjBYK4dTt48q94pJbJD",
@@ -341,7 +392,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 13:00:42"
+      "created_at": "2026-09-29 13:00:42",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/e57b7c5fcb52b8bb4c781cc1e2e5b25f8a6c6e79",
+      "durationMs": 202460
     },
     {
       "id": "track_sp_4qW3BbQAwZsrnu8a3ZRdyT",
@@ -360,7 +414,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 13:00:42"
+      "created_at": "2026-09-29 13:00:42",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/98af5b6b77831ad55b6d1129148745705a311973",
+      "durationMs": 180740
     },
     {
       "id": "track_sp_02HyFYmpzt02VJ8k0CqxKj",
@@ -379,7 +436,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 13:00:42"
+      "created_at": "2026-09-29 13:00:42",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/a3d0119e3182fbb19636c2a44737fa3e0b71f939",
+      "durationMs": 184927
     },
     {
       "id": "track_sp_7yNf9YjeO5JXUE3JEBgnYc",
@@ -398,7 +458,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 13:00:42"
+      "created_at": "2026-09-29 13:00:42",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/bf5ab98492256120bd9c48658e9c899c8692f77f",
+      "durationMs": 97960
     },
     {
       "id": "track_sp_65DbTqJKhbwqYbZ1Okr0rc",
@@ -417,7 +480,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 13:00:42"
+      "created_at": "2026-09-29 13:00:42",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/ad3f225321f11467402cc47e09f9ea1195f3de91",
+      "durationMs": 232226
     },
     {
       "id": "track_sp_1qbmS6ep2hbBRaEZFpn7BX",
@@ -436,7 +502,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 13:00:42"
+      "created_at": "2026-09-29 13:00:42",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/0a36635f94b4e44e6e4f5b7edb3f501d458812d9",
+      "durationMs": 184000
     },
     {
       "id": "track_sp_3zOYmiNOuyDL0ClxJcEJ0T",
@@ -455,7 +524,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 13:00:42"
+      "created_at": "2026-09-29 13:00:42",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/8a374e33d78679e1143d7a07797ddfa0225f8586",
+      "durationMs": 198840
     },
     {
       "id": "track_sp_4LfCY65LvojKjWEnU7fNN4",
@@ -474,7 +546,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 13:00:42"
+      "created_at": "2026-09-29 13:00:42",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/894b272aa0422aeebe856825b55e5c736a9bc5ee",
+      "durationMs": 209680
     },
     {
       "id": "track_sp_22NHkFYbgxB2Zirj29Gbp8",
@@ -493,7 +568,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 13:00:42"
+      "created_at": "2026-09-29 13:00:42",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/72b6457625435b7f64c345e86930e5f0071c559c",
+      "durationMs": 170584
     },
     {
       "id": "track_sp_514joG57v4yKTsfQmz7stz",
@@ -512,7 +590,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 13:00:42"
+      "created_at": "2026-09-29 13:00:42",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/1de9b315e1aa811aedaf905b1058b668b2d3146e",
+      "durationMs": 237344
     },
     {
       "id": "track_sp_5GKBPdWbW4RQtx9VkQ6xKO",
@@ -531,7 +612,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 13:00:42"
+      "created_at": "2026-09-29 13:00:42",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/e6cd52e0f695eb52584884637d38b3da5ac32fc7",
+      "durationMs": 182582
     },
     {
       "id": "track_sp_7MZHqgTVTnN6xZGYAcEEAf",
@@ -550,7 +634,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 13:00:42"
+      "created_at": "2026-09-29 13:00:42",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/6c85f9e4507e93478ee4adb7782f1a35a9d0e1ce",
+      "durationMs": 339410
     },
     {
       "id": "track_sp_3sK8wGT43QFpWrvNQsrQya",
@@ -569,7 +656,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 13:00:42"
+      "created_at": "2026-09-29 13:00:42",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/e41ce6b82410d81c08baacca2a7169e5ace4287d",
+      "durationMs": 237117
     },
     {
       "id": "track_sp_55lijDD6OAjLFFUHU9tcDm",
@@ -588,7 +678,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 13:00:42"
+      "created_at": "2026-09-29 13:00:42",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/0194ff4186a1f53bff2cdf6d7660289ca8eb0e7e",
+      "durationMs": 197142
     },
     {
       "id": "track_sp_0kl6Ozan3fuUdCl6TlB15v",
@@ -607,7 +700,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 13:00:42"
+      "created_at": "2026-09-29 13:00:42",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/b55c8fa4e31192a3e35ad53d3e889733f9cd9da1",
+      "durationMs": 191076
     },
     {
       "id": "track_sp_5qGziX9216V8hKJjGg8RtH",
@@ -626,7 +722,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 13:00:42"
+      "created_at": "2026-09-29 13:00:42",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/66473eb386fef1ce44a50fea4a4c3685d2f615b4",
+      "durationMs": 196000
     },
     {
       "id": "track_sp_70pVCVMGjmIWPbWXDwf11e",
@@ -645,7 +744,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 13:00:42"
+      "created_at": "2026-09-29 13:00:42",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/30dc1adb43c170165bb8091e788b55f26f2fc672",
+      "durationMs": 184248
     },
     {
       "id": "track_sp_2oWFJJW9d1bIra3zHjR6GO",
@@ -664,7 +766,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 13:00:42"
+      "created_at": "2026-09-29 13:00:42",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/f1e7acbb1c04e8ba21d08d2402cf069a8eed8f96",
+      "durationMs": 177428
     },
     {
       "id": "track_sp_5y2ijHECwFYWqcAHKTZgzD",
@@ -683,7 +788,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 13:00:42"
+      "created_at": "2026-09-29 13:00:42",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/2467ff71a7508c57a62112ee5beb996bd6b9e957",
+      "durationMs": 204068
     },
     {
       "id": "track_sp_3oTuTpF1F3A7rEC6RKsMRz",
@@ -702,7 +810,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 13:00:42"
+      "created_at": "2026-09-29 13:00:42",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/7d860804d259f81b4a7bc04900a5410d99995fd4",
+      "durationMs": 219743
     },
     {
       "id": "track_sp_5BZsQlgw21vDOAjoqkNgKb",
@@ -721,7 +832,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 13:00:42"
+      "created_at": "2026-09-29 13:00:42",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/d990a355be1d84adc0882bda733862fba7767e70",
+      "durationMs": 176453
     },
     {
       "id": "track_sp_5uPaqMMt59KGrdKIitDRqa",
@@ -740,7 +854,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 13:00:42"
+      "created_at": "2026-09-29 13:00:42",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/d21ded2a54dde5461f908b1bf26f1b4bae5ac139",
+      "durationMs": 178186
     },
     {
       "id": "track_sp_37UCSVSqiPGdR1DijOFyYY",
@@ -759,7 +876,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 13:00:42"
+      "created_at": "2026-09-29 13:00:42",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/c5bbc379559c92c9d07e2cebf4a1e14029d01331",
+      "durationMs": 189898
     },
     {
       "id": "track_sp_1VWiDyYTrqQhhmnWANWkFa",
@@ -778,7 +898,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 13:00:42"
+      "created_at": "2026-09-29 13:00:42",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/3f5b29adf9f673b9f985c1976c26f5820649d711",
+      "durationMs": 188531
     },
     {
       "id": "track_sp_6sGIMrtIzQjdzNndVxe397",
@@ -797,7 +920,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 13:00:42"
+      "created_at": "2026-09-29 13:00:42",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/e0ea7353932017364bdb12dc776e89b360abac42",
+      "durationMs": 169000
     },
     {
       "id": "track_sp_7ujApz6iFP3PmKIDGcaGbe",
@@ -816,7 +942,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 13:00:42"
+      "created_at": "2026-09-29 13:00:42",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/f82f2f3e714a66934fc309e357cbf249ad045f62",
+      "durationMs": 173975
     },
     {
       "id": "track_sp_4W6yulge3h7FSy0zGFrNKs",
@@ -835,7 +964,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 13:00:42"
+      "created_at": "2026-09-29 13:00:42",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/3f175c1a53a23119bfe50c9ca04e68d27d3131a5",
+      "durationMs": 286967
     },
     {
       "id": "track_sp_36idurZmYRjJ56KQ8JD9bN",
@@ -854,7 +986,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 13:00:42"
+      "created_at": "2026-09-29 13:00:42",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/7ffa15bbf70382813f8661408e976cc41655b367",
+      "durationMs": 170859
     },
     {
       "id": "track_sp_42UBPzRMh5yyz0EDPr6fr1",
@@ -873,7 +1008,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 13:00:42"
+      "created_at": "2026-09-29 13:00:42",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/37c21b6b0df9b7156527d0729a58b6db37c88a0a",
+      "durationMs": 213645
     },
     {
       "id": "track_sp_7e4zDInS6tA2jwzphvs2Ay",
@@ -892,7 +1030,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 13:00:42"
+      "created_at": "2026-09-29 13:00:42",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/90e14dd98b61140a5259ce400de788704d406742",
+      "durationMs": 156393
     },
     {
       "id": "track_sp_1DwscornXpj8fmOmYVlqZt",
@@ -911,7 +1052,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 13:00:42"
+      "created_at": "2026-09-29 13:00:42",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/cc3201e7ed85d09f1683e591fd2eb964ea7247a6",
+      "durationMs": 184761
     },
     {
       "id": "track_sp_2LSmH4vxyRhkJ2pPqcmkXw",
@@ -930,7 +1074,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 13:00:42"
+      "created_at": "2026-09-29 13:00:42",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/5fada77b20c9b592ea707bf74334195c2b8a125f",
+      "durationMs": 185806
     },
     {
       "id": "track_sp_7tICCrK3CcyRFKza7yrR0z",
@@ -949,7 +1096,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 13:00:42"
+      "created_at": "2026-09-29 13:00:42",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/d46acdc8f94c6fa471388c7a10c619bb08c88197",
+      "durationMs": 209066
     },
     {
       "id": "track_sp_2QrLrUqdSg5njDVEqq5QFp",
@@ -968,7 +1118,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 13:00:42"
+      "created_at": "2026-09-29 13:00:42",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/4146a98922ae8baa7298df40a5861407c872f708",
+      "durationMs": 180000
     },
     {
       "id": "track_sp_6oUUmBcUbZa5O48V5pjgAD",
@@ -987,7 +1140,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 13:00:42"
+      "created_at": "2026-09-29 13:00:42",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/b90cdabeb3093431041841713c812e70bafb1478",
+      "durationMs": 140720
     },
     {
       "id": "track_sp_12bYYQaLqHliSXvRIYlq8G",
@@ -1006,7 +1162,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 13:00:42"
+      "created_at": "2026-09-29 13:00:42",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/d3b9a6318dcc942387b69c677a80377044856d69",
+      "durationMs": 212973
     },
     {
       "id": "track_sp_05CjWFAcAlY6O9po6Qwakk",
@@ -1025,7 +1184,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 13:00:42"
+      "created_at": "2026-09-29 13:00:42",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/17eee24507cd710f88bb3ae4ea6c4157ed9b3489",
+      "durationMs": 217240
     },
     {
       "id": "track_sp_5ViLKrbyL3HD6wsq3AB9eI",
@@ -1044,7 +1206,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 13:00:42"
+      "created_at": "2026-09-29 13:00:42",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/4c09f53084e36b6c85f8b2a44893c226a3194f42",
+      "durationMs": 144101
     },
     {
       "id": "track_sp_68lbSrXDORS51pmyjZv712",
@@ -1063,7 +1228,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 13:00:42"
+      "created_at": "2026-09-29 13:00:42",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/acafb81cc609de53b9687a40f214f79d828b6947",
+      "durationMs": 159007
     },
     {
       "id": "track_sp_6ZAuQOgLrNQb9s7BXheuTy",
@@ -1082,7 +1250,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 13:00:42"
+      "created_at": "2026-09-29 13:00:42",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/3585c24b32da6477e0231e7b18e41c3599e42732",
+      "durationMs": 170320
     },
     {
       "id": "track_sp_5IMpnpD0tQVcqWlVIgtAtV",
@@ -1101,7 +1272,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 13:00:42"
+      "created_at": "2026-09-29 13:00:42",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/bcb1c4999d947ff0541bc11b164d91069fad1669",
+      "durationMs": 183237
     },
     {
       "id": "track_sp_23WxsmliKISYaCfam8iPPG",
@@ -1120,7 +1294,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 14:14:43"
+      "created_at": "2026-09-29 14:14:43",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/4c250eabf2df65fb1f77dd5a60fcd6712645e294",
+      "durationMs": 180376
     },
     {
       "id": "track_sp_5odlY52u43F5BjByhxg7wg",
@@ -1139,7 +1316,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 14:14:44"
+      "created_at": "2026-09-29 14:14:44",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/bcc17f30841d6fbf3cd7954c3e3cf669f11b6a21",
+      "durationMs": 209259
     },
     {
       "id": "track_sp_1O9WW9MIrPqflp1Ra8BQEx",
@@ -1158,7 +1338,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 14:14:44"
+      "created_at": "2026-09-29 14:14:44",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/54f42ac9fea5c1343f2335a9c796d74a93b0e1ec",
+      "durationMs": 210895
     },
     {
       "id": "track_sp_6FfLg6FFqhCsrFOaHIGkg0",
@@ -1177,7 +1360,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 14:14:44"
+      "created_at": "2026-09-29 14:14:44",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/da561f1fa461ea814d78e2752e659797181c38d5",
+      "durationMs": 135581
     },
     {
       "id": "track_sp_0myRViRgmQ3J8izICXEAVO",
@@ -1196,7 +1382,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 14:14:44"
+      "created_at": "2026-09-29 14:14:44",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/a90ca82468d0612991195e07a87c628d86b3a932",
+      "durationMs": 170333
     },
     {
       "id": "track_sp_4WFgvKVfEhb3IUAFGrutTR",
@@ -1215,7 +1404,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 14:14:44"
+      "created_at": "2026-09-29 14:14:44",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/c660e524e84990f7687728af3ba09f9e071e585d",
+      "durationMs": 213466
     },
     {
       "id": "track_sp_6W614n8yLUeS3zsZSeBwyq",
@@ -1234,7 +1426,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 14:14:44"
+      "created_at": "2026-09-29 14:14:44",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/68149ee3d3a501d066ea084ec3980fe5d2bde921",
+      "durationMs": 214357
     },
     {
       "id": "track_sp_6VhuP99TE6gYNQRJIlAWFD",
@@ -1253,7 +1448,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 14:14:44"
+      "created_at": "2026-09-29 14:14:44",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/0a164f0a3b44a259620445c5d2a1b23c2636956b",
+      "durationMs": 176666
     },
     {
       "id": "track_sp_6G9YlbU3ByPJQvOFDRdwyM",
@@ -1272,7 +1470,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 14:14:44"
+      "created_at": "2026-09-29 14:14:44",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/688f27341c5ad1c89a65ffee2b2789c8e5e6488c",
+      "durationMs": 171757
     },
     {
       "id": "track_sp_5XeFesFbtLpXzIVDNQP22n",
@@ -1291,7 +1492,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 14:14:44"
+      "created_at": "2026-09-29 14:14:44",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/07de30bde8363d9ff78b72339245c151f67af451",
+      "durationMs": 183956
     },
     {
       "id": "track_sp_2psRActEWsTlYYd7EDoyVR",
@@ -1310,7 +1514,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 14:14:44"
+      "created_at": "2026-09-29 14:14:44",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/4c725ed45c535444fded71908c0a69120cbbfc89",
+      "durationMs": 220750
     },
     {
       "id": "track_sp_2eAvDnpXP5W0cVtiI0PUxV",
@@ -1329,7 +1536,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 14:14:44"
+      "created_at": "2026-09-29 14:14:44",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/c3743f9956a58ed7af85063003518bb51e5344ea",
+      "durationMs": 233720
     },
     {
       "id": "track_sp_6G0SscWHDmLr05nByFmhwf",
@@ -1348,7 +1558,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 14:14:44"
+      "created_at": "2026-09-29 14:14:44",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/2bc24a56f05a8e28c6ca003d3ad6d394de4a6541",
+      "durationMs": 316280
     },
     {
       "id": "track_sp_3zmLuTupbo2niUo6rfvRzi",
@@ -1367,7 +1580,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 14:14:44"
+      "created_at": "2026-09-29 14:14:44",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/846e629f29ec2047b12d5a1e4b09a99db834f9c2",
+      "durationMs": 96496
     },
     {
       "id": "track_sp_3VqSRkq3jRpsSEBngUcY6a",
@@ -1386,7 +1602,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 14:14:44"
+      "created_at": "2026-09-29 14:14:44",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/a2d4a64304fd8e82fe9e31ed7a4aeb62ebb28272",
+      "durationMs": 174253
     },
     {
       "id": "track_sp_5GQPBzoRBDxcAjwSSluQXD",
@@ -1405,7 +1624,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 14:14:44"
+      "created_at": "2026-09-29 14:14:44",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/593d3940b6759c319b45089532b170d734108af5",
+      "durationMs": 142520
     },
     {
       "id": "track_sp_2PWTZV5znjLtZC5T1EVJvL",
@@ -1424,7 +1646,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 14:14:44"
+      "created_at": "2026-09-29 14:14:44",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/8df55f28995b2d829543029b2a615b9d3ad7442f",
+      "durationMs": 120308
     },
     {
       "id": "track_sp_7h0BX9YDClyO5NJJgddA5O",
@@ -1443,7 +1668,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 14:14:44"
+      "created_at": "2026-09-29 14:14:44",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/d25c82870ddc0d509d7e456d9f8175b33c269e1b",
+      "durationMs": 122576
     },
     {
       "id": "track_sp_14mT8BCOXiUUcGlb7KujkT",
@@ -1462,7 +1690,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 14:14:44"
+      "created_at": "2026-09-29 14:14:44",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/29a38871b29e74942d2a7c4696511e73d89a7a44",
+      "durationMs": 196253
     },
     {
       "id": "track_sp_6nRGPf5tpeJtKpXZO5cgIT",
@@ -1481,7 +1712,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 14:14:44"
+      "created_at": "2026-09-29 14:14:44",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/457c2cea5306d422427e218ec9cdc7f66c8949f4",
+      "durationMs": 70400
     },
     {
       "id": "track_sp_2Kc8MeW8prVwHEREYM3wCG",
@@ -1500,7 +1734,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 14:14:44"
+      "created_at": "2026-09-29 14:14:44",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/06a1482ad82631334e9d9b164b841d6e09b03ba5",
+      "durationMs": 167583
     },
     {
       "id": "track_sp_23C7tP1mrPbwXpOFWti2Ag",
@@ -1519,7 +1756,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 14:14:44"
+      "created_at": "2026-09-29 14:14:44",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/d13bf325f5ee347e86f7bc3b0a766268763bc6fe",
+      "durationMs": 120917
     },
     {
       "id": "track_sp_1SKPmfSYaPsETbRHaiA18G",
@@ -1538,7 +1778,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 14:14:44"
+      "created_at": "2026-09-29 14:14:44",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/14b8c7f33de3a3a6558d3589b9f2260ae8c513c5",
+      "durationMs": 237146
     },
     {
       "id": "track_sp_3siwsiaEoU4Kuuc9WKMUy5",
@@ -1557,7 +1800,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 14:14:44"
+      "created_at": "2026-09-29 14:14:44",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/d4318ea548c910877ebe8f80c9d5ec192cee7f97",
+      "durationMs": 236906
     },
     {
       "id": "track_sp_43iIQbw5hx986dUEZbr3eN",
@@ -1576,7 +1822,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 14:14:44"
+      "created_at": "2026-09-29 14:14:44",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/3cdcd256d89b8634adc47aebbcf6db256e3b9978",
+      "durationMs": 169573
     },
     {
       "id": "track_sp_7qjZnBKE73H4Oxkopwulqe",
@@ -1595,7 +1844,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 14:14:44"
+      "created_at": "2026-09-29 14:14:44",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/daf5f9aeeab319f4cf5c17682d75c18cc1e2ae93",
+      "durationMs": 199032
     },
     {
       "id": "track_sp_5pMPNxZz50iup8cXchRHxm",
@@ -1614,7 +1866,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 14:14:44"
+      "created_at": "2026-09-29 14:14:44",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/7afad22f3dcac1d1a8daa5d7db67d1dd1c2fae32",
+      "durationMs": 174253
     },
     {
       "id": "track_sp_5ThyDv6aRVU8AH4vXQNldF",
@@ -1633,7 +1888,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 14:14:44"
+      "created_at": "2026-09-29 14:14:44",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/7e70fa1e32a874ef6fa44501d13787ddc0fd11ce",
+      "durationMs": 207000
     },
     {
       "id": "track_sp_3bmsaFp11I9pbicxzlStf3",
@@ -1652,7 +1910,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 14:14:44"
+      "created_at": "2026-09-29 14:14:44",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/c4478bc4a27775ff7aa0cf95673f3d86f967b417",
+      "durationMs": 171063
     },
     {
       "id": "track_sp_0TsyaaM73GAKIxv38yzHV4",
@@ -1671,7 +1932,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 14:14:44"
+      "created_at": "2026-09-29 14:14:44",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/52bebfbd58f85c52a771136aa43346873e37d309",
+      "durationMs": 169941
     },
     {
       "id": "track_sp_6gH4TId535zZLoBFSdnDFm",
@@ -1690,7 +1954,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 14:14:44"
+      "created_at": "2026-09-29 14:14:44",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/e91d7f036e84120a4823ce416e91fd607b988654",
+      "durationMs": 273010
     },
     {
       "id": "track_sp_3oEkrIfXfSh9zGnE7eBzSV",
@@ -1709,7 +1976,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 14:14:44"
+      "created_at": "2026-09-29 14:14:44",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/a5c0b3c58f991b2b1f492ddb59223bb561a9a787",
+      "durationMs": 294720
     },
     {
       "id": "track_sp_5vXTArFpG0hB1fdlVsf28f",
@@ -1728,7 +1998,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 14:14:45"
+      "created_at": "2026-09-29 14:14:45",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/847a618cec6849983e17824a6a9e8cbc06920858",
+      "durationMs": 208000
     },
     {
       "id": "track_sp_1VPXCaMRqLuL6WH7vRtHKw",
@@ -1747,7 +2020,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 14:14:45"
+      "created_at": "2026-09-29 14:14:45",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/809dd51c1674e58ee12fde3ea8b952198dae2a85",
+      "durationMs": 110172
     },
     {
       "id": "track_sp_6zEg4KEgz6RGhCPmDKplYf",
@@ -1766,7 +2042,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 14:14:45"
+      "created_at": "2026-09-29 14:14:45",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/b3fc87824002a9935c4d4bda02e7b3405793eb1e",
+      "durationMs": 233600
     },
     {
       "id": "track_sp_4nwjvcUjV7cexhwA40Bh5i",
@@ -1785,7 +2064,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 14:14:45"
+      "created_at": "2026-09-29 14:14:45",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/3c24dfde787b8d1eb1a7142da7024c2ee1e856f0",
+      "durationMs": 164400
     },
     {
       "id": "track_sp_68EkhVWIeULhHxcbi1QhzK",
@@ -1804,7 +2086,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 14:16:37"
+      "created_at": "2026-09-29 14:16:37",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da841672fd712b54639b5e8c24e3",
+      "streamUrl": "https://p.scdn.co/mp3-preview/66a23e8f1f37cda81294ddb5044c50ca3f7f2e1a",
+      "durationMs": 180742
     },
     {
       "id": "track_sp_0JmnkIqdlnUzPaf8sqBRs3",
@@ -1823,7 +2108,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 14:16:37"
+      "created_at": "2026-09-29 14:16:37",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da841672fd712b54639b5e8c24e3",
+      "streamUrl": "https://p.scdn.co/mp3-preview/786606c3207fabbeb2a80f17d87570e58d3d8e1f",
+      "durationMs": 187723
     },
     {
       "id": "track_sp_0sTlGEld0h8kIPZaKDYUf4",
@@ -1842,7 +2130,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 14:16:37"
+      "created_at": "2026-09-29 14:16:37",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da841672fd712b54639b5e8c24e3",
+      "streamUrl": "https://p.scdn.co/mp3-preview/1b9ddf494b74972ba48768db80a192f4a419b450",
+      "durationMs": 195120
     },
     {
       "id": "track_sp_3KR1JFRwYzha78aE9SpX3a",
@@ -1861,7 +2152,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 14:16:38"
+      "created_at": "2026-09-29 14:16:38",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da841672fd712b54639b5e8c24e3",
+      "streamUrl": "https://p.scdn.co/mp3-preview/37bcd79e4d2c5cf8ed163d8f73ce82d1401bf5c9",
+      "durationMs": 99844
     },
     {
       "id": "track_sp_3qhlB30KknSejmIvZZLjOD",
@@ -1880,7 +2174,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 14:16:38"
+      "created_at": "2026-09-29 14:16:38",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da841672fd712b54639b5e8c24e3",
+      "streamUrl": "https://p.scdn.co/mp3-preview/2f6f0965be46144eca9212258c7a2988376727a1",
+      "durationMs": 159245
     },
     {
       "id": "track_sp_612bl0KHzyyxEhPzuMqM6e",
@@ -1899,7 +2196,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 14:16:38"
+      "created_at": "2026-09-29 14:16:38",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da841672fd712b54639b5e8c24e3",
+      "streamUrl": "https://p.scdn.co/mp3-preview/a65256adcf44e41fe96870c79d4d47d54c67fc60",
+      "durationMs": 248494
     },
     {
       "id": "track_sp_5IvhonyREYWlFv0SjZARxW",
@@ -1918,7 +2218,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 14:16:38"
+      "created_at": "2026-09-29 14:16:38",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da841672fd712b54639b5e8c24e3",
+      "streamUrl": "https://p.scdn.co/mp3-preview/8df55f28995b2d829543029b2a615b9d3ad7442f",
+      "durationMs": 120308
     },
     {
       "id": "track_sp_3DnjqawgblhxBcaNt2JusU",
@@ -1937,7 +2240,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 14:16:38"
+      "created_at": "2026-09-29 14:16:38",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da841672fd712b54639b5e8c24e3",
+      "streamUrl": "https://p.scdn.co/mp3-preview/3dd0a030dc39f350a481d0a8ca052fa225c79b97",
+      "durationMs": 221884
     },
     {
       "id": "track_sp_0tgVpDi06FyKpA1z0VMD4v",
@@ -1956,7 +2262,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 14:16:38"
+      "created_at": "2026-09-29 14:16:38",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da841672fd712b54639b5e8c24e3",
+      "streamUrl": "https://p.scdn.co/mp3-preview/4e30857a3c7da3f8891483643e310bb233afadd2",
+      "durationMs": 263400
     },
     {
       "id": "track_sp_54PbBpquVfhfrwRwvjSXbI",
@@ -1975,7 +2284,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 14:16:38"
+      "created_at": "2026-09-29 14:16:38",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da841672fd712b54639b5e8c24e3",
+      "streamUrl": "https://p.scdn.co/mp3-preview/0af9ac246a60236b73e34854631a6c3de5cca602",
+      "durationMs": 217706
     },
     {
       "id": "track_sp_7pT6WSg4PCt4mr5ZFyUfsF",
@@ -1994,7 +2306,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 14:16:38"
+      "created_at": "2026-09-29 14:16:38",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da841672fd712b54639b5e8c24e3",
+      "streamUrl": "https://p.scdn.co/mp3-preview/8a63f21ae64cdb7e8a87497ddbfd71f932a76d68",
+      "durationMs": 181522
     },
     {
       "id": "track_sp_3MnAsEBBsEj86d03RgO4EM",
@@ -2013,7 +2328,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 14:16:38"
+      "created_at": "2026-09-29 14:16:38",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da841672fd712b54639b5e8c24e3",
+      "streamUrl": "https://p.scdn.co/mp3-preview/f491c681051d9fd5d39329817d197ae67b3e969e",
+      "durationMs": 182600
     },
     {
       "id": "track_sp_2QjOHCTQ1Jl3zawyYOpxh6",
@@ -2032,7 +2350,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 14:16:38"
+      "created_at": "2026-09-29 14:16:38",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da841672fd712b54639b5e8c24e3",
+      "streamUrl": "https://p.scdn.co/mp3-preview/877602f424a9dea277b13301ffc516f9fd1fbe7e",
+      "durationMs": 240400
     },
     {
       "id": "track_sp_1avbaACTs8QOtkAVD5YIiT",
@@ -2051,7 +2372,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 14:16:38"
+      "created_at": "2026-09-29 14:16:38",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da841672fd712b54639b5e8c24e3",
+      "streamUrl": "https://p.scdn.co/mp3-preview/758f5f56eaca352263435d415dc798ee1bfd2236",
+      "durationMs": 184186
     },
     {
       "id": "track_sp_4jPy3l0RUwlUI9T5XHBW2m",
@@ -2070,7 +2394,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 14:16:38"
+      "created_at": "2026-09-29 14:16:38",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da841672fd712b54639b5e8c24e3",
+      "streamUrl": "https://p.scdn.co/mp3-preview/59e2cb4fb321453fabe0a19792e120059e58ba32",
+      "durationMs": 140525
     },
     {
       "id": "track_sp_2FMYzoK7QX1OKolZDHyjkS",
@@ -2089,7 +2416,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 14:16:38"
+      "created_at": "2026-09-29 14:16:38",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da841672fd712b54639b5e8c24e3",
+      "streamUrl": "https://p.scdn.co/mp3-preview/665b19cc70ac02f54d188699f0d47d8e3eeec43c",
+      "durationMs": 249460
     },
     {
       "id": "track_sp_6lanRgr6wXibZr8KgzXxBl",
@@ -2108,7 +2438,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 14:16:38"
+      "created_at": "2026-09-29 14:16:38",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da841672fd712b54639b5e8c24e3",
+      "streamUrl": "https://p.scdn.co/mp3-preview/be3f3ae6466123836bb05ce0a23a368c196e62f7",
+      "durationMs": 285120
     },
     {
       "id": "track_sp_6FOcAUTjpxsMN5X9cUvK1B",
@@ -2127,7 +2460,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 14:16:38"
+      "created_at": "2026-09-29 14:16:38",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da841672fd712b54639b5e8c24e3",
+      "streamUrl": "https://p.scdn.co/mp3-preview/7dd284ee4ff23a30f744850d41a5d69d96af8e8f",
+      "durationMs": 199665
     },
     {
       "id": "track_sp_3frZl6bno6us1TLjr6PZ4h",
@@ -2146,7 +2482,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 14:16:38"
+      "created_at": "2026-09-29 14:16:38",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da841672fd712b54639b5e8c24e3",
+      "streamUrl": "https://p.scdn.co/mp3-preview/022d0719f36de59fd489fb5ca40e16861e17d3d7",
+      "durationMs": 136562
     },
     {
       "id": "track_sp_3vkCueOmm7xQDoJ17W1Pm3",
@@ -2165,7 +2504,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 14:16:38"
+      "created_at": "2026-09-29 14:16:38",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da841672fd712b54639b5e8c24e3",
+      "streamUrl": "https://p.scdn.co/mp3-preview/2f90c9a6a2b6e38554d3bc3cf7512c2c70ac67b9",
+      "durationMs": 137773
     },
     {
       "id": "track_sp_4Pjht5dwS2BDK7klpDtGaO",
@@ -2184,7 +2526,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 14:16:38"
+      "created_at": "2026-09-29 14:16:38",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da841672fd712b54639b5e8c24e3",
+      "streamUrl": "https://p.scdn.co/mp3-preview/11ba74c3083a5a5f40ae0c624e8c76a5886ebd38",
+      "durationMs": 180451
     },
     {
       "id": "track_sp_5ohp4IjsJN51BbrjQrXpUr",
@@ -2203,7 +2548,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 14:16:38"
+      "created_at": "2026-09-29 14:16:38",
+      "coverUrl": "https://mosaic.scdn.co/640/ab67616d00001e0225450e2ad1c5d66ec53e65d4ab67616d00001e022bd1335d05cc5ec9195c36c4ab67616d00001e0295c55905bbc6485580d6ff3cab67616d00001e02e2461e606ed7f13314475b05",
+      "streamUrl": "https://p.scdn.co/mp3-preview/11ba74c3083a5a5f40ae0c624e8c76a5886ebd38",
+      "durationMs": 180451
     },
     {
       "id": "track_sp_32XDqmffPVWUxAReKxFBLZ",
@@ -2222,7 +2570,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 14:16:38"
+      "created_at": "2026-09-29 14:16:38",
+      "coverUrl": "https://mosaic.scdn.co/640/ab67616d00001e0225450e2ad1c5d66ec53e65d4ab67616d00001e022bd1335d05cc5ec9195c36c4ab67616d00001e0295c55905bbc6485580d6ff3cab67616d00001e02e2461e606ed7f13314475b05",
+      "streamUrl": "https://p.scdn.co/mp3-preview/11ba74c3083a5a5f40ae0c624e8c76a5886ebd38",
+      "durationMs": 180451
     },
     {
       "id": "track_sp_6T80kNfM3iJMRO6uzeOzRG",
@@ -2241,7 +2592,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 14:16:38"
+      "created_at": "2026-09-29 14:16:38",
+      "coverUrl": "https://mosaic.scdn.co/640/ab67616d00001e0225450e2ad1c5d66ec53e65d4ab67616d00001e022bd1335d05cc5ec9195c36c4ab67616d00001e0295c55905bbc6485580d6ff3cab67616d00001e02e2461e606ed7f13314475b05",
+      "streamUrl": "https://p.scdn.co/mp3-preview/11ba74c3083a5a5f40ae0c624e8c76a5886ebd38",
+      "durationMs": 180451
     },
     {
       "id": "track_sp_2qZh0BRG0DKpBZVu7MAjmG",
@@ -2260,7 +2614,10 @@
       "sample_rate": "44.1 kHz",
       "lyrics_available": 0,
       "popularity": 80,
-      "created_at": "2026-09-29 14:16:40"
+      "created_at": "2026-09-29 14:16:40",
+      "coverUrl": "https://mosaic.scdn.co/640/ab67616d00001e0225450e2ad1c5d66ec53e65d4ab67616d00001e022bd1335d05cc5ec9195c36c4ab67616d00001e0295c55905bbc6485580d6ff3cab67616d00001e02e2461e606ed7f13314475b05",
+      "streamUrl": "https://cdnt-preview.dzcdn.net/api/1/1/8/f/e/0/8fefc5537c36b4d0384ce263e50aca83.mp3?hdnea=exp=1790692299~acl=/api/1/1/8/f/e/0/8fefc5537c36b4d0384ce263e50aca83.mp3*~data=user_id=0,application_id=42~hmac=ad81c0cef52a254421d98e6baa3e5882eb31f685a20aba623789fd5ca41ab076",
+      "durationMs": 180460
     }
   ],
   "playlists": [
@@ -2269,7 +2626,7 @@
       "user_id": "user_furina_default",
       "name": "Opera Epiclese: Grand Repertoire",
       "description": "The definitive collection of Fontaine theatrical movements and royal suites, curated by Furina.",
-      "cover_url": "/images/furina_opera_tears.jpg",
+      "cover_url": "./images/furina_opera_tears.jpg",
       "is_public": 1,
       "provider": "furina",
       "provider_playlist_id": null,
@@ -2278,14 +2635,15 @@
       "last_synced_at": null,
       "sync_status": "synced",
       "created_at": "2026-09-29 12:06:33",
-      "updated_at": "2026-09-29 12:06:33"
+      "updated_at": "2026-09-29 12:06:33",
+      "coverUrl": "./images/furina_opera_tears.jpg"
     },
     {
       "id": "pl_salon_tea",
       "user_id": "user_furina_default",
       "name": "Salon Solitaire Afternoon High Tea",
       "description": "Refined baroque minuets and spirited waltzes for relaxation and graceful afternoon reflection.",
-      "cover_url": "/images/furina_salon_music.jpg",
+      "cover_url": "./images/furina_salon_music.jpg",
       "is_public": 1,
       "provider": "furina",
       "provider_playlist_id": null,
@@ -2294,14 +2652,15 @@
       "last_synced_at": null,
       "sync_status": "synced",
       "created_at": "2026-09-29 12:06:33",
-      "updated_at": "2026-09-29 12:06:33"
+      "updated_at": "2026-09-29 12:06:33",
+      "coverUrl": "./images/furina_salon_music.jpg"
     },
     {
       "id": "pl_fontaine_abyss",
       "user_id": "user_furina_default",
       "name": "Fontaine Submerged Memories",
       "description": "Luminous underwater ambient harmonies echoing through the Primordial Sea.",
-      "cover_url": "/images/furina_ocean_abyss.jpg",
+      "cover_url": "./images/furina_ocean_abyss.jpg",
       "is_public": 1,
       "provider": "furina",
       "provider_playlist_id": null,
@@ -2310,7 +2669,8 @@
       "last_synced_at": null,
       "sync_status": "synced",
       "created_at": "2026-09-29 12:06:33",
-      "updated_at": "2026-09-29 12:06:33"
+      "updated_at": "2026-09-29 12:06:33",
+      "coverUrl": "./images/furina_ocean_abyss.jpg"
     },
     {
       "id": "pl_imp_1790685577873_xji21",
@@ -2326,7 +2686,8 @@
       "last_synced_at": "2026-09-29 13:01:06",
       "sync_status": "synced",
       "created_at": "2026-09-29 12:39:37",
-      "updated_at": "2026-09-29 12:39:37"
+      "updated_at": "2026-09-29 12:39:37",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966"
     },
     {
       "id": "pl_imp_1790691283982_dqjem",
@@ -2342,7 +2703,8 @@
       "last_synced_at": "2026-09-29 14:16:37",
       "sync_status": "synced",
       "created_at": "2026-09-29 14:14:43",
-      "updated_at": "2026-09-29 14:14:43"
+      "updated_at": "2026-09-29 14:14:43",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8"
     },
     {
       "id": "pl_imp_1790691397952_51yxf",
@@ -2358,7 +2720,8 @@
       "last_synced_at": "2026-09-29 14:16:37",
       "sync_status": "synced",
       "created_at": "2026-09-29 14:16:37",
-      "updated_at": "2026-09-29 14:16:37"
+      "updated_at": "2026-09-29 14:16:37",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da841672fd712b54639b5e8c24e3"
     },
     {
       "id": "pl_imp_1790691398637_2jyf9",
@@ -2374,7 +2737,8 @@
       "last_synced_at": "2026-09-29 14:16:38",
       "sync_status": "synced",
       "created_at": "2026-09-29 14:16:38",
-      "updated_at": "2026-09-29 14:16:38"
+      "updated_at": "2026-09-29 14:16:38",
+      "coverUrl": "https://mosaic.scdn.co/640/ab67616d00001e0225450e2ad1c5d66ec53e65d4ab67616d00001e022bd1335d05cc5ec9195c36c4ab67616d00001e0295c55905bbc6485580d6ff3cab67616d00001e02e2461e606ed7f13314475b05"
     }
   ],
   "playlistTracks": [
@@ -2388,12 +2752,15 @@
       "title": "La Vaguelette",
       "artist": "Furina de Fontaine",
       "album": "La Vaguelette — Fontaine Opera Suites",
-      "cover_url": "/images/furina_opera_tears.jpg",
-      "stream_url": "/audio/la_vaguelette.wav",
+      "cover_url": "./images/furina_opera_tears.jpg",
+      "stream_url": "./audio/la_vaguelette.wav",
       "duration_ms": 180000,
       "codec": "PCM Lossless WAV",
       "bitrate": "1411 kbps",
-      "provider": "furina"
+      "provider": "furina",
+      "coverUrl": "./images/furina_opera_tears.jpg",
+      "streamUrl": "./audio/la_vaguelette.wav",
+      "durationMs": 180000
     },
     {
       "id": "pl_salon_tea_furina_hydro_solitaire",
@@ -2405,12 +2772,15 @@
       "title": "Hydro Solitaire",
       "artist": "Salon Solitaire Ensemble",
       "album": "Hydro Solitaire & Court Minuets",
-      "cover_url": "/images/furina_salon_music.jpg",
-      "stream_url": "/audio/hydro_solitaire.wav",
+      "cover_url": "./images/furina_salon_music.jpg",
+      "stream_url": "./audio/hydro_solitaire.wav",
       "duration_ms": 172000,
       "codec": "PCM Lossless WAV",
       "bitrate": "1411 kbps",
-      "provider": "furina"
+      "provider": "furina",
+      "coverUrl": "./images/furina_salon_music.jpg",
+      "streamUrl": "./audio/hydro_solitaire.wav",
+      "durationMs": 172000
     },
     {
       "id": "pl_fontaine_abyss_furina_vaguelette",
@@ -2422,12 +2792,15 @@
       "title": "La Vaguelette",
       "artist": "Furina de Fontaine",
       "album": "La Vaguelette — Fontaine Opera Suites",
-      "cover_url": "/images/furina_opera_tears.jpg",
-      "stream_url": "/audio/la_vaguelette.wav",
+      "cover_url": "./images/furina_opera_tears.jpg",
+      "stream_url": "./audio/la_vaguelette.wav",
       "duration_ms": 180000,
       "codec": "PCM Lossless WAV",
       "bitrate": "1411 kbps",
-      "provider": "furina"
+      "provider": "furina",
+      "coverUrl": "./images/furina_opera_tears.jpg",
+      "streamUrl": "./audio/la_vaguelette.wav",
+      "durationMs": 180000
     },
     {
       "id": "pl_imp_1790685577873_xji21_furina_vaguelette",
@@ -2439,12 +2812,15 @@
       "title": "La Vaguelette",
       "artist": "Furina de Fontaine",
       "album": "La Vaguelette — Fontaine Opera Suites",
-      "cover_url": "/images/furina_opera_tears.jpg",
-      "stream_url": "/audio/la_vaguelette.wav",
+      "cover_url": "./images/furina_opera_tears.jpg",
+      "stream_url": "./audio/la_vaguelette.wav",
       "duration_ms": 180000,
       "codec": "PCM Lossless WAV",
       "bitrate": "1411 kbps",
-      "provider": "furina"
+      "provider": "furina",
+      "coverUrl": "./images/furina_opera_tears.jpg",
+      "streamUrl": "./audio/la_vaguelette.wav",
+      "durationMs": 180000
     },
     {
       "id": "pl_imp_1790685577873_xji21_track_sp_70cHKK8bHAfJrOGVnfRG9J",
@@ -2461,7 +2837,10 @@
       "duration_ms": 181270,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/68bc3cb0611cfe6569ce56eeb025359233168a69",
+      "durationMs": 181270
     },
     {
       "id": "pl_imp_1790691283982_dqjem_track_sp_23WxsmliKISYaCfam8iPPG",
@@ -2478,7 +2857,10 @@
       "duration_ms": 180376,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/4c250eabf2df65fb1f77dd5a60fcd6712645e294",
+      "durationMs": 180376
     },
     {
       "id": "pl_imp_1790691397952_51yxf_track_sp_23WxsmliKISYaCfam8iPPG",
@@ -2495,7 +2877,10 @@
       "duration_ms": 180376,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/4c250eabf2df65fb1f77dd5a60fcd6712645e294",
+      "durationMs": 180376
     },
     {
       "id": "pl_opera_epiclese_furina_stage_glory",
@@ -2507,12 +2892,15 @@
       "title": "All The World's A Stage",
       "artist": "Furina de Fontaine",
       "album": "All The World's A Stage",
-      "cover_url": "/images/furina_pure_hydro.jpg",
-      "stream_url": "/audio/fontaine_waltz.wav",
+      "cover_url": "./images/furina_pure_hydro.jpg",
+      "stream_url": "./audio/fontaine_waltz.wav",
       "duration_ms": 195000,
       "codec": "PCM Lossless WAV",
       "bitrate": "1411 kbps",
-      "provider": "furina"
+      "provider": "furina",
+      "coverUrl": "./images/furina_pure_hydro.jpg",
+      "streamUrl": "./audio/fontaine_waltz.wav",
+      "durationMs": 195000
     },
     {
       "id": "pl_salon_tea_furina_fontaine_waltz",
@@ -2524,12 +2912,15 @@
       "title": "Fontaine Waltz",
       "artist": "Fontaine Philharmonic Orchestra",
       "album": "All The World's A Stage",
-      "cover_url": "/images/furina_ocean_abyss.jpg",
-      "stream_url": "/audio/fontaine_waltz.wav",
+      "cover_url": "./images/furina_ocean_abyss.jpg",
+      "stream_url": "./audio/fontaine_waltz.wav",
       "duration_ms": 165000,
       "codec": "PCM Lossless WAV",
       "bitrate": "1411 kbps",
-      "provider": "furina"
+      "provider": "furina",
+      "coverUrl": "./images/furina_ocean_abyss.jpg",
+      "streamUrl": "./audio/fontaine_waltz.wav",
+      "durationMs": 165000
     },
     {
       "id": "pl_fontaine_abyss_furina_melancholy_tears",
@@ -2541,12 +2932,15 @@
       "title": "Tears of the Hydro Archon",
       "artist": "Furina de Fontaine",
       "album": "La Vaguelette — Fontaine Opera Suites",
-      "cover_url": "/images/furina_melancholy_swing.jpg",
-      "stream_url": "/audio/la_vaguelette.wav",
+      "cover_url": "./images/furina_melancholy_swing.jpg",
+      "stream_url": "./audio/la_vaguelette.wav",
       "duration_ms": 154000,
       "codec": "PCM Lossless WAV",
       "bitrate": "1411 kbps",
-      "provider": "furina"
+      "provider": "furina",
+      "coverUrl": "./images/furina_melancholy_swing.jpg",
+      "streamUrl": "./audio/la_vaguelette.wav",
+      "durationMs": 154000
     },
     {
       "id": "pl_imp_1790685577873_xji21_track_sp_sp_clavier_bien_tempere",
@@ -2558,12 +2952,15 @@
       "title": "The Well-Tempered Clavier - Prelude No. 1 in C Major",
       "artist": "Johann Sebastian Bach, Fontaine Keyboard Virtuosi",
       "album": "Baroque Essentials",
-      "cover_url": "/images/furina_salon_music.jpg",
-      "stream_url": "/audio/hydro_solitaire.wav",
+      "cover_url": "./images/furina_salon_music.jpg",
+      "stream_url": "./audio/hydro_solitaire.wav",
       "duration_ms": 154000,
       "codec": "Ogg Vorbis / AAC",
       "bitrate": "320 kbps (Premium Web SDK)",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "./images/furina_salon_music.jpg",
+      "streamUrl": "./audio/hydro_solitaire.wav",
+      "durationMs": 154000
     },
     {
       "id": "pl_imp_1790685577873_xji21_track_sp_11hcBLPtbMp4aQI6zGQLub",
@@ -2580,7 +2977,10 @@
       "duration_ms": 225868,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/3b622221c4b4a6c28ef70ed256b47ef825108142",
+      "durationMs": 225868
     },
     {
       "id": "pl_imp_1790691283982_dqjem_track_sp_5odlY52u43F5BjByhxg7wg",
@@ -2597,7 +2997,10 @@
       "duration_ms": 209259,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/bcc17f30841d6fbf3cd7954c3e3cf669f11b6a21",
+      "durationMs": 209259
     },
     {
       "id": "pl_imp_1790691397952_51yxf_track_sp_68EkhVWIeULhHxcbi1QhzK",
@@ -2614,7 +3017,10 @@
       "duration_ms": 180742,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da841672fd712b54639b5e8c24e3",
+      "streamUrl": "https://p.scdn.co/mp3-preview/66a23e8f1f37cda81294ddb5044c50ca3f7f2e1a",
+      "durationMs": 180742
     },
     {
       "id": "pl_opera_epiclese_furina_melancholy_tears",
@@ -2626,12 +3032,15 @@
       "title": "Tears of the Hydro Archon",
       "artist": "Furina de Fontaine",
       "album": "La Vaguelette — Fontaine Opera Suites",
-      "cover_url": "/images/furina_melancholy_swing.jpg",
-      "stream_url": "/audio/la_vaguelette.wav",
+      "cover_url": "./images/furina_melancholy_swing.jpg",
+      "stream_url": "./audio/la_vaguelette.wav",
       "duration_ms": 154000,
       "codec": "PCM Lossless WAV",
       "bitrate": "1411 kbps",
-      "provider": "furina"
+      "provider": "furina",
+      "coverUrl": "./images/furina_melancholy_swing.jpg",
+      "streamUrl": "./audio/la_vaguelette.wav",
+      "durationMs": 154000
     },
     {
       "id": "pl_fontaine_abyss_furina_fontaine_waltz",
@@ -2643,12 +3052,15 @@
       "title": "Fontaine Waltz",
       "artist": "Fontaine Philharmonic Orchestra",
       "album": "All The World's A Stage",
-      "cover_url": "/images/furina_ocean_abyss.jpg",
-      "stream_url": "/audio/fontaine_waltz.wav",
+      "cover_url": "./images/furina_ocean_abyss.jpg",
+      "stream_url": "./audio/fontaine_waltz.wav",
       "duration_ms": 165000,
       "codec": "PCM Lossless WAV",
       "bitrate": "1411 kbps",
-      "provider": "furina"
+      "provider": "furina",
+      "coverUrl": "./images/furina_ocean_abyss.jpg",
+      "streamUrl": "./audio/fontaine_waltz.wav",
+      "durationMs": 165000
     },
     {
       "id": "pl_imp_1790685577873_xji21_track_sp_sp_claire_de_lune",
@@ -2660,12 +3072,15 @@
       "title": "Clair de Lune (Suite Bergamasque)",
       "artist": "Claude Debussy",
       "album": "Impressionist Waters",
-      "cover_url": "/images/furina_ocean_abyss.jpg",
-      "stream_url": "/audio/fontaine_waltz.wav",
+      "cover_url": "./images/furina_ocean_abyss.jpg",
+      "stream_url": "./audio/fontaine_waltz.wav",
       "duration_ms": 302000,
       "codec": "Ogg Vorbis / AAC",
       "bitrate": "320 kbps (Premium Web SDK)",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "./images/furina_ocean_abyss.jpg",
+      "streamUrl": "./audio/fontaine_waltz.wav",
+      "durationMs": 302000
     },
     {
       "id": "pl_imp_1790685577873_xji21_track_sp_3h5T5JypYU7huFiVYhv1dr",
@@ -2682,7 +3097,10 @@
       "duration_ms": 225834,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/f6ab45a8375c5bcf6f03161edd9f44c1fad501c8",
+      "durationMs": 225834
     },
     {
       "id": "pl_imp_1790691283982_dqjem_track_sp_1O9WW9MIrPqflp1Ra8BQEx",
@@ -2699,7 +3117,10 @@
       "duration_ms": 210895,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/54f42ac9fea5c1343f2335a9c796d74a93b0e1ec",
+      "durationMs": 210895
     },
     {
       "id": "pl_imp_1790691397952_51yxf_track_sp_5odlY52u43F5BjByhxg7wg",
@@ -2716,7 +3137,10 @@
       "duration_ms": 209259,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/bcc17f30841d6fbf3cd7954c3e3cf669f11b6a21",
+      "durationMs": 209259
     },
     {
       "id": "pl_imp_1790685577873_xji21_track_sp_sp_gymnopedie",
@@ -2728,12 +3152,15 @@
       "title": "Gymnopédie No. 1",
       "artist": "Erik Satie",
       "album": "Quiet Reflections",
-      "cover_url": "/images/furina_melancholy_swing.jpg",
-      "stream_url": "/audio/la_vaguelette.wav",
+      "cover_url": "./images/furina_melancholy_swing.jpg",
+      "stream_url": "./audio/la_vaguelette.wav",
       "duration_ms": 198000,
       "codec": "Ogg Vorbis / AAC",
       "bitrate": "320 kbps (Premium Web SDK)",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "./images/furina_melancholy_swing.jpg",
+      "streamUrl": "./audio/la_vaguelette.wav",
+      "durationMs": 198000
     },
     {
       "id": "pl_imp_1790685577873_xji21_track_sp_0eAuGrXyGFYwur9ARUe7LJ",
@@ -2750,7 +3177,10 @@
       "duration_ms": 151500,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/20a1469df9f65a51878811bbe49979c418abc1b7",
+      "durationMs": 151500
     },
     {
       "id": "pl_imp_1790691283982_dqjem_track_sp_6FfLg6FFqhCsrFOaHIGkg0",
@@ -2767,7 +3197,10 @@
       "duration_ms": 135581,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/da561f1fa461ea814d78e2752e659797181c38d5",
+      "durationMs": 135581
     },
     {
       "id": "pl_imp_1790691397952_51yxf_track_sp_0JmnkIqdlnUzPaf8sqBRs3",
@@ -2784,7 +3217,10 @@
       "duration_ms": 187723,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da841672fd712b54639b5e8c24e3",
+      "streamUrl": "https://p.scdn.co/mp3-preview/786606c3207fabbeb2a80f17d87570e58d3d8e1f",
+      "durationMs": 187723
     },
     {
       "id": "pl_imp_1790691398637_2jyf9_track_sp_2qZh0BRG0DKpBZVu7MAjmG",
@@ -2801,7 +3237,10 @@
       "duration_ms": 180460,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://mosaic.scdn.co/640/ab67616d00001e0225450e2ad1c5d66ec53e65d4ab67616d00001e022bd1335d05cc5ec9195c36c4ab67616d00001e0295c55905bbc6485580d6ff3cab67616d00001e02e2461e606ed7f13314475b05",
+      "streamUrl": "https://cdnt-preview.dzcdn.net/api/1/1/8/f/e/0/8fefc5537c36b4d0384ce263e50aca83.mp3?hdnea=exp=1790692299~acl=/api/1/1/8/f/e/0/8fefc5537c36b4d0384ce263e50aca83.mp3*~data=user_id=0,application_id=42~hmac=ad81c0cef52a254421d98e6baa3e5882eb31f685a20aba623789fd5ca41ab076",
+      "durationMs": 180460
     },
     {
       "id": "pl_imp_1790685577873_xji21_track_sp_20jbSiX29FDX4oQxBXyUEi",
@@ -2818,7 +3257,10 @@
       "duration_ms": 197949,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/9fb8e09c9facc2d9443b6e57ae36d47bf83c01b8",
+      "durationMs": 197949
     },
     {
       "id": "pl_imp_1790691283982_dqjem_track_sp_0myRViRgmQ3J8izICXEAVO",
@@ -2835,7 +3277,10 @@
       "duration_ms": 170333,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/a90ca82468d0612991195e07a87c628d86b3a932",
+      "durationMs": 170333
     },
     {
       "id": "pl_imp_1790691397952_51yxf_track_sp_6G9YlbU3ByPJQvOFDRdwyM",
@@ -2852,7 +3297,10 @@
       "duration_ms": 171757,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/688f27341c5ad1c89a65ffee2b2789c8e5e6488c",
+      "durationMs": 171757
     },
     {
       "id": "pl_imp_1790685577873_xji21_track_sp_7bxaFZ1O3cHkgLKMsdC3xR",
@@ -2869,7 +3317,10 @@
       "duration_ms": 223069,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/0015e9347a45b62215447eba657b2fc3ce279d2d",
+      "durationMs": 223069
     },
     {
       "id": "pl_imp_1790691283982_dqjem_track_sp_4WFgvKVfEhb3IUAFGrutTR",
@@ -2886,7 +3337,10 @@
       "duration_ms": 213466,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/c660e524e84990f7687728af3ba09f9e071e585d",
+      "durationMs": 213466
     },
     {
       "id": "pl_imp_1790691397952_51yxf_track_sp_6VhuP99TE6gYNQRJIlAWFD",
@@ -2903,7 +3357,10 @@
       "duration_ms": 176666,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/0a164f0a3b44a259620445c5d2a1b23c2636956b",
+      "durationMs": 176666
     },
     {
       "id": "pl_imp_1790685577873_xji21_track_sp_0kosUz0jePvjiz4ctmR6wL",
@@ -2920,7 +3377,10 @@
       "duration_ms": 223448,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/a6955a6725dcf614e9915396987847ea0b509580",
+      "durationMs": 223448
     },
     {
       "id": "pl_imp_1790691283982_dqjem_track_sp_6W614n8yLUeS3zsZSeBwyq",
@@ -2937,7 +3397,10 @@
       "duration_ms": 214357,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/68149ee3d3a501d066ea084ec3980fe5d2bde921",
+      "durationMs": 214357
     },
     {
       "id": "pl_imp_1790691397952_51yxf_track_sp_0sTlGEld0h8kIPZaKDYUf4",
@@ -2954,7 +3417,10 @@
       "duration_ms": 195120,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da841672fd712b54639b5e8c24e3",
+      "streamUrl": "https://p.scdn.co/mp3-preview/1b9ddf494b74972ba48768db80a192f4a419b450",
+      "durationMs": 195120
     },
     {
       "id": "pl_imp_1790685577873_xji21_track_sp_4EoJ151oQ5jY48z4RhSE96",
@@ -2971,7 +3437,10 @@
       "duration_ms": 297090,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/7559346825a2233855b5fc77e84a954606de3444",
+      "durationMs": 297090
     },
     {
       "id": "pl_imp_1790691283982_dqjem_track_sp_6VhuP99TE6gYNQRJIlAWFD",
@@ -2988,7 +3457,10 @@
       "duration_ms": 176666,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/0a164f0a3b44a259620445c5d2a1b23c2636956b",
+      "durationMs": 176666
     },
     {
       "id": "pl_imp_1790691397952_51yxf_track_sp_3KR1JFRwYzha78aE9SpX3a",
@@ -3005,7 +3477,10 @@
       "duration_ms": 99844,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da841672fd712b54639b5e8c24e3",
+      "streamUrl": "https://p.scdn.co/mp3-preview/37bcd79e4d2c5cf8ed163d8f73ce82d1401bf5c9",
+      "durationMs": 99844
     },
     {
       "id": "pl_imp_1790685577873_xji21_track_sp_3ouNEk0tv5TTi8VWMe1xbX",
@@ -3022,7 +3497,10 @@
       "duration_ms": 158494,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/65040556453e4f1c76bcefebf54a718521588331",
+      "durationMs": 158494
     },
     {
       "id": "pl_imp_1790691283982_dqjem_track_sp_6G9YlbU3ByPJQvOFDRdwyM",
@@ -3039,7 +3517,10 @@
       "duration_ms": 171757,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/688f27341c5ad1c89a65ffee2b2789c8e5e6488c",
+      "durationMs": 171757
     },
     {
       "id": "pl_imp_1790685577873_xji21_track_sp_2FZcjBYK4dTt48q94pJbJD",
@@ -3056,7 +3537,10 @@
       "duration_ms": 202460,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/e57b7c5fcb52b8bb4c781cc1e2e5b25f8a6c6e79",
+      "durationMs": 202460
     },
     {
       "id": "pl_imp_1790691283982_dqjem_track_sp_5XeFesFbtLpXzIVDNQP22n",
@@ -3073,7 +3557,10 @@
       "duration_ms": 183956,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/07de30bde8363d9ff78b72339245c151f67af451",
+      "durationMs": 183956
     },
     {
       "id": "pl_imp_1790691397952_51yxf_track_sp_4WFgvKVfEhb3IUAFGrutTR",
@@ -3090,7 +3577,10 @@
       "duration_ms": 213466,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/c660e524e84990f7687728af3ba09f9e071e585d",
+      "durationMs": 213466
     },
     {
       "id": "pl_imp_1790685577873_xji21_track_sp_4qW3BbQAwZsrnu8a3ZRdyT",
@@ -3107,7 +3597,10 @@
       "duration_ms": 180740,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/98af5b6b77831ad55b6d1129148745705a311973",
+      "durationMs": 180740
     },
     {
       "id": "pl_imp_1790691283982_dqjem_track_sp_2psRActEWsTlYYd7EDoyVR",
@@ -3124,7 +3617,10 @@
       "duration_ms": 220750,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/4c725ed45c535444fded71908c0a69120cbbfc89",
+      "durationMs": 220750
     },
     {
       "id": "pl_imp_1790691397952_51yxf_track_sp_3qhlB30KknSejmIvZZLjOD",
@@ -3141,7 +3637,10 @@
       "duration_ms": 159245,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da841672fd712b54639b5e8c24e3",
+      "streamUrl": "https://p.scdn.co/mp3-preview/2f6f0965be46144eca9212258c7a2988376727a1",
+      "durationMs": 159245
     },
     {
       "id": "pl_imp_1790685577873_xji21_track_sp_02HyFYmpzt02VJ8k0CqxKj",
@@ -3158,7 +3657,10 @@
       "duration_ms": 184927,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/a3d0119e3182fbb19636c2a44737fa3e0b71f939",
+      "durationMs": 184927
     },
     {
       "id": "pl_imp_1790691283982_dqjem_track_sp_2eAvDnpXP5W0cVtiI0PUxV",
@@ -3175,7 +3677,10 @@
       "duration_ms": 233720,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/c3743f9956a58ed7af85063003518bb51e5344ea",
+      "durationMs": 233720
     },
     {
       "id": "pl_imp_1790691397952_51yxf_track_sp_0myRViRgmQ3J8izICXEAVO",
@@ -3192,7 +3697,10 @@
       "duration_ms": 170333,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/a90ca82468d0612991195e07a87c628d86b3a932",
+      "durationMs": 170333
     },
     {
       "id": "pl_imp_1790685577873_xji21_track_sp_7yNf9YjeO5JXUE3JEBgnYc",
@@ -3209,7 +3717,10 @@
       "duration_ms": 97960,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/bf5ab98492256120bd9c48658e9c899c8692f77f",
+      "durationMs": 97960
     },
     {
       "id": "pl_imp_1790691283982_dqjem_track_sp_6G0SscWHDmLr05nByFmhwf",
@@ -3226,7 +3737,10 @@
       "duration_ms": 316280,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/2bc24a56f05a8e28c6ca003d3ad6d394de4a6541",
+      "durationMs": 316280
     },
     {
       "id": "pl_imp_1790691397952_51yxf_track_sp_7yNf9YjeO5JXUE3JEBgnYc",
@@ -3243,7 +3757,10 @@
       "duration_ms": 97960,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/bf5ab98492256120bd9c48658e9c899c8692f77f",
+      "durationMs": 97960
     },
     {
       "id": "pl_imp_1790685577873_xji21_track_sp_65DbTqJKhbwqYbZ1Okr0rc",
@@ -3260,7 +3777,10 @@
       "duration_ms": 232226,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/ad3f225321f11467402cc47e09f9ea1195f3de91",
+      "durationMs": 232226
     },
     {
       "id": "pl_imp_1790691283982_dqjem_track_sp_3zmLuTupbo2niUo6rfvRzi",
@@ -3277,7 +3797,10 @@
       "duration_ms": 96496,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/846e629f29ec2047b12d5a1e4b09a99db834f9c2",
+      "durationMs": 96496
     },
     {
       "id": "pl_imp_1790691397952_51yxf_track_sp_612bl0KHzyyxEhPzuMqM6e",
@@ -3294,7 +3817,10 @@
       "duration_ms": 248494,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da841672fd712b54639b5e8c24e3",
+      "streamUrl": "https://p.scdn.co/mp3-preview/a65256adcf44e41fe96870c79d4d47d54c67fc60",
+      "durationMs": 248494
     },
     {
       "id": "pl_imp_1790685577873_xji21_track_sp_1qbmS6ep2hbBRaEZFpn7BX",
@@ -3311,7 +3837,10 @@
       "duration_ms": 184000,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/0a36635f94b4e44e6e4f5b7edb3f501d458812d9",
+      "durationMs": 184000
     },
     {
       "id": "pl_imp_1790691283982_dqjem_track_sp_3VqSRkq3jRpsSEBngUcY6a",
@@ -3328,7 +3857,10 @@
       "duration_ms": 174253,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/a2d4a64304fd8e82fe9e31ed7a4aeb62ebb28272",
+      "durationMs": 174253
     },
     {
       "id": "pl_imp_1790691397952_51yxf_track_sp_2PWTZV5znjLtZC5T1EVJvL",
@@ -3345,7 +3877,10 @@
       "duration_ms": 120308,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/8df55f28995b2d829543029b2a615b9d3ad7442f",
+      "durationMs": 120308
     },
     {
       "id": "pl_imp_1790685577873_xji21_track_sp_3zOYmiNOuyDL0ClxJcEJ0T",
@@ -3362,7 +3897,10 @@
       "duration_ms": 198840,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/8a374e33d78679e1143d7a07797ddfa0225f8586",
+      "durationMs": 198840
     },
     {
       "id": "pl_imp_1790691283982_dqjem_track_sp_5GQPBzoRBDxcAjwSSluQXD",
@@ -3379,7 +3917,10 @@
       "duration_ms": 142520,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/593d3940b6759c319b45089532b170d734108af5",
+      "durationMs": 142520
     },
     {
       "id": "pl_imp_1790691397952_51yxf_track_sp_1O9WW9MIrPqflp1Ra8BQEx",
@@ -3396,7 +3937,10 @@
       "duration_ms": 210895,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/54f42ac9fea5c1343f2335a9c796d74a93b0e1ec",
+      "durationMs": 210895
     },
     {
       "id": "pl_imp_1790685577873_xji21_track_sp_4LfCY65LvojKjWEnU7fNN4",
@@ -3413,7 +3957,10 @@
       "duration_ms": 209680,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/894b272aa0422aeebe856825b55e5c736a9bc5ee",
+      "durationMs": 209680
     },
     {
       "id": "pl_imp_1790691283982_dqjem_track_sp_2PWTZV5znjLtZC5T1EVJvL",
@@ -3430,7 +3977,10 @@
       "duration_ms": 120308,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/8df55f28995b2d829543029b2a615b9d3ad7442f",
+      "durationMs": 120308
     },
     {
       "id": "pl_imp_1790691397952_51yxf_track_sp_6FfLg6FFqhCsrFOaHIGkg0",
@@ -3447,7 +3997,10 @@
       "duration_ms": 135581,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/da561f1fa461ea814d78e2752e659797181c38d5",
+      "durationMs": 135581
     },
     {
       "id": "pl_imp_1790685577873_xji21_track_sp_22NHkFYbgxB2Zirj29Gbp8",
@@ -3464,7 +4017,10 @@
       "duration_ms": 170584,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/72b6457625435b7f64c345e86930e5f0071c559c",
+      "durationMs": 170584
     },
     {
       "id": "pl_imp_1790691283982_dqjem_track_sp_7h0BX9YDClyO5NJJgddA5O",
@@ -3481,7 +4037,10 @@
       "duration_ms": 122576,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/d25c82870ddc0d509d7e456d9f8175b33c269e1b",
+      "durationMs": 122576
     },
     {
       "id": "pl_imp_1790691397952_51yxf_track_sp_5IvhonyREYWlFv0SjZARxW",
@@ -3498,7 +4057,10 @@
       "duration_ms": 120308,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da841672fd712b54639b5e8c24e3",
+      "streamUrl": "https://p.scdn.co/mp3-preview/8df55f28995b2d829543029b2a615b9d3ad7442f",
+      "durationMs": 120308
     },
     {
       "id": "pl_imp_1790685577873_xji21_track_sp_514joG57v4yKTsfQmz7stz",
@@ -3515,7 +4077,10 @@
       "duration_ms": 237344,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/1de9b315e1aa811aedaf905b1058b668b2d3146e",
+      "durationMs": 237344
     },
     {
       "id": "pl_imp_1790691283982_dqjem_track_sp_14mT8BCOXiUUcGlb7KujkT",
@@ -3532,7 +4097,10 @@
       "duration_ms": 196253,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/29a38871b29e74942d2a7c4696511e73d89a7a44",
+      "durationMs": 196253
     },
     {
       "id": "pl_imp_1790691397952_51yxf_track_sp_3DnjqawgblhxBcaNt2JusU",
@@ -3549,7 +4117,10 @@
       "duration_ms": 221884,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da841672fd712b54639b5e8c24e3",
+      "streamUrl": "https://p.scdn.co/mp3-preview/3dd0a030dc39f350a481d0a8ca052fa225c79b97",
+      "durationMs": 221884
     },
     {
       "id": "pl_imp_1790685577873_xji21_track_sp_5GKBPdWbW4RQtx9VkQ6xKO",
@@ -3566,7 +4137,10 @@
       "duration_ms": 182582,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/e6cd52e0f695eb52584884637d38b3da5ac32fc7",
+      "durationMs": 182582
     },
     {
       "id": "pl_imp_1790691283982_dqjem_track_sp_6nRGPf5tpeJtKpXZO5cgIT",
@@ -3583,7 +4157,10 @@
       "duration_ms": 70400,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/457c2cea5306d422427e218ec9cdc7f66c8949f4",
+      "durationMs": 70400
     },
     {
       "id": "pl_imp_1790691397952_51yxf_track_sp_0tgVpDi06FyKpA1z0VMD4v",
@@ -3600,7 +4177,10 @@
       "duration_ms": 263400,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da841672fd712b54639b5e8c24e3",
+      "streamUrl": "https://p.scdn.co/mp3-preview/4e30857a3c7da3f8891483643e310bb233afadd2",
+      "durationMs": 263400
     },
     {
       "id": "pl_imp_1790691398637_2jyf9_track_sp_5ohp4IjsJN51BbrjQrXpUr",
@@ -3617,7 +4197,10 @@
       "duration_ms": 180451,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://mosaic.scdn.co/640/ab67616d00001e0225450e2ad1c5d66ec53e65d4ab67616d00001e022bd1335d05cc5ec9195c36c4ab67616d00001e0295c55905bbc6485580d6ff3cab67616d00001e02e2461e606ed7f13314475b05",
+      "streamUrl": "https://p.scdn.co/mp3-preview/11ba74c3083a5a5f40ae0c624e8c76a5886ebd38",
+      "durationMs": 180451
     },
     {
       "id": "pl_imp_1790685577873_xji21_track_sp_7MZHqgTVTnN6xZGYAcEEAf",
@@ -3634,7 +4217,10 @@
       "duration_ms": 339410,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/6c85f9e4507e93478ee4adb7782f1a35a9d0e1ce",
+      "durationMs": 339410
     },
     {
       "id": "pl_imp_1790691283982_dqjem_track_sp_2Kc8MeW8prVwHEREYM3wCG",
@@ -3651,7 +4237,10 @@
       "duration_ms": 167583,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/06a1482ad82631334e9d9b164b841d6e09b03ba5",
+      "durationMs": 167583
     },
     {
       "id": "pl_imp_1790691397952_51yxf_track_sp_54PbBpquVfhfrwRwvjSXbI",
@@ -3668,7 +4257,10 @@
       "duration_ms": 217706,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da841672fd712b54639b5e8c24e3",
+      "streamUrl": "https://p.scdn.co/mp3-preview/0af9ac246a60236b73e34854631a6c3de5cca602",
+      "durationMs": 217706
     },
     {
       "id": "pl_imp_1790685577873_xji21_track_sp_3sK8wGT43QFpWrvNQsrQya",
@@ -3685,7 +4277,10 @@
       "duration_ms": 237117,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/e41ce6b82410d81c08baacca2a7169e5ace4287d",
+      "durationMs": 237117
     },
     {
       "id": "pl_imp_1790691283982_dqjem_track_sp_23C7tP1mrPbwXpOFWti2Ag",
@@ -3702,7 +4297,10 @@
       "duration_ms": 120917,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/d13bf325f5ee347e86f7bc3b0a766268763bc6fe",
+      "durationMs": 120917
     },
     {
       "id": "pl_imp_1790691397952_51yxf_track_sp_7pT6WSg4PCt4mr5ZFyUfsF",
@@ -3719,7 +4317,10 @@
       "duration_ms": 181522,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da841672fd712b54639b5e8c24e3",
+      "streamUrl": "https://p.scdn.co/mp3-preview/8a63f21ae64cdb7e8a87497ddbfd71f932a76d68",
+      "durationMs": 181522
     },
     {
       "id": "pl_imp_1790691398637_2jyf9_track_sp_32XDqmffPVWUxAReKxFBLZ",
@@ -3736,7 +4337,10 @@
       "duration_ms": 180451,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://mosaic.scdn.co/640/ab67616d00001e0225450e2ad1c5d66ec53e65d4ab67616d00001e022bd1335d05cc5ec9195c36c4ab67616d00001e0295c55905bbc6485580d6ff3cab67616d00001e02e2461e606ed7f13314475b05",
+      "streamUrl": "https://p.scdn.co/mp3-preview/11ba74c3083a5a5f40ae0c624e8c76a5886ebd38",
+      "durationMs": 180451
     },
     {
       "id": "pl_imp_1790685577873_xji21_track_sp_55lijDD6OAjLFFUHU9tcDm",
@@ -3753,7 +4357,10 @@
       "duration_ms": 197142,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/0194ff4186a1f53bff2cdf6d7660289ca8eb0e7e",
+      "durationMs": 197142
     },
     {
       "id": "pl_imp_1790691283982_dqjem_track_sp_1SKPmfSYaPsETbRHaiA18G",
@@ -3770,7 +4377,10 @@
       "duration_ms": 237146,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/14b8c7f33de3a3a6558d3589b9f2260ae8c513c5",
+      "durationMs": 237146
     },
     {
       "id": "pl_imp_1790691397952_51yxf_track_sp_3MnAsEBBsEj86d03RgO4EM",
@@ -3787,7 +4397,10 @@
       "duration_ms": 182600,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da841672fd712b54639b5e8c24e3",
+      "streamUrl": "https://p.scdn.co/mp3-preview/f491c681051d9fd5d39329817d197ae67b3e969e",
+      "durationMs": 182600
     },
     {
       "id": "pl_imp_1790685577873_xji21_track_sp_0kl6Ozan3fuUdCl6TlB15v",
@@ -3804,7 +4417,10 @@
       "duration_ms": 191076,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/b55c8fa4e31192a3e35ad53d3e889733f9cd9da1",
+      "durationMs": 191076
     },
     {
       "id": "pl_imp_1790691283982_dqjem_track_sp_3siwsiaEoU4Kuuc9WKMUy5",
@@ -3821,7 +4437,10 @@
       "duration_ms": 236906,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/d4318ea548c910877ebe8f80c9d5ec192cee7f97",
+      "durationMs": 236906
     },
     {
       "id": "pl_imp_1790691397952_51yxf_track_sp_3siwsiaEoU4Kuuc9WKMUy5",
@@ -3838,7 +4457,10 @@
       "duration_ms": 236906,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/d4318ea548c910877ebe8f80c9d5ec192cee7f97",
+      "durationMs": 236906
     },
     {
       "id": "pl_imp_1790685577873_xji21_track_sp_5qGziX9216V8hKJjGg8RtH",
@@ -3855,7 +4477,10 @@
       "duration_ms": 196000,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/66473eb386fef1ce44a50fea4a4c3685d2f615b4",
+      "durationMs": 196000
     },
     {
       "id": "pl_imp_1790691283982_dqjem_track_sp_43iIQbw5hx986dUEZbr3eN",
@@ -3872,7 +4497,10 @@
       "duration_ms": 169573,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/3cdcd256d89b8634adc47aebbcf6db256e3b9978",
+      "durationMs": 169573
     },
     {
       "id": "pl_imp_1790691397952_51yxf_track_sp_2QjOHCTQ1Jl3zawyYOpxh6",
@@ -3889,7 +4517,10 @@
       "duration_ms": 240400,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da841672fd712b54639b5e8c24e3",
+      "streamUrl": "https://p.scdn.co/mp3-preview/877602f424a9dea277b13301ffc516f9fd1fbe7e",
+      "durationMs": 240400
     },
     {
       "id": "pl_imp_1790685577873_xji21_track_sp_70pVCVMGjmIWPbWXDwf11e",
@@ -3906,7 +4537,10 @@
       "duration_ms": 184248,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/30dc1adb43c170165bb8091e788b55f26f2fc672",
+      "durationMs": 184248
     },
     {
       "id": "pl_imp_1790691283982_dqjem_track_sp_7qjZnBKE73H4Oxkopwulqe",
@@ -3923,7 +4557,10 @@
       "duration_ms": 199032,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/daf5f9aeeab319f4cf5c17682d75c18cc1e2ae93",
+      "durationMs": 199032
     },
     {
       "id": "pl_imp_1790691397952_51yxf_track_sp_1avbaACTs8QOtkAVD5YIiT",
@@ -3940,7 +4577,10 @@
       "duration_ms": 184186,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da841672fd712b54639b5e8c24e3",
+      "streamUrl": "https://p.scdn.co/mp3-preview/758f5f56eaca352263435d415dc798ee1bfd2236",
+      "durationMs": 184186
     },
     {
       "id": "pl_imp_1790685577873_xji21_track_sp_2oWFJJW9d1bIra3zHjR6GO",
@@ -3957,7 +4597,10 @@
       "duration_ms": 177428,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/f1e7acbb1c04e8ba21d08d2402cf069a8eed8f96",
+      "durationMs": 177428
     },
     {
       "id": "pl_imp_1790691283982_dqjem_track_sp_4qW3BbQAwZsrnu8a3ZRdyT",
@@ -3974,7 +4617,10 @@
       "duration_ms": 180740,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/98af5b6b77831ad55b6d1129148745705a311973",
+      "durationMs": 180740
     },
     {
       "id": "pl_imp_1790691397952_51yxf_track_sp_4jPy3l0RUwlUI9T5XHBW2m",
@@ -3991,7 +4637,10 @@
       "duration_ms": 140525,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da841672fd712b54639b5e8c24e3",
+      "streamUrl": "https://p.scdn.co/mp3-preview/59e2cb4fb321453fabe0a19792e120059e58ba32",
+      "durationMs": 140525
     },
     {
       "id": "pl_imp_1790685577873_xji21_track_sp_5y2ijHECwFYWqcAHKTZgzD",
@@ -4008,7 +4657,10 @@
       "duration_ms": 204068,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/2467ff71a7508c57a62112ee5beb996bd6b9e957",
+      "durationMs": 204068
     },
     {
       "id": "pl_imp_1790691283982_dqjem_track_sp_5pMPNxZz50iup8cXchRHxm",
@@ -4025,7 +4677,10 @@
       "duration_ms": 174253,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/7afad22f3dcac1d1a8daa5d7db67d1dd1c2fae32",
+      "durationMs": 174253
     },
     {
       "id": "pl_imp_1790691397952_51yxf_track_sp_2FMYzoK7QX1OKolZDHyjkS",
@@ -4042,7 +4697,10 @@
       "duration_ms": 249460,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da841672fd712b54639b5e8c24e3",
+      "streamUrl": "https://p.scdn.co/mp3-preview/665b19cc70ac02f54d188699f0d47d8e3eeec43c",
+      "durationMs": 249460
     },
     {
       "id": "pl_imp_1790685577873_xji21_track_sp_3oTuTpF1F3A7rEC6RKsMRz",
@@ -4059,7 +4717,10 @@
       "duration_ms": 219743,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/7d860804d259f81b4a7bc04900a5410d99995fd4",
+      "durationMs": 219743
     },
     {
       "id": "pl_imp_1790691283982_dqjem_track_sp_5ThyDv6aRVU8AH4vXQNldF",
@@ -4076,7 +4737,10 @@
       "duration_ms": 207000,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/7e70fa1e32a874ef6fa44501d13787ddc0fd11ce",
+      "durationMs": 207000
     },
     {
       "id": "pl_imp_1790691397952_51yxf_track_sp_6lanRgr6wXibZr8KgzXxBl",
@@ -4093,7 +4757,10 @@
       "duration_ms": 285120,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da841672fd712b54639b5e8c24e3",
+      "streamUrl": "https://p.scdn.co/mp3-preview/be3f3ae6466123836bb05ce0a23a368c196e62f7",
+      "durationMs": 285120
     },
     {
       "id": "pl_imp_1790685577873_xji21_track_sp_5BZsQlgw21vDOAjoqkNgKb",
@@ -4110,7 +4777,10 @@
       "duration_ms": 176453,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/d990a355be1d84adc0882bda733862fba7767e70",
+      "durationMs": 176453
     },
     {
       "id": "pl_imp_1790691283982_dqjem_track_sp_3bmsaFp11I9pbicxzlStf3",
@@ -4127,7 +4797,10 @@
       "duration_ms": 171063,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/c4478bc4a27775ff7aa0cf95673f3d86f967b417",
+      "durationMs": 171063
     },
     {
       "id": "pl_imp_1790691397952_51yxf_track_sp_6W614n8yLUeS3zsZSeBwyq",
@@ -4144,7 +4817,10 @@
       "duration_ms": 214357,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/68149ee3d3a501d066ea084ec3980fe5d2bde921",
+      "durationMs": 214357
     },
     {
       "id": "pl_imp_1790685577873_xji21_track_sp_5uPaqMMt59KGrdKIitDRqa",
@@ -4161,7 +4837,10 @@
       "duration_ms": 178186,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/d21ded2a54dde5461f908b1bf26f1b4bae5ac139",
+      "durationMs": 178186
     },
     {
       "id": "pl_imp_1790691283982_dqjem_track_sp_0TsyaaM73GAKIxv38yzHV4",
@@ -4178,7 +4857,10 @@
       "duration_ms": 169941,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/52bebfbd58f85c52a771136aa43346873e37d309",
+      "durationMs": 169941
     },
     {
       "id": "pl_imp_1790691397952_51yxf_track_sp_6FOcAUTjpxsMN5X9cUvK1B",
@@ -4195,7 +4877,10 @@
       "duration_ms": 199665,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da841672fd712b54639b5e8c24e3",
+      "streamUrl": "https://p.scdn.co/mp3-preview/7dd284ee4ff23a30f744850d41a5d69d96af8e8f",
+      "durationMs": 199665
     },
     {
       "id": "pl_imp_1790685577873_xji21_track_sp_37UCSVSqiPGdR1DijOFyYY",
@@ -4212,7 +4897,10 @@
       "duration_ms": 189898,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/c5bbc379559c92c9d07e2cebf4a1e14029d01331",
+      "durationMs": 189898
     },
     {
       "id": "pl_imp_1790691283982_dqjem_track_sp_6gH4TId535zZLoBFSdnDFm",
@@ -4229,7 +4917,10 @@
       "duration_ms": 273010,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/e91d7f036e84120a4823ce416e91fd607b988654",
+      "durationMs": 273010
     },
     {
       "id": "pl_imp_1790691397952_51yxf_track_sp_7h0BX9YDClyO5NJJgddA5O",
@@ -4246,7 +4937,10 @@
       "duration_ms": 122576,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/d25c82870ddc0d509d7e456d9f8175b33c269e1b",
+      "durationMs": 122576
     },
     {
       "id": "pl_imp_1790685577873_xji21_track_sp_1VWiDyYTrqQhhmnWANWkFa",
@@ -4263,7 +4957,10 @@
       "duration_ms": 188531,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/3f5b29adf9f673b9f985c1976c26f5820649d711",
+      "durationMs": 188531
     },
     {
       "id": "pl_imp_1790691283982_dqjem_track_sp_3oEkrIfXfSh9zGnE7eBzSV",
@@ -4280,7 +4977,10 @@
       "duration_ms": 294720,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/a5c0b3c58f991b2b1f492ddb59223bb561a9a787",
+      "durationMs": 294720
     },
     {
       "id": "pl_imp_1790691397952_51yxf_track_sp_2psRActEWsTlYYd7EDoyVR",
@@ -4297,7 +4997,10 @@
       "duration_ms": 220750,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/4c725ed45c535444fded71908c0a69120cbbfc89",
+      "durationMs": 220750
     },
     {
       "id": "pl_imp_1790685577873_xji21_track_sp_6sGIMrtIzQjdzNndVxe397",
@@ -4314,7 +5017,10 @@
       "duration_ms": 169000,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/e0ea7353932017364bdb12dc776e89b360abac42",
+      "durationMs": 169000
     },
     {
       "id": "pl_imp_1790691283982_dqjem_track_sp_5vXTArFpG0hB1fdlVsf28f",
@@ -4331,7 +5037,10 @@
       "duration_ms": 208000,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/847a618cec6849983e17824a6a9e8cbc06920858",
+      "durationMs": 208000
     },
     {
       "id": "pl_imp_1790691397952_51yxf_track_sp_3frZl6bno6us1TLjr6PZ4h",
@@ -4348,7 +5057,10 @@
       "duration_ms": 136562,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da841672fd712b54639b5e8c24e3",
+      "streamUrl": "https://p.scdn.co/mp3-preview/022d0719f36de59fd489fb5ca40e16861e17d3d7",
+      "durationMs": 136562
     },
     {
       "id": "pl_imp_1790685577873_xji21_track_sp_7ujApz6iFP3PmKIDGcaGbe",
@@ -4365,7 +5077,10 @@
       "duration_ms": 173975,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/f82f2f3e714a66934fc309e357cbf249ad045f62",
+      "durationMs": 173975
     },
     {
       "id": "pl_imp_1790691283982_dqjem_track_sp_1VPXCaMRqLuL6WH7vRtHKw",
@@ -4382,7 +5097,10 @@
       "duration_ms": 110172,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/809dd51c1674e58ee12fde3ea8b952198dae2a85",
+      "durationMs": 110172
     },
     {
       "id": "pl_imp_1790691397952_51yxf_track_sp_6G0SscWHDmLr05nByFmhwf",
@@ -4399,7 +5117,10 @@
       "duration_ms": 316280,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/2bc24a56f05a8e28c6ca003d3ad6d394de4a6541",
+      "durationMs": 316280
     },
     {
       "id": "pl_imp_1790685577873_xji21_track_sp_4W6yulge3h7FSy0zGFrNKs",
@@ -4416,7 +5137,10 @@
       "duration_ms": 286967,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/3f175c1a53a23119bfe50c9ca04e68d27d3131a5",
+      "durationMs": 286967
     },
     {
       "id": "pl_imp_1790691283982_dqjem_track_sp_6zEg4KEgz6RGhCPmDKplYf",
@@ -4433,7 +5157,10 @@
       "duration_ms": 233600,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/b3fc87824002a9935c4d4bda02e7b3405793eb1e",
+      "durationMs": 233600
     },
     {
       "id": "pl_imp_1790691397952_51yxf_track_sp_3zmLuTupbo2niUo6rfvRzi",
@@ -4450,7 +5177,10 @@
       "duration_ms": 96496,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/846e629f29ec2047b12d5a1e4b09a99db834f9c2",
+      "durationMs": 96496
     },
     {
       "id": "pl_imp_1790691398637_2jyf9_track_sp_6T80kNfM3iJMRO6uzeOzRG",
@@ -4467,7 +5197,10 @@
       "duration_ms": 180451,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://mosaic.scdn.co/640/ab67616d00001e0225450e2ad1c5d66ec53e65d4ab67616d00001e022bd1335d05cc5ec9195c36c4ab67616d00001e0295c55905bbc6485580d6ff3cab67616d00001e02e2461e606ed7f13314475b05",
+      "streamUrl": "https://p.scdn.co/mp3-preview/11ba74c3083a5a5f40ae0c624e8c76a5886ebd38",
+      "durationMs": 180451
     },
     {
       "id": "pl_imp_1790685577873_xji21_track_sp_36idurZmYRjJ56KQ8JD9bN",
@@ -4484,7 +5217,10 @@
       "duration_ms": 170859,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/7ffa15bbf70382813f8661408e976cc41655b367",
+      "durationMs": 170859
     },
     {
       "id": "pl_imp_1790691283982_dqjem_track_sp_4nwjvcUjV7cexhwA40Bh5i",
@@ -4501,7 +5237,10 @@
       "duration_ms": 164400,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/3c24dfde787b8d1eb1a7142da7024c2ee1e856f0",
+      "durationMs": 164400
     },
     {
       "id": "pl_imp_1790691397952_51yxf_track_sp_3VqSRkq3jRpsSEBngUcY6a",
@@ -4518,7 +5257,10 @@
       "duration_ms": 174253,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/a2d4a64304fd8e82fe9e31ed7a4aeb62ebb28272",
+      "durationMs": 174253
     },
     {
       "id": "pl_imp_1790685577873_xji21_track_sp_42UBPzRMh5yyz0EDPr6fr1",
@@ -4535,7 +5277,10 @@
       "duration_ms": 213645,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/37c21b6b0df9b7156527d0729a58b6db37c88a0a",
+      "durationMs": 213645
     },
     {
       "id": "pl_imp_1790691397952_51yxf_track_sp_14mT8BCOXiUUcGlb7KujkT",
@@ -4552,7 +5297,10 @@
       "duration_ms": 196253,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/29a38871b29e74942d2a7c4696511e73d89a7a44",
+      "durationMs": 196253
     },
     {
       "id": "pl_imp_1790685577873_xji21_track_sp_7e4zDInS6tA2jwzphvs2Ay",
@@ -4569,7 +5317,10 @@
       "duration_ms": 156393,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/90e14dd98b61140a5259ce400de788704d406742",
+      "durationMs": 156393
     },
     {
       "id": "pl_imp_1790691397952_51yxf_track_sp_6nRGPf5tpeJtKpXZO5cgIT",
@@ -4586,7 +5337,10 @@
       "duration_ms": 70400,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/457c2cea5306d422427e218ec9cdc7f66c8949f4",
+      "durationMs": 70400
     },
     {
       "id": "pl_imp_1790685577873_xji21_track_sp_1DwscornXpj8fmOmYVlqZt",
@@ -4603,7 +5357,10 @@
       "duration_ms": 184761,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/cc3201e7ed85d09f1683e591fd2eb964ea7247a6",
+      "durationMs": 184761
     },
     {
       "id": "pl_imp_1790691397952_51yxf_track_sp_2Kc8MeW8prVwHEREYM3wCG",
@@ -4620,7 +5377,10 @@
       "duration_ms": 167583,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/06a1482ad82631334e9d9b164b841d6e09b03ba5",
+      "durationMs": 167583
     },
     {
       "id": "pl_imp_1790685577873_xji21_track_sp_2LSmH4vxyRhkJ2pPqcmkXw",
@@ -4637,7 +5397,10 @@
       "duration_ms": 185806,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/5fada77b20c9b592ea707bf74334195c2b8a125f",
+      "durationMs": 185806
     },
     {
       "id": "pl_imp_1790691397952_51yxf_track_sp_23C7tP1mrPbwXpOFWti2Ag",
@@ -4654,7 +5417,10 @@
       "duration_ms": 120917,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/d13bf325f5ee347e86f7bc3b0a766268763bc6fe",
+      "durationMs": 120917
     },
     {
       "id": "pl_imp_1790685577873_xji21_track_sp_7tICCrK3CcyRFKza7yrR0z",
@@ -4671,7 +5437,10 @@
       "duration_ms": 209066,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/d46acdc8f94c6fa471388c7a10c619bb08c88197",
+      "durationMs": 209066
     },
     {
       "id": "pl_imp_1790691397952_51yxf_track_sp_1SKPmfSYaPsETbRHaiA18G",
@@ -4688,7 +5457,10 @@
       "duration_ms": 237146,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/14b8c7f33de3a3a6558d3589b9f2260ae8c513c5",
+      "durationMs": 237146
     },
     {
       "id": "pl_imp_1790685577873_xji21_track_sp_2QrLrUqdSg5njDVEqq5QFp",
@@ -4705,7 +5477,10 @@
       "duration_ms": 180000,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/4146a98922ae8baa7298df40a5861407c872f708",
+      "durationMs": 180000
     },
     {
       "id": "pl_imp_1790691397952_51yxf_track_sp_43iIQbw5hx986dUEZbr3eN",
@@ -4722,7 +5497,10 @@
       "duration_ms": 169573,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/3cdcd256d89b8634adc47aebbcf6db256e3b9978",
+      "durationMs": 169573
     },
     {
       "id": "pl_imp_1790685577873_xji21_track_sp_6oUUmBcUbZa5O48V5pjgAD",
@@ -4739,7 +5517,10 @@
       "duration_ms": 140720,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/b90cdabeb3093431041841713c812e70bafb1478",
+      "durationMs": 140720
     },
     {
       "id": "pl_imp_1790691397952_51yxf_track_sp_7qjZnBKE73H4Oxkopwulqe",
@@ -4756,7 +5537,10 @@
       "duration_ms": 199032,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/daf5f9aeeab319f4cf5c17682d75c18cc1e2ae93",
+      "durationMs": 199032
     },
     {
       "id": "pl_imp_1790685577873_xji21_track_sp_12bYYQaLqHliSXvRIYlq8G",
@@ -4773,7 +5557,10 @@
       "duration_ms": 212973,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/d3b9a6318dcc942387b69c677a80377044856d69",
+      "durationMs": 212973
     },
     {
       "id": "pl_imp_1790691397952_51yxf_track_sp_4qW3BbQAwZsrnu8a3ZRdyT",
@@ -4790,7 +5577,10 @@
       "duration_ms": 180740,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/98af5b6b77831ad55b6d1129148745705a311973",
+      "durationMs": 180740
     },
     {
       "id": "pl_imp_1790685577873_xji21_track_sp_05CjWFAcAlY6O9po6Qwakk",
@@ -4807,7 +5597,10 @@
       "duration_ms": 217240,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/17eee24507cd710f88bb3ae4ea6c4157ed9b3489",
+      "durationMs": 217240
     },
     {
       "id": "pl_imp_1790691397952_51yxf_track_sp_5pMPNxZz50iup8cXchRHxm",
@@ -4824,7 +5617,10 @@
       "duration_ms": 174253,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/7afad22f3dcac1d1a8daa5d7db67d1dd1c2fae32",
+      "durationMs": 174253
     },
     {
       "id": "pl_imp_1790685577873_xji21_track_sp_5ViLKrbyL3HD6wsq3AB9eI",
@@ -4841,7 +5637,10 @@
       "duration_ms": 144101,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/4c09f53084e36b6c85f8b2a44893c226a3194f42",
+      "durationMs": 144101
     },
     {
       "id": "pl_imp_1790691397952_51yxf_track_sp_5ThyDv6aRVU8AH4vXQNldF",
@@ -4858,7 +5657,10 @@
       "duration_ms": 207000,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/7e70fa1e32a874ef6fa44501d13787ddc0fd11ce",
+      "durationMs": 207000
     },
     {
       "id": "pl_imp_1790685577873_xji21_track_sp_68lbSrXDORS51pmyjZv712",
@@ -4875,7 +5677,10 @@
       "duration_ms": 159007,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/acafb81cc609de53b9687a40f214f79d828b6947",
+      "durationMs": 159007
     },
     {
       "id": "pl_imp_1790691397952_51yxf_track_sp_3bmsaFp11I9pbicxzlStf3",
@@ -4892,7 +5697,10 @@
       "duration_ms": 171063,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/c4478bc4a27775ff7aa0cf95673f3d86f967b417",
+      "durationMs": 171063
     },
     {
       "id": "pl_imp_1790685577873_xji21_track_sp_6ZAuQOgLrNQb9s7BXheuTy",
@@ -4909,7 +5717,10 @@
       "duration_ms": 170320,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/3585c24b32da6477e0231e7b18e41c3599e42732",
+      "durationMs": 170320
     },
     {
       "id": "pl_imp_1790691397952_51yxf_track_sp_6gH4TId535zZLoBFSdnDFm",
@@ -4926,7 +5737,10 @@
       "duration_ms": 273010,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/e91d7f036e84120a4823ce416e91fd607b988654",
+      "durationMs": 273010
     },
     {
       "id": "pl_imp_1790685577873_xji21_track_sp_5IMpnpD0tQVcqWlVIgtAtV",
@@ -4943,7 +5757,10 @@
       "duration_ms": 183237,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966",
+      "streamUrl": "https://p.scdn.co/mp3-preview/bcb1c4999d947ff0541bc11b164d91069fad1669",
+      "durationMs": 183237
     },
     {
       "id": "pl_imp_1790691397952_51yxf_track_sp_3oEkrIfXfSh9zGnE7eBzSV",
@@ -4960,7 +5777,10 @@
       "duration_ms": 294720,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/a5c0b3c58f991b2b1f492ddb59223bb561a9a787",
+      "durationMs": 294720
     },
     {
       "id": "pl_imp_1790691397952_51yxf_track_sp_3vkCueOmm7xQDoJ17W1Pm3",
@@ -4977,7 +5797,10 @@
       "duration_ms": 137773,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da841672fd712b54639b5e8c24e3",
+      "streamUrl": "https://p.scdn.co/mp3-preview/2f90c9a6a2b6e38554d3bc3cf7512c2c70ac67b9",
+      "durationMs": 137773
     },
     {
       "id": "pl_imp_1790691397952_51yxf_track_sp_5vXTArFpG0hB1fdlVsf28f",
@@ -4994,7 +5817,10 @@
       "duration_ms": 208000,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/847a618cec6849983e17824a6a9e8cbc06920858",
+      "durationMs": 208000
     },
     {
       "id": "pl_imp_1790691397952_51yxf_track_sp_4Pjht5dwS2BDK7klpDtGaO",
@@ -5011,7 +5837,10 @@
       "duration_ms": 180451,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da841672fd712b54639b5e8c24e3",
+      "streamUrl": "https://p.scdn.co/mp3-preview/11ba74c3083a5a5f40ae0c624e8c76a5886ebd38",
+      "durationMs": 180451
     },
     {
       "id": "pl_imp_1790691397952_51yxf_track_sp_1VPXCaMRqLuL6WH7vRtHKw",
@@ -5028,7 +5857,10 @@
       "duration_ms": 110172,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/809dd51c1674e58ee12fde3ea8b952198dae2a85",
+      "durationMs": 110172
     },
     {
       "id": "pl_imp_1790691397952_51yxf_track_sp_6zEg4KEgz6RGhCPmDKplYf",
@@ -5045,7 +5877,10 @@
       "duration_ms": 233600,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/b3fc87824002a9935c4d4bda02e7b3405793eb1e",
+      "durationMs": 233600
     },
     {
       "id": "pl_imp_1790691397952_51yxf_track_sp_4nwjvcUjV7cexhwA40Bh5i",
@@ -5062,7 +5897,10 @@
       "duration_ms": 164400,
       "codec": "OGG Vorbis",
       "bitrate": "320 kbps",
-      "provider": "spotify"
+      "provider": "spotify",
+      "coverUrl": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8483a87beaa40568b5a2e852c8",
+      "streamUrl": "https://p.scdn.co/mp3-preview/3c24dfde787b8d1eb1a7142da7024c2ee1e856f0",
+      "durationMs": 164400
     }
   ],
   "charts": [
@@ -5076,8 +5914,10 @@
       "updated_at": "2026-09-29 12:06:33",
       "title": "La Vaguelette",
       "artist": "Furina de Fontaine",
-      "cover_url": "/images/furina_opera_tears.jpg",
-      "stream_url": "/audio/la_vaguelette.wav"
+      "cover_url": "./images/furina_opera_tears.jpg",
+      "stream_url": "./audio/la_vaguelette.wav",
+      "coverUrl": "./images/furina_opera_tears.jpg",
+      "streamUrl": "./audio/la_vaguelette.wav"
     },
     {
       "id": "chart_2",
@@ -5089,8 +5929,10 @@
       "updated_at": "2026-09-29 12:06:33",
       "title": "All The World's A Stage",
       "artist": "Furina de Fontaine",
-      "cover_url": "/images/furina_pure_hydro.jpg",
-      "stream_url": "/audio/fontaine_waltz.wav"
+      "cover_url": "./images/furina_pure_hydro.jpg",
+      "stream_url": "./audio/fontaine_waltz.wav",
+      "coverUrl": "./images/furina_pure_hydro.jpg",
+      "streamUrl": "./audio/fontaine_waltz.wav"
     },
     {
       "id": "chart_3",
@@ -5102,8 +5944,10 @@
       "updated_at": "2026-09-29 12:06:33",
       "title": "Hydro Solitaire",
       "artist": "Salon Solitaire Ensemble",
-      "cover_url": "/images/furina_salon_music.jpg",
-      "stream_url": "/audio/hydro_solitaire.wav"
+      "cover_url": "./images/furina_salon_music.jpg",
+      "stream_url": "./audio/hydro_solitaire.wav",
+      "coverUrl": "./images/furina_salon_music.jpg",
+      "streamUrl": "./audio/hydro_solitaire.wav"
     },
     {
       "id": "chart_4",
@@ -5115,8 +5959,10 @@
       "updated_at": "2026-09-29 12:06:33",
       "title": "Fontaine Waltz",
       "artist": "Fontaine Philharmonic Orchestra",
-      "cover_url": "/images/furina_ocean_abyss.jpg",
-      "stream_url": "/audio/fontaine_waltz.wav"
+      "cover_url": "./images/furina_ocean_abyss.jpg",
+      "stream_url": "./audio/fontaine_waltz.wav",
+      "coverUrl": "./images/furina_ocean_abyss.jpg",
+      "streamUrl": "./audio/fontaine_waltz.wav"
     },
     {
       "id": "chart_5",
@@ -5128,8 +5974,10 @@
       "updated_at": "2026-09-29 12:06:33",
       "title": "Tears of the Hydro Archon",
       "artist": "Furina de Fontaine",
-      "cover_url": "/images/furina_melancholy_swing.jpg",
-      "stream_url": "/audio/la_vaguelette.wav"
+      "cover_url": "./images/furina_melancholy_swing.jpg",
+      "stream_url": "./audio/la_vaguelette.wav",
+      "coverUrl": "./images/furina_melancholy_swing.jpg",
+      "streamUrl": "./audio/la_vaguelette.wav"
     }
   ]
 }

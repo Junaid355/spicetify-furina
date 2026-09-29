@@ -120,26 +120,34 @@ class FurinaCatalogProvider extends MusicProvider {
   }
 
   formatTrack(row) {
+    const prov = row.provider || 'furina';
+    const cover = row.cover_url || row.coverUrl || './icons/app-icon.jpg';
+    const stream = row.stream_url || row.streamUrl || null;
+    const dur = row.duration_ms || row.durationMs || 180000;
+
     return {
       id: row.id,
       title: row.title,
       artist: row.artist,
       album: row.album,
-      durationMs: row.duration_ms,
-      coverUrl: row.cover_url,
-      streamUrl: row.stream_url,
-      provider: 'furina',
-      providerTrackId: row.provider_track_id,
-      playbackType: 'furina',
-      isDownloadable: true,
+      durationMs: dur,
+      duration_ms: dur,
+      coverUrl: cover,
+      cover_url: cover,
+      streamUrl: stream,
+      stream_url: stream,
+      provider: prov,
+      providerTrackId: row.provider_track_id || row.providerTrackId,
+      playbackType: prov,
+      isDownloadable: prov === 'furina',
       audioQuality: {
-        codec: row.codec || 'PCM Lossless WAV',
-        bitrate: row.bitrate || '1411 kbps',
+        codec: row.codec || (prov === 'spotify' ? 'OGG Vorbis' : 'PCM Lossless WAV'),
+        bitrate: row.bitrate || (prov === 'spotify' ? '320 kbps' : '1411 kbps'),
         sampleRate: row.sample_rate || '44.1 kHz',
-        source: 'Furina Authorized Catalog'
+        source: prov === 'spotify' ? 'Spotify Catalog' : 'Furina Authorized Catalog'
       },
       lyricsAvailable: Boolean(row.lyrics_available),
-      popularity: row.popularity
+      popularity: row.popularity || 80
     };
   }
 }

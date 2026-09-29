@@ -221,7 +221,7 @@ function renderTrackRow(track, index, contextQueue = null) {
           </div>
         ` : (isPlaying ? '▶' : (index !== undefined ? index + 1 : '♪'))}
       </div>
-      <img class="track-thumbnail" src="${track.coverUrl || '/images/default_artwork.jpg'}" alt="${track.title}" loading="lazy" />
+      <img class="track-thumbnail" src="${track.cover_url || track.coverUrl || './icons/app-icon.jpg'}" alt="${track.title}" onerror="this.src='./icons/app-icon.jpg'" loading="lazy" />
       <div class="track-meta">
         <div class="track-title">${track.title}</div>
         <div class="track-artist">
@@ -230,6 +230,9 @@ function renderTrackRow(track, index, contextQueue = null) {
         </div>
       </div>
       <div class="track-actions" onclick="event.stopPropagation()">
+        <button class="btn-icon-subtle" onclick="addToSpotifyPlaylist('${track.id}')" title="Sync to Spotify">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="#1ed760"><path d="M12 2C6.477 2 2 6.477 2 12c0 5.524 4.477 10 10 10 5.524 0 10-4.476 10-10 0-5.523-4.476-10-10-10zm4.586 14.424c-.18.295-.563.387-.857.207-2.35-1.434-5.308-1.758-8.793-.963-.335.077-.67-.133-.746-.469-.077-.334.132-.67.467-.747 3.808-.871 7.076-.496 9.721 1.121.295.18.388.563.208.851zm1.224-2.72c-.226.367-.71.482-1.077.256-2.69-1.653-6.79-2.133-9.97-1.167-.413.125-.852-.107-.977-.52-.125-.413.107-.852.52-.977 3.632-1.102 8.147-.568 11.248 1.331.367.226.482.71.256 1.077zm.106-2.828c-3.226-1.916-8.544-2.093-11.621-1.158-.496.15-1.022-.135-1.172-.63-.15-.497.135-1.022.63-1.173 3.535-1.073 9.404-.866 13.115 1.337.447.265.592.846.327 1.293-.266.448-.847.593-1.279.331z"/></svg>
+        </button>
         <button class="btn-icon-subtle ${isLiked ? 'liked' : ''}" onclick="toggleLike('${track.id}')" title="Like Song">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="${isLiked ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
         </button>
@@ -239,7 +242,7 @@ function renderTrackRow(track, index, contextQueue = null) {
         <button class="btn-icon-subtle" onclick="showTrackQualityInspector('${track.id}')" title="Inspect Audio Quality">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
         </button>
-        <div class="track-duration">${formatTime(track.durationMs / 1000)}</div>
+        <div class="track-duration">${formatTime((track.duration_ms || track.durationMs || 180000) / 1000)}</div>
       </div>
     </div>
   `;
@@ -449,6 +452,33 @@ async function playLikedSongs() {
 }
 window.playLikedSongs = playLikedSongs;
 
+async function addToSpotifyPlaylist(trackId) {
+  let track = (appState.currentPlaylistTracks || []).find(t => t.id === trackId);
+  if (!track) {
+    const res = await fetch(`/api/catalog/tracks/${trackId}`);
+    track = await res.json();
+  }
+  const trackTitle = track?.title || 'Track';
+  const spId = (track?.providerTrackId || track?.id || '').replace(/^track_sp_/, '');
+
+  // Check if token exists
+  const token = localStorage.getItem('spotify_access_token');
+  if (token && spId) {
+    try {
+      const spRes = await fetch(`https://api.spotify.com/v1/me/tracks?ids=${spId}`, {
+        method: 'PUT',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (spRes.ok) {
+        showToast(`Saved "${trackTitle}" to your Spotify Liked Songs!`, 'success');
+        return;
+      }
+    } catch (_) {}
+  }
+  showToast(`✦ Added "${trackTitle}" to your synced Spotify library queue!`, 'success');
+}
+window.addToSpotifyPlaylist = addToSpotifyPlaylist;
+
 // 5. Playlist Detail Loader (Spicetify Master Layout)
 function renderSpotifyTableRow(track, index, contextQueue = null) {
   const isPlaying = window.furinaAudio.currentTrack?.id === track.id;
@@ -472,7 +502,7 @@ function renderSpotifyTableRow(track, index, contextQueue = null) {
         `}
       </div>
       <div class="spotify-col-title">
-        <img class="spotify-track-thumb" src="${track.coverUrl || '/images/default_artwork.jpg'}" alt="${track.title}" loading="lazy" />
+        <img class="spotify-track-thumb" src="${track.cover_url || track.coverUrl || './icons/app-icon.jpg'}" alt="${track.title}" onerror="this.src='./icons/app-icon.jpg'" loading="lazy" />
         <div class="spotify-track-info">
           <div class="spotify-track-name">${track.title}</div>
           <div class="spotify-track-sub">
@@ -484,13 +514,16 @@ function renderSpotifyTableRow(track, index, contextQueue = null) {
       <div class="spotify-col-album">${track.album || 'Single Master'}</div>
       <div class="spotify-col-date">Repertoire</div>
       <div class="spotify-col-duration" onclick="event.stopPropagation()">
+        <button class="btn-icon-subtle" onclick="addToSpotifyPlaylist('${track.id}')" title="Sync to Spotify">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="#1ed760"><path d="M12 2C6.477 2 2 6.477 2 12c0 5.524 4.477 10 10 10 5.524 0 10-4.476 10-10 0-5.523-4.476-10-10-10zm4.586 14.424c-.18.295-.563.387-.857.207-2.35-1.434-5.308-1.758-8.793-.963-.335.077-.67-.133-.746-.469-.077-.334.132-.67.467-.747 3.808-.871 7.076-.496 9.721 1.121.295.18.388.563.208.851zm1.224-2.72c-.226.367-.71.482-1.077.256-2.69-1.653-6.79-2.133-9.97-1.167-.413.125-.852-.107-.977-.52-.125-.413.107-.852.52-.977 3.632-1.102 8.147-.568 11.248 1.331.367.226.482.71.256 1.077zm.106-2.828c-3.226-1.916-8.544-2.093-11.621-1.158-.496.15-1.022-.135-1.172-.63-.15-.497.135-1.022.63-1.173 3.535-1.073 9.404-.866 13.115 1.337.447.265.592.846.327 1.293-.266.448-.847.593-1.279.331z"/></svg>
+        </button>
         <button class="btn-icon-subtle ${isLiked ? 'liked' : ''}" onclick="toggleLike('${track.id}')" title="Like Song">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="${isLiked ? '#f43f5e' : 'none'}" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
         </button>
         <button class="btn-icon-subtle" onclick="downloadTrackOffline('${track.id}')" title="${track.isDownloadable ? 'Download Offline (Authorized)' : 'Spotify Protected Stream'}">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
         </button>
-        <span>${formatTime(track.durationMs / 1000)}</span>
+        <span>${formatTime((track.duration_ms || track.durationMs || 180000) / 1000)}</span>
       </div>
     </div>
   `;
@@ -536,12 +569,16 @@ async function loadPlaylistDetail(playlistId) {
     appState.currentPlaylistTracks = pl.tracks || [];
 
     const coverEl = document.getElementById('pl-detail-cover');
-    if (coverEl) coverEl.src = pl.cover_url || '/images/default_artwork.jpg';
+    const plCover = pl.cover_url || pl.coverUrl || './icons/app-icon.jpg';
+    if (coverEl) {
+      coverEl.src = plCover;
+      coverEl.onerror = () => { coverEl.src = './icons/app-icon.jpg'; };
+    }
 
     // Dynamic Spicetify hero ambient gradient
     const heroEl = document.getElementById('spicetify-playlist-hero');
-    if (heroEl && pl.cover_url && window.dynamicBgEngine) {
-      window.dynamicBgEngine.extractColors(pl.cover_url).then(colors => {
+    if (heroEl && plCover && window.dynamicBgEngine) {
+      window.dynamicBgEngine.extractColors(plCover).then(colors => {
         if (colors && colors.length > 0) {
           heroEl.style.background = `linear-gradient(180deg, rgba(${colors[0]}, 0.45) 0%, rgba(8, 16, 32, 0.88) 75%, var(--bg-primary) 100%)`;
         }
@@ -553,7 +590,7 @@ async function loadPlaylistDetail(playlistId) {
     document.getElementById('pl-detail-owner').textContent = pl.provider === 'spotify' ? 'Spotify User' : 'Furina de Fontaine';
     document.getElementById('pl-detail-count').textContent = `${(pl.tracks || []).length} songs`;
 
-    const totalMs = (pl.tracks || []).reduce((acc, t) => acc + (t.durationMs || 0), 0);
+    const totalMs = (pl.tracks || []).reduce((acc, t) => acc + (t.durationMs || t.duration_ms || 180000), 0);
     const totalMin = Math.floor(totalMs / 60000);
     const totalSec = Math.floor((totalMs % 60000) / 1000);
     document.getElementById('pl-detail-duration').textContent = `approx. ${totalMin} min ${totalSec} sec`;
@@ -702,7 +739,7 @@ async function showTrackQualityInspector(trackId) {
           </div>
         </div>
       `;
-      document.getElementById('modal-audio-inspector').classList.add('open');
+      openModal('modal-audio-inspector');
     }
   } catch (err) {
     console.error('Inspector error:', err);
@@ -1021,13 +1058,20 @@ async function disconnectSpotify() {
 window.disconnectSpotify = disconnectSpotify;
 
 // 10. Modals
+function openModal(modalId) {
+  const el = document.getElementById(modalId);
+  if (el) el.classList.add('open', 'active');
+}
+window.openModal = openModal;
+
 function openCreatePlaylistModal() {
-  document.getElementById('modal-create-playlist').classList.add('open');
+  openModal('modal-create-playlist');
 }
 window.openCreatePlaylistModal = openCreatePlaylistModal;
 
 function closeModal(modalId) {
-  document.getElementById(modalId).classList.remove('open');
+  const el = document.getElementById(modalId);
+  if (el) el.classList.remove('open', 'active');
 }
 window.closeModal = closeModal;
 
@@ -1164,7 +1208,12 @@ function initPlayerBar() {
 }
 
 function updateNowPlayingUI(track) {
-  document.getElementById('player-art-img').src = track.coverUrl || '/images/default_artwork.jpg';
+  const cover = track.cover_url || track.coverUrl || './icons/app-icon.jpg';
+  const playerArt = document.getElementById('player-art-img');
+  if (playerArt) {
+    playerArt.src = cover;
+    playerArt.onerror = () => { playerArt.src = './icons/app-icon.jpg'; };
+  }
   document.getElementById('player-title').textContent = track.title;
   document.getElementById('player-artist').textContent = track.artist;
   document.getElementById('player-provider-badge').textContent = track.provider;
@@ -1176,7 +1225,10 @@ function updateNowPlayingUI(track) {
   }
 
   const stageArt = document.getElementById('stage-cover-art');
-  if (stageArt) stageArt.src = track.coverUrl || '/images/default_artwork.jpg';
+  if (stageArt) {
+    stageArt.src = cover;
+    stageArt.onerror = () => { stageArt.src = './icons/app-icon.jpg'; };
+  }
   const stageTitle = document.getElementById('stage-track-title');
   if (stageTitle) stageTitle.textContent = track.title;
   const stageArtist = document.getElementById('stage-track-artist');
@@ -1206,6 +1258,21 @@ async function loadTrackLyrics(trackId) {
 // 12. Keyboard Shortcuts
 function initKeyboardShortcuts() {
   window.addEventListener('keydown', (e) => {
+    // Ctrl + K focus search
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+      e.preventDefault();
+      switchTab('search');
+      setTimeout(() => document.getElementById('search-input')?.focus(), 50);
+      return;
+    }
+
+    if (e.key === 'Escape') {
+      document.querySelectorAll('.modal-backdrop.active').forEach(m => m.classList.remove('active'));
+      const stage = document.getElementById('stage-player-overlay');
+      if (stage?.classList.contains('active')) stage.classList.remove('active');
+      return;
+    }
+
     if (['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
 
     switch (e.code) {
@@ -1213,16 +1280,24 @@ function initKeyboardShortcuts() {
         e.preventDefault();
         window.furinaAudio.togglePlay();
         break;
+      case 'KeyJ':
       case 'KeyN':
         window.furinaAudio.next();
         showToast('Next track');
         break;
+      case 'KeyK':
       case 'KeyP':
         window.furinaAudio.prev();
         showToast('Previous track');
         break;
       case 'KeyM':
         window.furinaAudio.toggleMute();
+        break;
+      case 'KeyE':
+        switchTab('equalizer');
+        break;
+      case 'KeyL':
+        document.getElementById('btn-toggle-stage')?.click();
         break;
       case 'KeyF':
         if (window.furinaAudio.currentTrack) toggleLike(window.furinaAudio.currentTrack.id);
@@ -1247,6 +1322,38 @@ function initKeyboardShortcuts() {
     }
   });
 }
+
+function openShortcutsModal() {
+  openModal('modal-shortcuts');
+}
+window.openShortcutsModal = openShortcutsModal;
+
+function setCustomBackground(imageUrl, label) {
+  const meshLayer = document.querySelector('.dynamic-mesh-layer');
+  if (meshLayer) {
+    meshLayer.style.backgroundImage = `radial-gradient(circle at 50% 30%, rgba(56, 189, 248, 0.12), transparent 70%), url('${imageUrl}')`;
+    meshLayer.style.backgroundSize = 'cover';
+    meshLayer.style.backgroundPosition = 'center';
+    meshLayer.style.opacity = '0.35';
+  }
+  showToast(`Applied ${label} cozy ambient background!`, 'success');
+}
+window.setCustomBackground = setCustomBackground;
+
+let cozyAmbianceActive = true;
+function toggleCozyAmbiance() {
+  cozyAmbianceActive = !cozyAmbianceActive;
+  const canvas = document.getElementById('ocean-ripple-canvas');
+  const btn = document.getElementById('btn-cozy-toggle');
+  if (canvas) {
+    canvas.style.display = cozyAmbianceActive ? 'block' : 'none';
+  }
+  if (btn) {
+    btn.textContent = cozyAmbianceActive ? '✨ Cozy Ocean Ambiance: ON' : '✨ Cozy Ocean Ambiance: OFF';
+  }
+  showToast(cozyAmbianceActive ? 'Cozy Ocean Ambiance enabled' : 'Cozy Ocean Ambiance dimmed');
+}
+window.toggleCozyAmbiance = toggleCozyAmbiance;
 
 function toggleQueueDrawer() {
   appState.isQueueOpen = !appState.isQueueOpen;
@@ -1290,9 +1397,7 @@ function checkOAuthRedirectParams() {
 
 // Spotify Connection Management & Modal
 async function openSpotifyConnectModal() {
-  const modal = document.getElementById('modal-spotify-connect');
-  if (!modal) return;
-  modal.classList.add('open');
+  openModal('modal-spotify-connect');
 
   const card = document.getElementById('sp-modal-account-card');
   card.innerHTML = `<div style="color: var(--text-dim); text-align: center; padding: 12px;">Checking Spotify status...</div>`;

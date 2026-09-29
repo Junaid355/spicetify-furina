@@ -138,8 +138,12 @@
           <button class="btn-icon-subtle" onclick="switchTab('marketplace')" title="Marketplace & Themes">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
           </button>
+          <button class="btn-subtle" onclick="openShortcutsModal()" title="Keyboard Shortcuts" style="font-size: 0.78rem; padding: 4px 10px; display: inline-flex; align-items: center; gap: 4px;">
+            <span>⌨</span>
+            <span>Keys</span>
+          </button>
           <div class="user-profile-badge" onclick="switchTab('settings')">
-            <img class="user-profile-avatar" src="/images/furina_pure_hydro.jpg" alt="Furina Avatar" />
+            <img class="user-profile-avatar" src="images/furina_pure_hydro.jpg" onerror="this.src='icons/app-icon.jpg'" alt="Furina Avatar" />
             <span class="user-profile-name">Lady Furina</span>
           </div>
         </div>
@@ -192,6 +196,56 @@
             </h2>
           </div>
           <div class="shelf-scroll" id="home-moods-shelf"></div>
+
+          <!-- Cozy Furina Showcase & Ambiance Gallery (User Pictures) -->
+          <div class="section-header" style="margin-top: 36px;">
+            <h2 class="section-title">
+              <span style="color: var(--accent-gold);">✦</span>
+              Cozy Fontaine Salon Gallery
+            </h2>
+            <div style="display: flex; gap: 8px;">
+              <button class="btn-subtle" onclick="toggleCozyAmbiance()" id="btn-cozy-toggle" style="font-size: 0.8rem; padding: 4px 12px;">
+                ✨ Cozy Ocean Ambiance: ON
+              </button>
+            </div>
+          </div>
+          <div class="shelf-scroll" id="furina-gallery-shelf">
+            <div class="card-item" onclick="setCustomBackground('images/media_1790683175532.jpg', 'Fontaine Grand Opera')" style="cursor: pointer;">
+              <div class="card-cover-wrapper">
+                <img class="card-cover" src="images/media_1790683175532.jpg" onerror="this.src='icons/app-icon.jpg'" alt="Furina Stage" loading="lazy" />
+              </div>
+              <div class="card-title">Fontaine Grand Opera</div>
+              <div class="card-subtitle">Click to apply ambient theme</div>
+            </div>
+            <div class="card-item" onclick="setCustomBackground('images/media_1790683183816.jpg', 'Primordial Abyss')" style="cursor: pointer;">
+              <div class="card-cover-wrapper">
+                <img class="card-cover" src="images/media_1790683183816.jpg" onerror="this.src='icons/app-icon.jpg'" alt="Ocean Abyss" loading="lazy" />
+              </div>
+              <div class="card-title">Primordial Abyss</div>
+              <div class="card-subtitle">Click to apply ambient theme</div>
+            </div>
+            <div class="card-item" onclick="setCustomBackground('images/media_1790683191834.jpg', 'Moonlit Melancholy')" style="cursor: pointer;">
+              <div class="card-cover-wrapper">
+                <img class="card-cover" src="images/media_1790683191834.jpg" onerror="this.src='icons/app-icon.jpg'" alt="Furina Swing" loading="lazy" />
+              </div>
+              <div class="card-title">Moonlit Melancholy</div>
+              <div class="card-subtitle">Click to apply ambient theme</div>
+            </div>
+            <div class="card-item" onclick="setCustomBackground('images/media_1790683198143.jpg', 'Behind The Curtain')" style="cursor: pointer;">
+              <div class="card-cover-wrapper">
+                <img class="card-cover" src="images/media_1790683198143.jpg" onerror="this.src='icons/app-icon.jpg'" alt="Furina Tears" loading="lazy" />
+              </div>
+              <div class="card-title">Behind The Curtain</div>
+              <div class="card-subtitle">Click to apply ambient theme</div>
+            </div>
+            <div class="card-item" onclick="setCustomBackground('images/media_1790683203668.jpg', 'Salon Solitaire')" style="cursor: pointer;">
+              <div class="card-cover-wrapper">
+                <img class="card-cover" src="images/media_1790683203668.jpg" onerror="this.src='icons/app-icon.jpg'" alt="Furina Solitaire" loading="lazy" />
+              </div>
+              <div class="card-title">Salon Solitaire</div>
+              <div class="card-subtitle">Click to apply ambient theme</div>
+            </div>
+          </div>
         </section>
 
         <!-- 2. Search View -->
@@ -231,7 +285,7 @@
           <!-- Spicetify Dynamic Hero Banner -->
           <div class="spicetify-playlist-hero" id="spicetify-playlist-hero">
             <div class="spicetify-hero-cover-wrapper">
-              <img id="pl-detail-cover" class="spicetify-hero-cover" src="/images/furina_salon_music.jpg" alt="Playlist Cover" />
+              <img id="pl-detail-cover" class="spicetify-hero-cover" src="images/furina_salon_music.jpg" onerror="this.src='icons/app-icon.jpg'" alt="Playlist Cover" />
             </div>
             <div class="spicetify-hero-meta">
               <div class="spicetify-hero-badge" id="pl-detail-badge">
@@ -241,7 +295,7 @@
               <p id="pl-detail-desc" class="spicetify-hero-desc">The definitive collection of Fontaine theatrical suites and royal masterworks.</p>
               <div class="spicetify-hero-stats" id="pl-detail-stats">
                 <div class="spicetify-owner-badge">
-                  <img class="spicetify-owner-avatar" src="/images/furina_pure_hydro.jpg" alt="Owner" style="width: 24px; height: 24px; border-radius: 50%; object-fit: cover;" />
+                  <img class="spicetify-owner-avatar" src="images/furina_pure_hydro.jpg" onerror="this.src='icons/app-icon.jpg'" alt="Owner" style="width: 24px; height: 24px; border-radius: 50%; object-fit: cover;" />
                   <span id="pl-detail-owner">Furina de Fontaine</span>
                 </div>
                 <span class="spicetify-stat-dot">•</span>
@@ -398,7 +452,7 @@
   <div class="app-player-bar">
     <div class="player-now-playing">
       <div class="player-artwork-frame" id="btn-toggle-stage" title="Click to open Fontaine Theater Stage">
-        <img class="player-artwork-img" id="player-art-img" src="/images/furina_opera_tears.jpg" alt="Now Playing" />
+        <img class="player-artwork-img" id="player-art-img" src="images/furina_opera_tears.jpg" onerror="this.src='icons/app-icon.jpg'" alt="Now Playing" />
       </div>
       <div class="player-track-info">
         <div class="player-track-title" id="player-title">La Vaguelette</div>
@@ -466,7 +520,7 @@
     <div class="stage-content-body">
       <div class="stage-visual-column">
         <div class="stage-cover-frame">
-          <img id="stage-cover-art" class="artwork-vinyl-spin" src="/images/furina_opera_tears.jpg" alt="Stage Cover" />
+          <img id="stage-cover-art" class="artwork-vinyl-spin" src="images/furina_opera_tears.jpg" onerror="this.src='icons/app-icon.jpg'" alt="Stage Cover" />
         </div>
         <div style="text-align: center; margin-bottom: 12px;">
           <h2 id="stage-track-title" style="font-size: 1.5rem; font-weight: 800;">La Vaguelette</h2>
@@ -585,6 +639,52 @@
       <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px; border-top: 1px solid var(--border-glass-subtle); padding-top: 12px;">
         <button class="btn-subtle" onclick="handleSpotifyDisconnect()" style="color: #f43f5e; font-size: 0.8rem;">Disconnect Spotify</button>
         <button class="btn-secondary" onclick="closeModal('modal-spotify-connect')">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Keyboard Shortcuts & Easy Keys Modal -->
+  <div class="modal-backdrop" id="modal-shortcuts">
+    <div class="modal-box" style="max-width: 480px;">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="font-size: 1.25rem;">⌨</span>
+          <h3 class="modal-title">Easy Keyboard Shortcuts</h3>
+        </div>
+        <button class="btn-icon-subtle" onclick="closeModal('modal-shortcuts')">✕</button>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 10px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: var(--bg-surface); border-radius: var(--radius-sm); border: 1px solid var(--border-glass-subtle);">
+          <span style="font-size: 0.85rem; color: var(--text-sub);">Play / Pause Track</span>
+          <kbd style="background: rgba(56, 189, 248, 0.2); padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: 700; border: 1px solid var(--accent-cyan);">Space</kbd>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: var(--bg-surface); border-radius: var(--radius-sm); border: 1px solid var(--border-glass-subtle);">
+          <span style="font-size: 0.85rem; color: var(--text-sub);">Next Song</span>
+          <kbd style="background: rgba(56, 189, 248, 0.2); padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: 700; border: 1px solid var(--accent-cyan);">J / Shift + N</kbd>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: var(--bg-surface); border-radius: var(--radius-sm); border: 1px solid var(--border-glass-subtle);">
+          <span style="font-size: 0.85rem; color: var(--text-sub);">Previous Song</span>
+          <kbd style="background: rgba(56, 189, 248, 0.2); padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: 700; border: 1px solid var(--accent-cyan);">K / Shift + P</kbd>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: var(--bg-surface); border-radius: var(--radius-sm); border: 1px solid var(--border-glass-subtle);">
+          <span style="font-size: 0.85rem; color: var(--text-sub);">Seek Backward / Forward 5s</span>
+          <kbd style="background: rgba(56, 189, 248, 0.2); padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: 700; border: 1px solid var(--accent-cyan);">← / →</kbd>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: var(--bg-surface); border-radius: var(--radius-sm); border: 1px solid var(--border-glass-subtle);">
+          <span style="font-size: 0.85rem; color: var(--text-sub);">Toggle Mute</span>
+          <kbd style="background: rgba(56, 189, 248, 0.2); padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: 700; border: 1px solid var(--accent-cyan);">M</kbd>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: var(--bg-surface); border-radius: var(--radius-sm); border: 1px solid var(--border-glass-subtle);">
+          <span style="font-size: 0.85rem; color: var(--text-sub);">Quick Focus Global Search</span>
+          <kbd style="background: rgba(56, 189, 248, 0.2); padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: 700; border: 1px solid var(--accent-cyan);">Ctrl + K</kbd>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: var(--bg-surface); border-radius: var(--radius-sm); border: 1px solid var(--border-glass-subtle);">
+          <span style="font-size: 0.85rem; color: var(--text-sub);">10-Band Equalizer</span>
+          <kbd style="background: rgba(56, 189, 248, 0.2); padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: 700; border: 1px solid var(--accent-cyan);">E</kbd>
+        </div>
+      </div>
+      <div style="display: flex; justify-content: flex-end; margin-top: 18px;">
+        <button class="btn-primary" onclick="closeModal('modal-shortcuts')">Got It</button>
       </div>
     </div>
   </div>
