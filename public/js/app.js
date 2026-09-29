@@ -207,10 +207,9 @@ function renderTrackRow(track, index, contextQueue = null) {
   const isPlaying = window.furinaAudio.currentTrack?.id === track.id;
   const isAudioActive = isPlaying && window.furinaAudio.isPlaying;
   const isLiked = appState.likedTrackIds.has(track.id);
-  const queueJson = contextQueue ? JSON.stringify(contextQueue).replace(/"/g, '&quot;') : 'null';
 
   return `
-    <div class="track-row ${isPlaying ? 'playing' : ''}" data-track-id="${track.id}" data-index="${index !== undefined ? index + 1 : '♪'}" onclick="handleTrackClick('${track.id}', ${queueJson})">
+    <div class="track-row ${isPlaying ? 'playing' : ''}" data-track-id="${track.id}" data-index="${index !== undefined ? index + 1 : '♪'}" onclick="handleTrackClick('${track.id}')">
       <div class="track-index">
         ${isAudioActive ? `
           <div class="playing-eq-indicator">
@@ -251,12 +250,31 @@ function renderTrackRow(track, index, contextQueue = null) {
 // Track Play Handler
 async function handleTrackClick(trackId, queue = null) {
   let track = null;
-  if (queue) track = queue.find(t => t.id === trackId);
-  if (!track) {
-    const res = await fetch(`/api/catalog/tracks/${trackId}`);
-    track = await res.json();
+  if (queue && Array.isArray(queue)) {
+    track = queue.find(t => t.id === trackId);
   }
-  window.furinaAudio.playTrack(track, queue);
+  if (!track && appState.currentPlaylistTracks) {
+    track = appState.currentPlaylistTracks.find(t => t.id === trackId);
+    if (!queue) queue = appState.currentPlaylistTracks;
+  }
+  if (!track && appState.homeData) {
+    const allHome = [
+      ...(appState.homeData.spotlightTracks || []),
+      ...(appState.homeData.globalTrending || []),
+      ...(appState.homeData.trending || [])
+    ];
+    track = allHome.find(t => t.id === trackId);
+    if (!queue) queue = allHome;
+  }
+  if (!track) {
+    try {
+      const res = await fetch(`/api/catalog/tracks/${trackId}`);
+      if (res.ok) track = await res.json();
+    } catch (_) {}
+  }
+  if (track) {
+    window.furinaAudio.playTrack(track, queue);
+  }
 }
 window.handleTrackClick = handleTrackClick;
 
@@ -484,10 +502,9 @@ function renderSpotifyTableRow(track, index, contextQueue = null) {
   const isPlaying = window.furinaAudio.currentTrack?.id === track.id;
   const isAudioActive = isPlaying && window.furinaAudio.isPlaying;
   const isLiked = appState.likedTrackIds.has(track.id);
-  const queueJson = contextQueue ? JSON.stringify(contextQueue).replace(/"/g, '&quot;') : 'null';
 
   return `
-    <div class="spotify-table-row ${isPlaying ? 'playing' : ''}" data-track-id="${track.id}" data-index="${index !== undefined ? index + 1 : '♪'}" onclick="handleTrackClick('${track.id}', ${queueJson})">
+    <div class="spotify-table-row ${isPlaying ? 'playing' : ''}" data-track-id="${track.id}" data-index="${index !== undefined ? index + 1 : '♪'}" onclick="handleTrackClick('${track.id}')">
       <div class="spotify-col-idx">
         ${isAudioActive ? `
           <div class="playing-eq-indicator">
@@ -565,11 +582,18 @@ async function loadPlaylistDetail(playlistId) {
   try {
     const res = await fetch(`/api/playlists/${playlistId}`);
     const pl = await res.json();
+    
+    const plName = pl.name || pl.playlist?.name || 'Fontaine Repertoire';
+    const plDesc = pl.description || pl.playlist?.description || 'Fontaine Repertoire';
+    const plCover = pl.cover_url || pl.coverUrl || pl.playlist?.cover_url || pl.playlist?.coverUrl || './icons/app-icon.jpg';
+    const plProvider = pl.provider || pl.playlist?.provider || 'furina';
+    const plTracks = pl.tracks || pl.playlist?.tracks || [];
+    const isImported = pl.is_imported || pl.playlist?.is_imported || plProvider === 'spotify';
+
     appState.currentPlaylistData = pl;
-    appState.currentPlaylistTracks = pl.tracks || [];
+    appState.currentPlaylistTracks = plTracks;
 
     const coverEl = document.getElementById('pl-detail-cover');
-    const plCover = pl.cover_url || pl.coverUrl || './icons/app-icon.jpg';
     if (coverEl) {
       coverEl.src = plCover;
       coverEl.onerror = () => { coverEl.src = './icons/app-icon.jpg'; };
@@ -585,25 +609,25 @@ async function loadPlaylistDetail(playlistId) {
       });
     }
 
-    document.getElementById('pl-detail-title').textContent = pl.name;
-    document.getElementById('pl-detail-desc').textContent = pl.description || 'Fontaine Repertoire';
-    document.getElementById('pl-detail-owner').textContent = pl.provider === 'spotify' ? 'Spotify User' : 'Furina de Fontaine';
-    document.getElementById('pl-detail-count').textContent = `${(pl.tracks || []).length} songs`;
+    document.getElementById('pl-detail-title').textContent = plName;
+    document.getElementById('pl-detail-desc').textContent = plDesc;
+    document.getElementById('pl-detail-owner').textContent = plProvider === 'spotify' ? 'Spotify User' : 'Furina de Fontaine';
+    document.getElementById('pl-detail-count').textContent = `${plTracks.length} songs`;
 
-    const totalMs = (pl.tracks || []).reduce((acc, t) => acc + (t.durationMs || t.duration_ms || 180000), 0);
+    const totalMs = plTracks.reduce((acc, t) => acc + (t.durationMs || t.duration_ms || 180000), 0);
     const totalMin = Math.floor(totalMs / 60000);
     const totalSec = Math.floor((totalMs % 60000) / 1000);
     document.getElementById('pl-detail-duration').textContent = `approx. ${totalMin} min ${totalSec} sec`;
 
     const syncStatusEl = document.getElementById('pl-detail-sync-status');
     if (syncStatusEl) {
-      syncStatusEl.textContent = pl.provider === 'spotify' ? '✦ Spotify Official' : '✦ Lossless WAV Master';
-      syncStatusEl.className = `badge-provider ${pl.provider}`;
+      syncStatusEl.textContent = plProvider === 'spotify' ? '✦ Spotify Official' : '✦ Lossless WAV Master';
+      syncStatusEl.className = `badge-provider ${plProvider}`;
     }
 
     const syncBtn = document.getElementById('btn-sync-playlist');
     if (syncBtn) {
-      if (pl.is_imported || pl.provider === 'spotify') {
+      if (isImported) {
         syncBtn.style.display = 'inline-flex';
         syncBtn.onclick = () => syncPlaylistWithSpotify(pl.id);
       } else {
@@ -612,8 +636,8 @@ async function loadPlaylistDetail(playlistId) {
     }
 
     document.getElementById('btn-play-all-playlist').onclick = () => {
-      if (pl.tracks && pl.tracks.length > 0) {
-        window.furinaAudio.playTrack(pl.tracks[0], pl.tracks);
+      if (plTracks.length > 0) {
+        window.furinaAudio.playTrack(plTracks[0], plTracks);
       }
     };
 

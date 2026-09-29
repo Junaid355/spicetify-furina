@@ -693,12 +693,12 @@
   <script>
     // Automatic Cache-Buster & Service Worker Purge
     (function() {
-      const CURRENT_APP_VERSION = 'furina-v4.0';
+      const CURRENT_APP_VERSION = 'furina-v5.0';
       if (localStorage.getItem('furina_installed_ver') !== CURRENT_APP_VERSION) {
         if ('caches' in window) {
           caches.keys().then((names) => {
             for (let name of names) {
-              if (name !== 'furina-music-v4.0') {
+              if (name !== 'furina-music-v5.0') {
                 console.log('[App] Evicting stale cache:', name);
                 caches.delete(name);
               }
@@ -708,7 +708,8 @@
         localStorage.setItem('furina_installed_ver', CURRENT_APP_VERSION);
       }
       if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/sw.js?v=4.0')
+        const swPath = window.location.pathname.includes('/spicetify-furina/') ? '/spicetify-furina/sw.js?v=5.0' : './sw.js?v=5.0';
+        navigator.serviceWorker.register(swPath)
           .then((reg) => {
             reg.update();
             console.log('[SW] ServiceWorker registered with scope:', reg.scope);
@@ -717,13 +718,13 @@
       }
     })();
   </script>
-  <script src="js/client-api.js?v=4.0"></script>
-  <script src="js/dynamic-bg.js?v=4.0"></script>
-  <script src="js/audio-player.js?v=4.0"></script>
-  <script src="js/offline-storage.js?v=4.0"></script>
-  <script src="js/lyrics-engine.js?v=4.0"></script>
-  <script src="js/spotify-client.js?v=4.0"></script>
-  <script src="js/marketplace.js?v=4.0"></script>
-  <script src="js/app.js?v=4.0"></script>
+  <script src="js/client-api.js?v=5.0"></script>
+  <script src="js/dynamic-bg.js?v=5.0"></script>
+  <script src="js/audio-player.js?v=5.0"></script>
+  <script src="js/offline-storage.js?v=5.0"></script>
+  <script src="js/lyrics-engine.js?v=5.0"></script>
+  <script src="js/spotify-client.js?v=5.0"></script>
+  <script src="js/marketplace.js?v=5.0"></script>
+  <script src="js/app.js?v=5.0"></script>
 </body>
 </html>

@@ -5,6 +5,7 @@
  */
 
 (function() {
+  const nativeFetch = window.fetch;
   let staticCatalog = null;
   const isStaticHost = window.location.hostname.endsWith('github.io') || 
                        window.location.protocol === 'file:' || 
@@ -27,10 +28,8 @@
     return staticCatalog;
   }
 
-  // Preload catalog
+  // Preload catalog safely
   loadStaticCatalog();
-
-  const nativeFetch = window.fetch;
 
   window.fetch = async function(input, init) {
     let url = typeof input === 'string' ? input : input.url;
@@ -144,6 +143,7 @@
                      catalog?.tracks?.slice(0, 10) || [];
 
       return jsonResponse({
+        ...playlist,
         playlist,
         tracks: tracks.map(t => ({
           id: t.track_id || t.id,
