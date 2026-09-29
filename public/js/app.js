@@ -266,6 +266,11 @@ async function handleTrackClick(trackId, queue = null) {
     track = allHome.find(t => t.id === trackId);
     if (!queue) queue = allHome;
   }
+  if (!track && appState.searchResults) {
+    const allSearch = appState.searchResults.allTracks || appState.searchResults.tracks || [];
+    track = allSearch.find(t => t.id === trackId);
+    if (!queue) queue = allSearch;
+  }
   if (!track) {
     try {
       const res = await fetch(`/api/catalog/tracks/${trackId}`);
@@ -316,8 +321,7 @@ function initSearch() {
     searchDebounceTimeout = setTimeout(async () => {
       try {
         const res = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
-        const data = await res.json();
-        appState.searchResults = data.results;
+        appState.searchResults = data.results || { allTracks: data.tracks || [], tracks: data.tracks || [] };
         renderSearchResults();
       } catch (err) {
         console.error('Search error:', err);

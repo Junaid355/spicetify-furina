@@ -275,13 +275,24 @@
         console.warn('[ClientAPI] Live Apple Music search error:', err);
       }
 
+      const furinaMatches = catalogMatches.filter(t => t.provider === 'furina');
+      const spotifyMatches = catalogMatches.filter(t => t.provider === 'spotify');
       const combined = [...catalogMatches, ...itunesMatches];
+
+      const results = {
+        allTracks: combined,
+        tracks: combined,
+        furina: { tracks: furinaMatches, artists: [], albums: [] },
+        spotify: { tracks: spotifyMatches, artists: [], albums: [] },
+        deezer: { tracks: [], artists: [], albums: [] },
+        apple: { tracks: itunesMatches, artists: [], albums: [] }
+      };
+
       return jsonResponse({
         query,
         count: combined.length,
         tracks: combined,
-        artists: [],
-        albums: []
+        results
       });
     }
 
