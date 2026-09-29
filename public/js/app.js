@@ -344,22 +344,22 @@ function renderSearchResults() {
   if (!resultsContainer || !appState.searchResults) return;
 
   const sr = appState.searchResults;
-  let tracks = sr.allTracks || [];
+  let tracks = sr.allTracks || sr.tracks || [];
   if (appState.searchFilter === 'furina') {
-    tracks = sr.furina?.tracks || [];
+    tracks = sr.furina?.tracks || tracks.filter(t => t.provider === 'furina');
   } else if (appState.searchFilter === 'spotify') {
-    tracks = sr.spotify?.tracks || [];
+    tracks = sr.spotify?.tracks || tracks.filter(t => t.provider === 'spotify');
   } else if (appState.searchFilter === 'deezer') {
-    tracks = sr.deezer?.tracks || [];
+    tracks = sr.deezer?.tracks || tracks.filter(t => t.provider === 'deezer');
   } else if (appState.searchFilter === 'apple') {
-    tracks = sr.apple?.tracks || [];
+    tracks = sr.apple?.tracks || tracks.filter(t => t.provider === 'apple');
   }
 
-  const allCount = sr.allTracks?.length || 0;
-  const spCount = sr.spotify?.tracks?.length || 0;
-  const dzCount = sr.deezer?.tracks?.length || 0;
-  const apCount = sr.apple?.tracks?.length || 0;
-  const fuCount = sr.furina?.tracks?.length || 0;
+  const allCount = sr.allTracks?.length || sr.tracks?.length || tracks.length;
+  const spCount = sr.spotify?.tracks?.length || tracks.filter(t => t.provider === 'spotify').length;
+  const dzCount = sr.deezer?.tracks?.length || tracks.filter(t => t.provider === 'deezer').length;
+  const apCount = sr.apple?.tracks?.length || tracks.filter(t => t.provider === 'apple').length;
+  const fuCount = sr.furina?.tracks?.length || tracks.filter(t => t.provider === 'furina').length;
 
   if (tracks.length === 0) {
     resultsContainer.innerHTML = `
