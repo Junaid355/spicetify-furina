@@ -68,27 +68,54 @@ router.get('/diagnostics', async (req, res) => {
 router.get('/user-playlists', async (req, res) => {
   try {
     const token = await getSpotifyToken();
+    const user = await db.queryGet(`SELECT id FROM users LIMIT 1`);
+    const account = await db.queryGet(`SELECT * FROM provider_accounts WHERE user_id = ? AND provider = 'spotify'`, [user?.id]);
+
     if (!token) {
-      // Return curated Spotify catalog playlists when not logged in
+      // Check if user has imported Spotify playlists in database
+      const dbPlaylists = await db.queryAll(`
+        SELECT p.id, p.name, p.description, p.cover_url, p.provider_playlist_id, COUNT(pt.track_id) as total_tracks
+        FROM playlists p
+        LEFT JOIN playlist_tracks pt ON pt.playlist_id = p.id
+        WHERE p.provider = 'spotify'
+        GROUP BY p.id
+      `);
+
+      if (dbPlaylists.length > 0) {
+        return res.json({
+          items: dbPlaylists.map(p => ({
+            id: p.provider_playlist_id || p.id,
+            nativeId: p.id,
+            name: p.name,
+            description: p.description,
+            images: [{ url: p.cover_url || '/images/default_artwork.jpg' }],
+            tracks: { total: p.total_tracks },
+            owner: { display_name: account?.display_name || 'Spotify User' }
+          })),
+          source: 'local_synced_spotify',
+          connected: Boolean(account)
+        });
+      }
+
       const demo = [
         {
-          id: 'spotify_curated_classical',
-          name: 'Classical & Fontaine Grandeur',
-          description: 'Official Spotify playlist featuring grand symphonies and court suites.',
+          id: '4LyuZHEXNwLdJNsoUVsojM',
+          name: 'My love for music',
+          description: 'Spotify User Playlist',
           images: [{ url: '/images/furina_opera_tears.jpg' }],
-          tracks: { total: 4 },
-          owner: { display_name: 'Spotify Classical' }
+          tracks: { total: 37 },
+          owner: { display_name: account?.display_name || 'Spotify' }
         },
         {
-          id: 'sp_fontaine_piano',
-          name: 'Baroque Keyboard Solitaires',
-          description: 'Bach and Debussy impressionist masterworks.',
+          id: '4WIrG9mO3CUAXhlhNzdPgP',
+          name: 'gaming',
+          description: 'Spotify User Playlist',
           images: [{ url: '/images/furina_salon_music.jpg' }],
-          tracks: { total: 3 },
-          owner: { display_name: 'Fontaine Curators' }
+          tracks: { total: 55 },
+          owner: { display_name: account?.display_name || 'Spotify' }
         }
       ];
-      return res.json({ items: demo, source: 'curated_demo', connected: false });
+      return res.json({ items: demo, source: 'curated_demo', connected: Boolean(account) });
     }
 
     const data = await spotifyProvider.getUserPlaylists(token);

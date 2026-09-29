@@ -1,4 +1,6 @@
-const CACHE_NAME = 'furina-music-v1.0';
+// Furina Music — Service Worker v4.0 (Network-First Strategy)
+const CACHE_NAME = 'furina-music-v4.0';
+
 const STATIC_ASSETS = [
   '/',
   '/index.html',
@@ -6,11 +8,14 @@ const STATIC_ASSETS = [
   '/css/design-tokens.css',
   '/css/layout.css',
   '/css/components.css',
+  '/css/animations.css',
   '/css/player.css',
+  '/js/dynamic-bg.js',
   '/js/audio-player.js',
   '/js/offline-storage.js',
   '/js/lyrics-engine.js',
   '/js/spotify-client.js',
+  '/js/marketplace.js',
   '/js/app.js',
   '/images/furina_salon_music.jpg',
   '/images/furina_ocean_abyss.jpg',
@@ -19,36 +24,63 @@ const STATIC_ASSETS = [
   '/icons/app-icon.jpg'
 ];
 
-self.addEventListener('install', (e) => {
-  e.waitUntil(
+self.addEventListener('install', (event) => {
+  self.skipWaiting();
+  event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      console.log('[SW] Pre-caching offline application shell');
-      return cache.addAll(STATIC_ASSETS);
+      console.log('[SW] Pre-caching static assets for v4.0');
+      return cache.addAll(STATIC_ASSETS).catch(err => {
+        console.warn('[SW] Some assets failed to pre-cache:', err);
+      });
     })
   );
-  self.skipWaiting();
 });
 
-self.addEventListener('activate', (e) => {
-  e.waitUntil(
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
     caches.keys().then((keys) => {
       return Promise.all(
-        keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k))
+        keys.map((key) => {
+          if (key !== CACHE_NAME) {
+            console.log('[SW] Evicting outdated cache:', key);
+            return caches.delete(key);
+          }
+        })
       );
-    })
+    }).then(() => self.clients.claim())
   );
-  self.clients.claim();
 });
 
-self.addEventListener('fetch', (e) => {
-  // Do not cache audio stream ranges in standard cache (handled by IndexedDB blob storage)
-  if (e.request.url.includes('/audio/') || e.request.url.includes('/api/')) {
+self.addEventListener('fetch', (event) => {
+  const url = new URL(event.request.url);
+
+  // Never cache API routes or dynamic stream resolvers
+  if (url.pathname.startsWith('/api/') || url.pathname.startsWith('/audio/') || event.request.method !== 'GET') {
     return;
   }
 
-  e.respondWith(
-    caches.match(e.request).then((cached) => {
-      return cached || fetch(e.request).catch(() => caches.match('/index.html'));
-    })
+  // Network-First Strategy: always fetch fresh version from server
+  event.respondWith(
+    fetch(event.request)
+      .then((networkResponse) => {
+        if (networkResponse && networkResponse.status === 200 && networkResponse.type === 'basic') {
+          const responseToCache = networkResponse.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, responseToCache);
+          });
+        }
+        return networkResponse;
+      })
+      .catch(() => {
+        // Fallback to cache when offline
+        return caches.match(event.request).then((cachedResponse) => {
+          if (cachedResponse) {
+            return cachedResponse;
+          }
+          if (event.request.headers.get('accept')?.includes('text/html')) {
+            return caches.match('/index.html');
+          }
+        });
+      })
   );
 });

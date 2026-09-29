@@ -783,14 +783,17 @@ async function loadSpotifyHub() {
       </div>
       <div class="shelf-scroll">
         ${plData.items.map(pl => `
-          <div class="card-item">
+          <div class="card-item" onclick="${pl.nativeId ? `switchTab('playlist-detail', { playlistId: '${pl.nativeId}' })` : `importSpotifyPlaylistDirect('${pl.id}')`}" style="cursor: pointer;">
             <div class="card-cover-wrapper">
               <img class="card-cover" src="${pl.images?.[0]?.url || '/images/default_artwork.jpg'}" alt="${pl.name}" />
+              <button class="card-play-btn" title="Play">
+                <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              </button>
             </div>
             <div class="card-title">${pl.name}</div>
             <div class="card-subtitle" style="margin-bottom: 12px;">${pl.tracks?.total || 0} tracks • By ${pl.owner?.display_name || 'Spotify'}</div>
-            <button class="btn-subtle" style="margin-top: auto;" onclick="importSpotifyPlaylistDirect('${pl.id}')">
-              📥 Import to Furina
+            <button class="btn-subtle" style="margin-top: auto; width: 100%;" onclick="event.stopPropagation(); ${pl.nativeId ? `switchTab('playlist-detail', { playlistId: '${pl.nativeId}' })` : `importSpotifyPlaylistDirect('${pl.id}')`}">
+              ${pl.nativeId ? '▶ Open & Play' : '📥 Import to Furina'}
             </button>
           </div>
         `).join('')}

@@ -11,16 +11,17 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="Furina Music" />
   <meta name="theme-color" content="#060d1b" />
-  <link rel="apple-touch-icon" href="/icons/app-icon.jpg" />
-  <link rel="icon" type="image/jpeg" href="/icons/app-icon.jpg" />
-  <link rel="manifest" href="/manifest.json" />
+  <base href="./" />
+  <link rel="apple-touch-icon" href="icons/app-icon.jpg" />
+  <link rel="icon" type="image/jpeg" href="icons/app-icon.jpg" />
+  <link rel="manifest" href="manifest.json" />
 
   <!-- Stylesheets -->
-  <link rel="stylesheet" href="/css/design-tokens.css?v=2.2" />
-  <link rel="stylesheet" href="/css/layout.css?v=2.2" />
-  <link rel="stylesheet" href="/css/animations.css?v=2.2" />
-  <link rel="stylesheet" href="/css/components.css?v=2.2" />
-  <link rel="stylesheet" href="/css/player.css?v=2.2" />
+  <link rel="stylesheet" href="css/design-tokens.css?v=4.0" />
+  <link rel="stylesheet" href="css/layout.css?v=4.0" />
+  <link rel="stylesheet" href="css/animations.css?v=4.0" />
+  <link rel="stylesheet" href="css/components.css?v=4.0" />
+  <link rel="stylesheet" href="css/player.css?v=4.0" />
 </head>
 <body>
   <!-- Dynamic Album-Art Reactive Background Mesh & Canvas -->
@@ -589,12 +590,40 @@
   </div>
 
   <!-- Scripts -->
-  <script src="/js/dynamic-bg.js?v=3.0"></script>
-  <script src="/js/audio-player.js?v=3.0"></script>
-  <script src="/js/offline-storage.js?v=3.0"></script>
-  <script src="/js/lyrics-engine.js?v=3.0"></script>
-  <script src="/js/spotify-client.js?v=3.0"></script>
-  <script src="/js/marketplace.js?v=3.0"></script>
-  <script src="/js/app.js?v=3.0"></script>
+  <script>
+    // Automatic Cache-Buster & Service Worker Purge
+    (function() {
+      const CURRENT_APP_VERSION = 'furina-v4.0';
+      if (localStorage.getItem('furina_installed_ver') !== CURRENT_APP_VERSION) {
+        if ('caches' in window) {
+          caches.keys().then((names) => {
+            for (let name of names) {
+              if (name !== 'furina-music-v4.0') {
+                console.log('[App] Evicting stale cache:', name);
+                caches.delete(name);
+              }
+            }
+          });
+        }
+        localStorage.setItem('furina_installed_ver', CURRENT_APP_VERSION);
+      }
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js?v=4.0')
+          .then((reg) => {
+            reg.update();
+            console.log('[SW] ServiceWorker registered with scope:', reg.scope);
+          })
+          .catch((err) => console.warn('[SW] Registration failed:', err));
+      }
+    })();
+  </script>
+  <script src="js/client-api.js?v=4.0"></script>
+  <script src="js/dynamic-bg.js?v=4.0"></script>
+  <script src="js/audio-player.js?v=4.0"></script>
+  <script src="js/offline-storage.js?v=4.0"></script>
+  <script src="js/lyrics-engine.js?v=4.0"></script>
+  <script src="js/spotify-client.js?v=4.0"></script>
+  <script src="js/marketplace.js?v=4.0"></script>
+  <script src="js/app.js?v=4.0"></script>
 </body>
 </html>
