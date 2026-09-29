@@ -1,0 +1,36 @@
+{
+  "name": "Furina Music",
+  "short_name": "Furina",
+  "description": "High-fidelity Fontaine music experience connecting Spotify with Furina's authorized lossless catalog.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#060d1b",
+  "theme_color": "#060d1b",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "/icons/app-icon.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/app-icon.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Fontaine Opera",
+      "url": "/?view=home",
+      "description": "Listen to Fontaine grand suites"
+    },
+    {
+      "name": "Your Library",
+      "url": "/?view=library",
+      "description": "View saved tracks and playlists"
+    }
+  ]
+}

@@ -1,0 +1,156 @@
+:root {
+  /* Default: Furina Ocean (Fontaine Royal) */
+  --bg-abyss: #030712;
+  --bg-primary: #060d1b;
+  --bg-surface: rgba(13, 24, 46, 0.72);
+  --bg-surface-elevated: rgba(20, 38, 72, 0.85);
+  --bg-glass-card: rgba(15, 30, 58, 0.52);
+  --border-glass: rgba(56, 189, 248, 0.22);
+  --border-glass-subtle: rgba(255, 255, 255, 0.08);
+
+  --accent-cyan: #38bdf8;
+  --accent-hydro: #00e5ff;
+  --accent-blue-deep: #0284c7;
+  --accent-gold: #f6d89b;
+  --accent-gold-dark: #d4af37;
+  --accent-violet: #a78bfa;
+  --accent-tear: #93c5fd;
+
+  --dynamic-glow-color: rgba(56, 189, 248, 0.25);
+  --dynamic-accent: #38bdf8;
+
+  --text-main: #f8fafc;
+  --text-sub: #cbd5e1;
+  --text-dim: #64748b;
+  --text-gold: #fde68a;
+
+  --badge-furina-bg: rgba(56, 189, 248, 0.15);
+  --badge-furina-border: #38bdf8;
+  --badge-furina-text: #7dd3fc;
+
+  --badge-spotify-bg: rgba(30, 215, 96, 0.15);
+  --badge-spotify-border: #1ed760;
+  --badge-spotify-text: #4ade80;
+
+  --glow-hydro: 0 0 25px rgba(56, 189, 248, 0.35);
+  --glow-stage: 0 0 40px rgba(167, 139, 250, 0.25);
+  --shadow-card: 0 10px 30px -10px rgba(0, 0, 0, 0.6);
+  --shadow-elevated: 0 20px 40px -15px rgba(0, 0, 0, 0.8);
+
+  --sidebar-width: 260px;
+  --player-height: 90px;
+  --header-height: 64px;
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 22px;
+  --radius-full: 9999px;
+
+  --transition-fast: 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-smooth: 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Theme 2: Midnight Fontaine (Opera Epiclese) */
+[data-theme="epiclese-twilight"] {
+  --bg-abyss: #04020a;
+  --bg-primary: #0a0818;
+  --bg-surface: rgba(26, 18, 52, 0.75);
+  --bg-surface-elevated: rgba(36, 26, 74, 0.88);
+  --bg-glass-card: rgba(28, 20, 58, 0.55);
+  --border-glass: rgba(192, 132, 252, 0.25);
+  --accent-cyan: #c084fc;
+  --accent-hydro: #e879f9;
+  --accent-blue-deep: #7c3aed;
+  --accent-gold: #fde047;
+  --dynamic-glow-color: rgba(192, 132, 252, 0.25);
+  --dynamic-accent: #c084fc;
+}
+
+/* Theme 3: Hydro Glass (Azure Crystal) */
+[data-theme="hydro-pure"] {
+  --bg-abyss: #010a14;
+  --bg-primary: #031424;
+  --bg-surface: rgba(6, 32, 58, 0.75);
+  --bg-surface-elevated: rgba(10, 48, 86, 0.88);
+  --bg-glass-card: rgba(8, 38, 70, 0.55);
+  --border-glass: rgba(34, 211, 238, 0.28);
+  --accent-cyan: #22d3ee;
+  --accent-hydro: #38bdf8;
+  --accent-blue-deep: #0284c7;
+  --dynamic-glow-color: rgba(34, 211, 238, 0.25);
+  --dynamic-accent: #22d3ee;
+}
+
+/* Theme 4: Deep Sea (Primordial Abyss) */
+[data-theme="deep-sea"] {
+  --bg-abyss: #000c0e;
+  --bg-primary: #02181b;
+  --bg-surface: rgba(4, 38, 42, 0.75);
+  --bg-surface-elevated: rgba(8, 56, 62, 0.88);
+  --bg-glass-card: rgba(6, 44, 48, 0.55);
+  --border-glass: rgba(20, 184, 166, 0.28);
+  --accent-cyan: #14b8a6;
+  --accent-hydro: #2dd4bf;
+  --accent-blue-deep: #0f766e;
+  --dynamic-glow-color: rgba(20, 184, 166, 0.25);
+  --dynamic-accent: #14b8a6;
+}
+
+/* Theme 5: Moonlit Ocean (Silver Tide) */
+[data-theme="moonlit-ocean"] {
+  --bg-abyss: #080c14;
+  --bg-primary: #0f172a;
+  --bg-surface: rgba(30, 41, 59, 0.75);
+  --bg-surface-elevated: rgba(51, 65, 85, 0.88);
+  --bg-glass-card: rgba(30, 41, 59, 0.55);
+  --border-glass: rgba(148, 163, 184, 0.28);
+  --accent-cyan: #94a3b8;
+  --accent-hydro: #cbd5e1;
+  --accent-blue-deep: #475569;
+  --dynamic-glow-color: rgba(148, 163, 184, 0.22);
+  --dynamic-accent: #cbd5e1;
+}
+
+/* Theme 6: Fontaine Night (Golden Iris) */
+[data-theme="fontaine-night"] {
+  --bg-abyss: #0a0603;
+  --bg-primary: #140c06;
+  --bg-surface: rgba(38, 22, 10, 0.75);
+  --bg-surface-elevated: rgba(56, 32, 14, 0.88);
+  --bg-glass-card: rgba(42, 24, 12, 0.55);
+  --border-glass: rgba(245, 158, 11, 0.28);
+  --accent-cyan: #f59e0b;
+  --accent-hydro: #fbbf24;
+  --accent-blue-deep: #b45309;
+  --dynamic-glow-color: rgba(245, 158, 11, 0.25);
+  --dynamic-accent: #f59e0b;
+}
+
+/* Theme 7: Aurora Water (Prismatic Waves) */
+[data-theme="aurora-water"] {
+  --bg-abyss: #040814;
+  --bg-primary: #081226;
+  --bg-surface: rgba(18, 30, 64, 0.75);
+  --bg-surface-elevated: rgba(28, 48, 102, 0.88);
+  --bg-glass-card: rgba(22, 38, 80, 0.55);
+  --border-glass: rgba(129, 140, 248, 0.3);
+  --accent-cyan: #818cf8;
+  --accent-hydro: #38bdf8;
+  --accent-blue-deep: #4f46e5;
+  --dynamic-glow-color: rgba(129, 140, 248, 0.25);
+  --dynamic-accent: #818cf8;
+}
+
+/* Theme 8: Minimal Furina (Clean Monochrome Studio) */
+[data-theme="minimal-furina"] {
+  --bg-abyss: #000000;
+  --bg-primary: #080808;
+  --bg-surface: rgba(18, 18, 18, 0.8);
+  --bg-surface-elevated: rgba(28, 28, 28, 0.9);
+  --bg-glass-card: rgba(20, 20, 20, 0.6);
+  --border-glass: rgba(255, 255, 255, 0.15);
+  --accent-cyan: #38bdf8;
+  --accent-hydro: #ffffff;
+  --accent-blue-deep: #1e293b;
+  --dynamic-glow-color: rgba(56, 189, 248, 0.15);
+  --dynamic-accent: #38bdf8;
+}

@@ -1,0 +1,153 @@
+/* Furina Music — Advanced Animation & Motion System */
+
+/* Dynamic Mesh Movement */
+@keyframes meshShift {
+  0% { transform: scale(1) translate(0, 0) rotate(0deg); }
+  50% { transform: scale(1.15) translate(-30px, 20px) rotate(5deg); }
+  100% { transform: scale(1) translate(0, 0) rotate(0deg); }
+}
+
+.dynamic-mesh-layer {
+  position: fixed;
+  inset: -100px;
+  background: radial-gradient(circle at 75% 25%, var(--dynamic-glow-color) 0%, transparent 60%),
+              radial-gradient(circle at 20% 80%, rgba(2, 132, 199, 0.15) 0%, transparent 55%),
+              radial-gradient(circle at 50% 50%, rgba(167, 139, 250, 0.08) 0%, transparent 70%);
+  filter: blur(80px);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.85;
+  animation: meshShift 24s ease-in-out infinite;
+  transition: background 1.2s ease;
+}
+
+/* Vinyl / Artwork Rotation */
+@keyframes vinylSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.artwork-vinyl-spin {
+  animation: vinylSpin 14s linear infinite;
+}
+
+.artwork-vinyl-paused {
+  animation-play-state: paused !important;
+}
+
+/* Dancing Equalizer Bars */
+@keyframes eqBar1 {
+  0%, 100% { height: 4px; }
+  50% { height: 16px; }
+}
+@keyframes eqBar2 {
+  0%, 100% { height: 14px; }
+  50% { height: 6px; }
+}
+@keyframes eqBar3 {
+  0%, 100% { height: 8px; }
+  50% { height: 18px; }
+}
+@keyframes eqBar4 {
+  0%, 100% { height: 16px; }
+  50% { height: 4px; }
+}
+
+.playing-eq-indicator {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 2.5px;
+  height: 18px;
+  width: 18px;
+  margin-right: 6px;
+}
+
+.playing-eq-bar {
+  width: 2.5px;
+  background: var(--accent-cyan);
+  border-radius: 2px;
+  box-shadow: 0 0 6px var(--accent-cyan);
+}
+
+.playing-eq-bar:nth-child(1) { animation: eqBar1 0.85s ease-in-out infinite; }
+.playing-eq-bar:nth-child(2) { animation: eqBar2 0.72s ease-in-out infinite; }
+.playing-eq-bar:nth-child(3) { animation: eqBar3 0.95s ease-in-out infinite; }
+.playing-eq-bar:nth-child(4) { animation: eqBar4 0.65s ease-in-out infinite; }
+
+/* 3D Card Hover Transformations */
+.card-item {
+  transform: perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0);
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.28s ease, border-color 0.28s ease, background 0.28s ease !important;
+  will-change: transform;
+}
+
+.card-item:hover {
+  transform: perspective(1000px) translateY(-6px) scale(1.02);
+  box-shadow: 0 16px 36px -10px rgba(0, 0, 0, 0.7), 0 0 24px var(--dynamic-glow-color);
+  border-color: var(--accent-cyan);
+}
+
+/* Staggered Content Appearance */
+@keyframes staggerSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.view-section.active .card-item,
+.view-section.active .track-row {
+  animation: staggerSlideIn 0.32s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.view-section.active .card-item:nth-child(1) { animation-delay: 0.03s; }
+.view-section.active .card-item:nth-child(2) { animation-delay: 0.06s; }
+.view-section.active .card-item:nth-child(3) { animation-delay: 0.09s; }
+.view-section.active .card-item:nth-child(4) { animation-delay: 0.12s; }
+.view-section.active .card-item:nth-child(5) { animation-delay: 0.15s; }
+.view-section.active .card-item:nth-child(6) { animation-delay: 0.18s; }
+
+/* Hydro Glow Pulse */
+@keyframes hydroPulse {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(56, 189, 248, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(56, 189, 248, 0.65), 0 0 45px rgba(0, 229, 255, 0.3);
+  }
+}
+
+.hydro-glow-active {
+  animation: hydroPulse 2.8s ease-in-out infinite;
+}
+
+/* Interactive Water Ripple Effect on Canvas */
+#ocean-ripple-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Micro-interactions */
+button:active {
+  transform: scale(0.96) !important;
+}
+
+/* Reduced Motion Override */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .dynamic-mesh-layer {
+    animation: none !important;
+  }
+}

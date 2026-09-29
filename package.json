@@ -1,0 +1,28 @@
+{
+  "name": "furina-music",
+  "version": "1.0.0",
+  "description": "High-Fidelity Fontaine Music Platform with Lossless Streaming, Spotify Integration, and Synced Lyrics",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "test": "node tests/server.test.js",
+    "desktop": "electron desktop/electron-main.js"
+  },
+  "keywords": [
+    "furina",
+    "music",
+    "fontaine",
+    "lossless",
+    "spotify-integration",
+    "pwa",
+    "electron"
+  ],
+  "author": "Furina Music Team",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "sqlite3": "^6.0.1"
+  }
+}
