@@ -146,6 +146,23 @@ async function loadHome() {
       `).join('');
     }
 
+    // Global Trending Shelf (Live Multi-Source API)
+    const globalShelf = document.getElementById('home-global-trending-shelf');
+    if (globalShelf && data.globalTrending && data.globalTrending.length > 0) {
+      globalShelf.innerHTML = data.globalTrending.map((t, idx) => `
+        <div class="card-item" onclick="handleTrackClick('${t.id}', appState.homeData.globalTrending)">
+          <div class="card-cover-wrapper">
+            <img class="card-cover" src="${t.coverUrl || '/images/default_artwork.jpg'}" alt="${t.title}" loading="lazy" />
+            <div class="card-play-overlay">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            </div>
+          </div>
+          <div class="card-title">${t.title}</div>
+          <div class="card-subtitle"><span class="badge-provider ${t.provider}">${t.provider}</span> ${t.artist}</div>
+        </div>
+      `).join('');
+    }
+
     // Solitaire Trending Tracks
     const tracksContainer = document.getElementById('home-recent-tracks');
     if (tracksContainer && data.trending) {
@@ -301,15 +318,33 @@ function renderSearchResults() {
   const resultsContainer = document.getElementById('search-results');
   if (!resultsContainer || !appState.searchResults) return;
 
-  let tracks = appState.searchResults.allTracks || [];
+  const sr = appState.searchResults;
+  let tracks = sr.allTracks || [];
   if (appState.searchFilter === 'furina') {
-    tracks = appState.searchResults.furina.tracks || [];
+    tracks = sr.furina?.tracks || [];
   } else if (appState.searchFilter === 'spotify') {
-    tracks = appState.searchResults.spotify.tracks || [];
+    tracks = sr.spotify?.tracks || [];
+  } else if (appState.searchFilter === 'deezer') {
+    tracks = sr.deezer?.tracks || [];
+  } else if (appState.searchFilter === 'apple') {
+    tracks = sr.apple?.tracks || [];
   }
+
+  const allCount = sr.allTracks?.length || 0;
+  const spCount = sr.spotify?.tracks?.length || 0;
+  const dzCount = sr.deezer?.tracks?.length || 0;
+  const apCount = sr.apple?.tracks?.length || 0;
+  const fuCount = sr.furina?.tracks?.length || 0;
 
   if (tracks.length === 0) {
     resultsContainer.innerHTML = `
+      <div style="display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap;">
+        <button class="btn-subtle search-filter-pill ${appState.searchFilter === 'all' ? 'active' : ''}" data-filter="all" onclick="setSearchFilter('all')">All (${allCount})</button>
+        <button class="btn-subtle search-filter-pill ${appState.searchFilter === 'spotify' ? 'active' : ''}" data-filter="spotify" onclick="setSearchFilter('spotify')">Spotify (${spCount})</button>
+        <button class="btn-subtle search-filter-pill ${appState.searchFilter === 'deezer' ? 'active' : ''}" data-filter="deezer" onclick="setSearchFilter('deezer')">Deezer (${dzCount})</button>
+        <button class="btn-subtle search-filter-pill ${appState.searchFilter === 'apple' ? 'active' : ''}" data-filter="apple" onclick="setSearchFilter('apple')">Apple Music (${apCount})</button>
+        <button class="btn-subtle search-filter-pill ${appState.searchFilter === 'furina' ? 'active' : ''}" data-filter="furina" onclick="setSearchFilter('furina')">Fontaine (${fuCount})</button>
+      </div>
       <div style="text-align: center; color: var(--text-dim); margin-top: 40px;">
         No tracks found for filter: ${appState.searchFilter.toUpperCase()}.
       </div>
@@ -318,10 +353,12 @@ function renderSearchResults() {
   }
 
   resultsContainer.innerHTML = `
-    <div style="display: flex; gap: 8px; margin-bottom: 16px;">
-      <button class="btn-subtle search-filter-pill ${appState.searchFilter === 'all' ? 'active' : ''}" data-filter="all" onclick="setSearchFilter('all')">All Providers (${appState.searchResults.allTracks.length})</button>
-      <button class="btn-subtle search-filter-pill ${appState.searchFilter === 'furina' ? 'active' : ''}" data-filter="furina" onclick="setSearchFilter('furina')">Furina Catalog (${appState.searchResults.furina.tracks.length})</button>
-      <button class="btn-subtle search-filter-pill ${appState.searchFilter === 'spotify' ? 'active' : ''}" data-filter="spotify" onclick="setSearchFilter('spotify')">Spotify Official (${appState.searchResults.spotify.tracks.length})</button>
+    <div style="display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap;">
+      <button class="btn-subtle search-filter-pill ${appState.searchFilter === 'all' ? 'active' : ''}" data-filter="all" onclick="setSearchFilter('all')">All Providers (${allCount})</button>
+      <button class="btn-subtle search-filter-pill ${appState.searchFilter === 'spotify' ? 'active' : ''}" data-filter="spotify" onclick="setSearchFilter('spotify')">Spotify (${spCount})</button>
+      <button class="btn-subtle search-filter-pill ${appState.searchFilter === 'deezer' ? 'active' : ''}" data-filter="deezer" onclick="setSearchFilter('deezer')">Deezer (${dzCount})</button>
+      <button class="btn-subtle search-filter-pill ${appState.searchFilter === 'apple' ? 'active' : ''}" data-filter="apple" onclick="setSearchFilter('apple')">Apple Music (${apCount})</button>
+      <button class="btn-subtle search-filter-pill ${appState.searchFilter === 'furina' ? 'active' : ''}" data-filter="furina" onclick="setSearchFilter('furina')">Fontaine (${fuCount})</button>
     </div>
     <div class="track-list">
       ${tracks.map((t, idx) => renderTrackRow(t, idx, tracks)).join('')}
@@ -1269,17 +1306,22 @@ async function openSpotifyConnectModal() {
     if (diag.connection?.connected && diag.connection?.user) {
       const u = diag.connection.user;
       card.innerHTML = `
-        <div style="background: rgba(30, 215, 96, 0.08); border: 1px solid rgba(30, 215, 96, 0.35); border-radius: 12px; padding: 16px; display: flex; align-items: center; justify-content: space-between;">
-          <div style="display: flex; align-items: center; gap: 14px;">
-            <img src="${u.avatar || '/images/furina_pure_hydro.jpg'}" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid #1ed760;" />
-            <div>
-              <div style="font-weight: 800; font-size: 1.05rem; color: #fff;">${u.name || 'Spotify User'}</div>
-              <div style="font-size: 0.78rem; color: #1ed760; font-weight: 700;">● Connected (${u.product ? u.product.toUpperCase() : 'PREMIUM'})</div>
-              <div style="font-size: 0.72rem; color: var(--text-dim);">${u.followers || 0} followers • ${u.email || ''}</div>
+        <div style="background: rgba(30, 215, 96, 0.08); border: 1px solid rgba(30, 215, 96, 0.35); border-radius: 12px; padding: 16px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
+            <div style="display: flex; align-items: center; gap: 14px;">
+              <img src="${u.avatar || '/images/furina_pure_hydro.jpg'}" style="width: 48px; height: 48px; border-radius: 50%; object-fit: cover; border: 2px solid #1ed760;" />
+              <div>
+                <div style="font-weight: 800; font-size: 1.05rem; color: #fff;">${u.name || 'Spotify User'}</div>
+                <div style="font-size: 0.78rem; color: #1ed760; font-weight: 700;">● Connected (${u.product ? u.product.toUpperCase() : 'PREMIUM'})</div>
+                <div style="font-size: 0.72rem; color: var(--text-dim);">${u.followers || 0} followers • ${u.email || ''}</div>
+              </div>
             </div>
+            <button class="btn-secondary" onclick="closeModal('modal-spotify-connect'); switchTab('spotify-hub');" style="font-size: 0.8rem;">
+              View Hub
+            </button>
           </div>
-          <button class="btn-secondary" onclick="closeModal('modal-spotify-connect'); switchTab('spotify-hub');" style="font-size: 0.8rem;">
-            View Playlists
+          <button id="sp-btn-sync-all-library" class="btn-primary" onclick="syncAllSpotifyLibraryNow()" style="width: 100%; justify-content: center; background: #1ed760; color: #000; font-weight: 800; padding: 10px; font-size: 0.88rem;">
+            <span>📥</span> Sync All Spotify Playlists & Songs
           </button>
         </div>
       `;
@@ -1306,6 +1348,35 @@ async function openSpotifyConnectModal() {
   }
 }
 window.openSpotifyConnectModal = openSpotifyConnectModal;
+
+async function syncAllSpotifyLibraryNow() {
+  const syncBtn = document.getElementById('sp-btn-sync-all-library');
+  if (syncBtn) {
+    syncBtn.innerHTML = `<span>⏳</span> Syncing Library & Songs...`;
+    syncBtn.disabled = true;
+  }
+  showToast('Starting full sync of your Spotify playlists & songs...', 'info');
+  try {
+    const res = await fetch('/api/spotify/sync-user-library', { method: 'POST' });
+    const data = await res.json();
+    if (data.success) {
+      showToast(data.message || 'All Spotify playlists & songs synchronized!', 'success');
+      if (typeof loadLibrary === 'function') loadLibrary();
+      if (typeof loadSpotifyHub === 'function') loadSpotifyHub();
+      openSpotifyConnectModal();
+    } else {
+      showToast(data.error || 'Sync failed. Please ensure account is connected.', 'warning');
+    }
+  } catch (err) {
+    showToast('Sync error: ' + err.message, 'warning');
+  } finally {
+    if (syncBtn) {
+      syncBtn.innerHTML = `<span>📥</span> Sync All Spotify Playlists & Songs`;
+      syncBtn.disabled = false;
+    }
+  }
+}
+window.syncAllSpotifyLibraryNow = syncAllSpotifyLibraryNow;
 
 async function updateHeaderSpotifyBadge() {
   const badge = document.getElementById('header-spotify-badge');
@@ -1411,6 +1482,36 @@ async function testSpotifyConnectionLive() {
   }
 }
 window.testSpotifyConnectionLive = testSpotifyConnectionLive;
+
+async function handleImportFromModal() {
+  const input = document.getElementById('sp-modal-url-input');
+  const url = input?.value.trim();
+  if (!url) {
+    showToast('Please enter a Spotify playlist link.', 'warning');
+    return;
+  }
+  showToast('Extracting real Spotify songs & playlist...', 'info');
+  try {
+    const res = await fetch('/api/spotify/import-playlist', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ urlOrId: url })
+    });
+    const data = await res.json();
+    if (res.ok && data.id) {
+      showToast(`Imported "${data.name}" with ${data.tracks?.length || 0} real songs!`, 'success');
+      closeModal('modal-spotify-connect');
+      switchTab('playlist-detail', { playlistId: data.id });
+      loadPlaylistDetail(data.id);
+      loadLibrary();
+    } else {
+      showToast(data.error || 'Import failed. Check the link and try again.', 'warning');
+    }
+  } catch (err) {
+    showToast('Import error: ' + err.message, 'warning');
+  }
+}
+window.handleImportFromModal = handleImportFromModal;
 
 async function handleSpotifyDisconnect() {
   try {

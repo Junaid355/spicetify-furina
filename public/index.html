@@ -162,6 +162,14 @@
 
           <div class="section-header">
             <h2 class="section-title">
+              <span style="color: #f43f5e;">🔥</span>
+              Global Trending Hits (Live Multi-Source API)
+            </h2>
+          </div>
+          <div class="shelf-scroll" id="home-global-trending-shelf"></div>
+
+          <div class="section-header">
+            <h2 class="section-title">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-cyan)" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
               Fontaine Solitaire Highlights
             </h2>
@@ -188,12 +196,12 @@
         <!-- 2. Search View -->
         <section class="view-section" id="view-search">
           <div class="section-header">
-            <h2 class="section-title">Search Federation</h2>
+            <h2 class="section-title">Search Federation (Multi-API)</h2>
           </div>
-          <input type="text" class="input-field" id="search-input" placeholder="Search songs, artists, albums across Furina Catalog & Spotify..." />
+          <input type="text" class="input-field" id="search-input" placeholder="Search across Spotify, Deezer, Apple Music & Fontaine (e.g. Taylor Swift, Bruno Mars, Sabrina Carpenter)..." />
           <div style="margin-top: 24px;" id="search-results">
             <div style="text-align: center; color: var(--text-dim); margin-top: 40px;">
-              Type a title like "La Vaguelette", "Bach", "Debussy" or "Fontaine"...
+              Type a song or artist name to search Spotify, Deezer, and Apple Music catalogs...
             </div>
           </div>
         </section>
@@ -560,6 +568,16 @@
           </div>
         </div>
 
+        <div style="border-top: 1px solid var(--border-glass-subtle); padding-top: 14px;">
+          <div style="font-size: 0.8rem; font-weight: 700; color: var(--text-sub); margin-bottom: 8px;">
+            🔗 Instant Import Spotify Playlist Link
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <input type="text" class="input-field" id="sp-modal-url-input" placeholder="Paste any Spotify playlist link (no login needed)..." style="flex: 1;" />
+            <button class="btn-primary" onclick="handleImportFromModal()" style="font-size: 0.8rem; white-space: nowrap; background: #1ed760; color: #000;">Import All</button>
+          </div>
+        </div>
+
         <div id="sp-modal-status-feedback" style="display: none; padding: 10px; border-radius: 8px; font-size: 0.82rem; margin-top: 4px;"></div>
       </div>
 
@@ -571,12 +589,12 @@
   </div>
 
   <!-- Scripts -->
-  <script src="/js/dynamic-bg.js?v=2.2"></script>
-  <script src="/js/audio-player.js?v=2.2"></script>
-  <script src="/js/offline-storage.js?v=2.2"></script>
-  <script src="/js/lyrics-engine.js?v=2.2"></script>
-  <script src="/js/spotify-client.js?v=2.2"></script>
-  <script src="/js/marketplace.js?v=2.2"></script>
-  <script src="/js/app.js?v=2.2"></script>
+  <script src="/js/dynamic-bg.js?v=3.0"></script>
+  <script src="/js/audio-player.js?v=3.0"></script>
+  <script src="/js/offline-storage.js?v=3.0"></script>
+  <script src="/js/lyrics-engine.js?v=3.0"></script>
+  <script src="/js/spotify-client.js?v=3.0"></script>
+  <script src="/js/marketplace.js?v=3.0"></script>
+  <script src="/js/app.js?v=3.0"></script>
 </body>
 </html>

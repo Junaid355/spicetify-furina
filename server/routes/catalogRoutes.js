@@ -140,4 +140,37 @@ router.get('/moods/:id', async (req, res) => {
   }
 });
 
+// Live Global Multi-Source Charts (Deezer + Apple + Spotify)
+router.get('/global-charts', async (req, res) => {
+  try {
+    const deezerProvider = require('../providers/DeezerProvider');
+    const limit = parseInt(req.query.limit, 10) || 25;
+    const tracks = await deezerProvider.getTopChart(limit);
+    res.json({
+      chartName: 'Global Top Trending Hits',
+      updatedAt: new Date().toISOString(),
+      provider: 'deezer_global',
+      tracks
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Real-Time Audio Stream Resolver for Any Track
+router.get('/resolve-audio', async (req, res) => {
+  try {
+    const { title, artist } = req.query;
+    if (!title) return res.status(400).json({ error: 'Title is required' });
+    const streamResolver = require('../services/streamResolver');
+    const stream = await streamResolver.resolveAudioStream(title, artist || '');
+    if (!stream) {
+      return res.status(404).json({ error: 'No audio stream available' });
+    }
+    res.json(stream);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 module.exports = router;

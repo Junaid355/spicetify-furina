@@ -143,6 +143,22 @@ class SpotifyProvider extends MusicProvider {
     return await this.fetchSpotify(`/me/playlists?limit=${limit}`, accessToken);
   }
 
+  async getUserSavedTracks(accessToken, limit = 50) {
+    if (!accessToken) return { items: [] };
+    return await this.fetchSpotify(`/me/tracks?limit=${limit}`, accessToken);
+  }
+
+  async getUserTopTracks(accessToken, limit = 50) {
+    if (!accessToken) return { items: [] };
+    return await this.fetchSpotify(`/me/top/tracks?limit=${limit}`, accessToken);
+  }
+
+  async getPlaylistTracks(playlistId, accessToken, limit = 100) {
+    const cleanId = this.extractPlaylistId(playlistId);
+    if (!accessToken) return { items: [] };
+    return await this.fetchSpotify(`/playlists/${cleanId}/tracks?limit=${limit}`, accessToken);
+  }
+
   async getPlaylist(playlistId, accessToken) {
     const cleanId = this.extractPlaylistId(playlistId);
     if (accessToken) {

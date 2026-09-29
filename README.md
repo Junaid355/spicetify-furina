@@ -17,6 +17,12 @@ A music platform and Spicetify-inspired client tailored with Fontaine aesthetics
   - **Official Spotify OAuth 2.0**: Connect with Spotify via authorization code flow or paste custom `Client ID` / `Client Secret` / direct Access Token via the interactive **Connect to Spotify** modal.
   - Live latency testing and account status badge.
 
+- **Multi-Source Federated Music APIs**:
+  - **Spotify Web API & Embed Scraper**: Full account synchronization for all user playlists, liked songs (`/me/tracks`), and top tracks, plus public playlist URL extraction.
+  - **Deezer Music API**: Real-time Global Top Charts and catalog search with 320kbps MP3 streams directly from Deezer CDN.
+  - **Apple Music / iTunes API**: High-resolution 1000x1000 artwork, complete metadata, and 256kbps AAC audio streams.
+  - **Universal Stream Resolver**: Dynamic multi-source fallback ensures every single track resolves to an active playable audio stream.
+
 - **Spicetify-Inspired Marketplace & Modding**:
   - **8 Fontaine Themes**: Furina Ocean, Midnight Fontaine, Hydro Glass, Deep Sea, Moonlit Ocean, Fontaine Night, Aurora Water, and Minimal Furina.
   - **Extensions**: Pro Navigation Hotkeys, Dynamic Ambient Lighting, Mini Floating Player, and Auto-Sync Daemon.

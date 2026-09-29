@@ -171,4 +171,49 @@ router.post('/import-playlist', async (req, res) => {
   }
 });
 
+// 5. Complete Spotify User Library Sync (All Playlists, Liked Songs, Top Tracks)
+router.post('/sync-user-library', async (req, res) => {
+  try {
+    const user = await db.queryGet(`SELECT id FROM users LIMIT 1`);
+    const token = await getSpotifyToken();
+    if (!token) {
+      return res.status(401).json({ error: 'Spotify account not connected. Please connect via modal first.' });
+    }
+
+    const syncReport = await syncService.syncAllSpotifyUserData(user.id, token);
+    res.json({
+      success: true,
+      message: `Successfully synchronized ${syncReport.playlistsImported} playlists, ${syncReport.likedSongsCount} liked songs, and ${syncReport.topTracksCount} top tracks!`,
+      ...syncReport
+    });
+  } catch (err) {
+    console.error('[SpotifyRoutes] User library sync error:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// 6. Direct User Saved Tracks endpoint
+router.get('/saved-tracks', async (req, res) => {
+  try {
+    const token = await getSpotifyToken();
+    if (!token) return res.status(401).json({ error: 'Not connected to Spotify' });
+    const data = await spotifyProvider.getUserSavedTracks(token, 50);
+    res.json(data);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// 7. Direct User Top Tracks endpoint
+router.get('/top-tracks', async (req, res) => {
+  try {
+    const token = await getSpotifyToken();
+    if (!token) return res.status(401).json({ error: 'Not connected to Spotify' });
+    const data = await spotifyProvider.getUserTopTracks(token, 50);
+    res.json(data);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 module.exports = router;

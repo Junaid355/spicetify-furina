@@ -186,21 +186,36 @@ class FurinaAudioEngine {
       }
     }
 
-    // Playback routing
-    if (track.provider === 'spotify') {
-      if (window.spotifyClient && window.spotifyClient.isReady) {
-        console.log(`[AudioEngine] Delegating playback to Spotify Web Playback SDK: ${track.spotifyUri}`);
-        await window.spotifyClient.playUri(track.spotifyUri);
-      } else if (track.streamUrl) {
-        this.audioElement.src = track.streamUrl;
+    // Multi-source playback routing with dynamic stream resolver
+    let streamToPlay = track.streamUrl;
+
+    if (!streamToPlay && track.title) {
+      try {
+        console.log(`[AudioEngine] Resolving live audio stream for: ${track.title} by ${track.artist}...`);
+        const res = await fetch(`/api/catalog/resolve-audio?title=${encodeURIComponent(track.title)}&artist=${encodeURIComponent(track.artist || '')}`);
+        if (res.ok) {
+          const resolved = await res.json();
+          if (resolved?.streamUrl) {
+            streamToPlay = resolved.streamUrl;
+            track.streamUrl = streamToPlay;
+          }
+        }
+      } catch (_) {}
+    }
+
+    if (track.provider === 'spotify' && window.spotifyClient && window.spotifyClient.isReady && track.spotifyUri) {
+      console.log(`[AudioEngine] Delegating playback to Spotify Web Playback SDK: ${track.spotifyUri}`);
+      await window.spotifyClient.playUri(track.spotifyUri);
+    } else {
+      this.audioElement.src = streamToPlay || '/audio/la_vaguelette.wav';
+      try {
         await this.audioElement.play();
-      } else {
+      } catch (err) {
+        console.warn('[AudioEngine] Play failed, attempting fallback resolver:', err.message);
+        // Fallback to Fontaine theme if browser blocked autoplay or stream expired
         this.audioElement.src = '/audio/la_vaguelette.wav';
         await this.audioElement.play();
       }
-    } else {
-      this.audioElement.src = track.streamUrl || `/audio/la_vaguelette.wav`;
-      await this.audioElement.play();
     }
 
     this.emit('trackchange', track);

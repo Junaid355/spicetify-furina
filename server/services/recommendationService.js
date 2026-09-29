@@ -42,6 +42,13 @@ class RecommendationService {
       { id: 'mood_judgment', name: 'The Oratrice Melodrama', color: 'from-purple-900 to-violet-950', description: 'High-stakes judgment fanfares and orchestral climaxes', icon: '⚖️' }
     ];
 
+    // 7. Live Global Trending Chart (Multi-Source API)
+    let globalTrending = [];
+    try {
+      const deezerProvider = require('../providers/DeezerProvider');
+      globalTrending = await deezerProvider.getTopChart(12);
+    } catch (_) {}
+
     return {
       hero: {
         title: "All The World's A Stage",
@@ -51,6 +58,7 @@ class RecommendationService {
         actionTrackId: "furina_vaguelette"
       },
       trending: trendingTracks.map(t => furinaProvider.formatTrack(t)),
+      globalTrending,
       playlists,
       artists,
       albums,
