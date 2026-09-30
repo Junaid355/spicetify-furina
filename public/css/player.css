@@ -32,17 +32,58 @@
   width: 54px;
   height: 54px;
   border-radius: var(--radius-sm);
-  overflow: hidden;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
-  border: 1px solid var(--border-glass);
+  overflow: visible;
   flex-shrink: 0;
   cursor: pointer;
+  margin-right: 12px;
 }
 
 .player-artwork-img {
-  width: 100%;
-  height: 100%;
+  position: relative;
+  width: 54px;
+  height: 54px;
+  border-radius: var(--radius-sm);
   object-fit: cover;
+  z-index: 2;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+  border: 1px solid var(--border-glass);
+}
+
+.player-vinyl-disc {
+  position: absolute;
+  top: 3px;
+  left: 12px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #1e293b 0%, #090d16 55%, #1e293b 58%, #090d16 85%, #020617 100%);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.7);
+  z-index: 1;
+  transition: transform 0.42s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.player-vinyl-disc::after {
+  content: '';
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--accent-cyan);
+  border: 2px solid #000;
+  box-shadow: 0 0 6px var(--accent-cyan);
+}
+
+.player-artwork-frame.playing .player-vinyl-disc {
+  transform: translateX(18px) rotate(360deg);
+  animation: vinylSpin 5s linear infinite;
+}
+
+.player-artwork-frame.playing.paused .player-vinyl-disc {
+  animation-play-state: paused !important;
 }
 
 .player-track-info {

@@ -453,6 +453,7 @@
     <div class="player-now-playing">
       <div class="player-artwork-frame" id="btn-toggle-stage" title="Click to open Fontaine Theater Stage">
         <img class="player-artwork-img" id="player-art-img" src="images/furina_opera_tears.jpg" onerror="this.src='icons/app-icon.jpg'" alt="Now Playing" />
+        <div class="player-vinyl-disc" id="player-vinyl-disc"></div>
       </div>
       <div class="player-track-info">
         <div class="player-track-title" id="player-title">La Vaguelette</div>
@@ -718,6 +719,9 @@
       }
     })();
   </script>
+  <!-- Dedicated YouTube Full Audio Streamer Element (Hidden) -->
+  <div id="furina-yt-streamer" style="position:fixed;bottom:-999px;right:-999px;width:10px;height:10px;opacity:0.001;pointer-events:none;z-index:-10;"></div>
+
   <script src="js/client-api.js?v=5.0"></script>
   <script src="js/dynamic-bg.js?v=5.0"></script>
   <script src="js/audio-player.js?v=5.0"></script>

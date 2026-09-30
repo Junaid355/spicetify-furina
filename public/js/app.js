@@ -18,9 +18,19 @@ const appState = {
   spotifyProfile: null
 };
 
-// Utilities
-function formatTime(seconds) {
-  if (!seconds || isNaN(seconds)) return '0:00';
+// Utilities & Resilient Fallback Artwork
+function getFallbackArtwork() {
+  const basePath = window.location.pathname.includes('/spicetify-furina/') ? '/spicetify-furina/' : '/';
+  return `${basePath}images/furina_salon_music.jpg`.replace('//', '/');
+}
+window.getFallbackArtwork = getFallbackArtwork;
+
+function formatTime(val) {
+  if (!val || isNaN(val)) return '0:00';
+  let seconds = val;
+  if (seconds > 1000) {
+    seconds = seconds / 1000;
+  }
   const m = Math.floor(seconds / 60);
   const s = Math.floor(seconds % 60);
   return `${m}:${s < 10 ? '0' : ''}${s}`;
@@ -220,7 +230,7 @@ function renderTrackRow(track, index, contextQueue = null) {
           </div>
         ` : (isPlaying ? '▶' : (index !== undefined ? index + 1 : '♪'))}
       </div>
-      <img class="track-thumbnail" src="${track.cover_url || track.coverUrl || './icons/app-icon.jpg'}" alt="${track.title}" onerror="this.src='./icons/app-icon.jpg'" loading="lazy" />
+      <img class="track-thumbnail" src="${track.cover_url || track.coverUrl || window.getFallbackArtwork()}" alt="${track.title}" onerror="this.onerror=null; this.src=window.getFallbackArtwork();" loading="lazy" />
       <div class="track-meta">
         <div class="track-title">${track.title}</div>
         <div class="track-artist">
@@ -241,7 +251,7 @@ function renderTrackRow(track, index, contextQueue = null) {
         <button class="btn-icon-subtle" onclick="showTrackQualityInspector('${track.id}')" title="Inspect Audio Quality">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
         </button>
-        <div class="track-duration">${formatTime((track.duration_ms || track.durationMs || 180000) / 1000)}</div>
+        <div class="track-duration">${formatTime(track.duration_ms || track.durationMs || track.duration || 180000)}</div>
       </div>
     </div>
   `;
@@ -523,7 +533,7 @@ function renderSpotifyTableRow(track, index, contextQueue = null) {
         `}
       </div>
       <div class="spotify-col-title">
-        <img class="spotify-track-thumb" src="${track.cover_url || track.coverUrl || './icons/app-icon.jpg'}" alt="${track.title}" onerror="this.src='./icons/app-icon.jpg'" loading="lazy" />
+        <img class="spotify-track-thumb" src="${track.cover_url || track.coverUrl || window.getFallbackArtwork()}" alt="${track.title}" onerror="this.onerror=null; this.src=window.getFallbackArtwork();" loading="lazy" />
         <div class="spotify-track-info">
           <div class="spotify-track-name">${track.title}</div>
           <div class="spotify-track-sub">
@@ -544,7 +554,7 @@ function renderSpotifyTableRow(track, index, contextQueue = null) {
         <button class="btn-icon-subtle" onclick="downloadTrackOffline('${track.id}')" title="${track.isDownloadable ? 'Download Offline (Authorized)' : 'Spotify Protected Stream'}">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
         </button>
-        <span>${formatTime((track.duration_ms || track.durationMs || 180000) / 1000)}</span>
+        <span>${formatTime(track.duration_ms || track.durationMs || track.duration || 180000)}</span>
       </div>
     </div>
   `;
@@ -600,7 +610,7 @@ async function loadPlaylistDetail(playlistId) {
     const coverEl = document.getElementById('pl-detail-cover');
     if (coverEl) {
       coverEl.src = plCover;
-      coverEl.onerror = () => { coverEl.src = './icons/app-icon.jpg'; };
+      coverEl.onerror = () => { coverEl.onerror = null; coverEl.src = window.getFallbackArtwork(); };
     }
 
     // Dynamic Spicetify hero ambient gradient
@@ -1148,7 +1158,7 @@ function initPlayerBar() {
       const rect = scrubber.getBoundingClientRect();
       const clickX = e.clientX - rect.left;
       const ratio = clickX / rect.width;
-      const duration = audio.audioElement.duration || audio.currentTrack?.durationMs / 1000 || 0;
+      const duration = audio.getDuration();
       audio.seek(ratio * duration);
     });
   }
@@ -1221,12 +1231,20 @@ function initPlayerBar() {
     }
     if (event === 'statechange') {
       const vinylArt = document.getElementById('stage-cover-art');
+      const artFrame = document.querySelector('.player-artwork-frame');
       if (data.isPlaying) {
         if (playBtn) playBtn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>`;
         if (vinylArt) vinylArt.classList.remove('artwork-vinyl-paused');
+        if (artFrame) {
+          artFrame.classList.add('playing');
+          artFrame.classList.remove('paused');
+        }
       } else {
         if (playBtn) playBtn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>`;
         if (vinylArt) vinylArt.classList.add('artwork-vinyl-paused');
+        if (artFrame) {
+          artFrame.classList.add('paused');
+        }
       }
       syncTrackRowsLive();
     }
@@ -1533,7 +1551,16 @@ async function updateHeaderSpotifyBadge() {
 window.updateHeaderSpotifyBadge = updateHeaderSpotifyBadge;
 
 function handleSpotifyOAuthLogin() {
-  window.location.href = '/api/auth/spotify/login';
+  const isStaticHost = window.location.hostname.endsWith('github.io') || 
+                       window.location.protocol === 'file:' || 
+                       window.location.search.includes('mode=static');
+
+  if (isStaticHost) {
+    const customId = document.getElementById('sp-input-client-id')?.value.trim();
+    window.spotifyClient.login(customId || null);
+  } else {
+    window.location.href = '/api/auth/spotify/login';
+  }
 }
 window.handleSpotifyOAuthLogin = handleSpotifyOAuthLogin;
 

@@ -165,29 +165,71 @@
 
     // 4. Current User & Spotify Status
     if (pathname === '/api/auth/me') {
+      const spClient = window.spotifyClient;
+      const isConnected = Boolean(spClient && spClient.accessToken);
+      const spProfile = spClient ? spClient.userProfile : null;
+
       return jsonResponse({
         user: {
-          id: 'user_furina_default',
-          username: 'furina_listener',
-          email: 'listener@furina.music',
-          display_name: 'Lady Furina',
-          avatar_url: './images/furina_pure_hydro.jpg',
-          role: 'admin'
+          id: spProfile ? spProfile.id : 'user_furina_default',
+          username: spProfile ? spProfile.id : 'furina_listener',
+          email: spProfile ? spProfile.email : 'listener@furina.music',
+          display_name: spProfile ? spProfile.display_name : 'Lady Furina',
+          avatar_url: spProfile?.images?.[0]?.url || './images/furina_pure_hydro.jpg',
+          role: 'listener'
         },
         connectedProviders: {
           spotify: {
-            connected: true,
+            connected: isConnected,
             expired: false,
-            displayName: 'Junaid (Spotify Connected)',
-            product: 'premium',
-            lastLinked: new Date().toISOString()
+            displayName: spProfile ? spProfile.display_name : (isConnected ? 'Spotify Account Connected' : null),
+            product: spProfile?.product || (isConnected ? 'premium' : null),
+            lastLinked: isConnected ? new Date().toISOString() : null
           }
         }
       });
     }
 
-    // 5. Spotify User Playlists
+    // 5. Spotify User Playlists (Dynamic Multi-User)
     if (pathname === '/api/spotify/user-playlists') {
+      const spClient = window.spotifyClient;
+      if (spClient && spClient.userPlaylists && spClient.userPlaylists.length > 0) {
+        return jsonResponse({
+          items: spClient.userPlaylists.map(p => ({
+            id: p.id,
+            nativeId: p.id,
+            name: p.name,
+            description: p.description,
+            images: [{ url: p.cover_url || './images/default_artwork.jpg' }],
+            tracks: { total: p.track_count || 0 },
+            owner: { display_name: p.owner || spClient.userProfile?.display_name || 'You' }
+          })),
+          source: 'spotify_live_api',
+          connected: true
+        });
+      }
+
+      if (spClient && spClient.accessToken) {
+        try {
+          const liveLists = await spClient.fetchUserPlaylists();
+          if (liveLists.length > 0) {
+            return jsonResponse({
+              items: liveLists.map(p => ({
+                id: p.id,
+                nativeId: p.id,
+                name: p.name,
+                description: p.description,
+                images: [{ url: p.cover_url || './images/default_artwork.jpg' }],
+                tracks: { total: p.track_count || 0 },
+                owner: { display_name: p.owner || spClient.userProfile?.display_name || 'You' }
+              })),
+              source: 'spotify_live_api',
+              connected: true
+            });
+          }
+        } catch (_) {}
+      }
+
       const spotifyPlaylists = (catalog?.playlists || []).filter(p => p.provider === 'spotify');
       return jsonResponse({
         items: spotifyPlaylists.map(p => ({
@@ -197,10 +239,10 @@
           description: p.description,
           images: [{ url: p.cover_url || './images/default_artwork.jpg' }],
           tracks: { total: p.track_count || 37 },
-          owner: { display_name: 'Junaid (Spotify)' }
+          owner: { display_name: 'Spotify Community' }
         })),
-        source: 'local_synced_spotify',
-        connected: true
+        source: 'curated_catalog',
+        connected: false
       });
     }
 
@@ -298,8 +340,25 @@
 
     // 8. Stream Resolver Fallback
     if (pathname === '/api/catalog/resolve-audio') {
-      const title = urlObj.searchParams.get('title') || '';
-      const artist = urlObj.searchParams.get('artist') || '';
+      const title = (urlObj.searchParams.get('title') || '').trim();
+      const artist = (urlObj.searchParams.get('artist') || '').trim();
+      const map = window.furinaAudio?.videoMap || {};
+      const fullKey = `${title} - ${artist}`.toLowerCase().trim();
+      const simpleKey = title.toLowerCase().trim();
+
+      const vid = map[fullKey] || map[simpleKey];
+      if (vid) {
+        return jsonResponse({
+          videoId: vid,
+          youtubeId: vid,
+          streamType: 'youtube',
+          fullLength: true,
+          provider: 'youtube',
+          title,
+          artist
+        });
+      }
+
       try {
         const itunesRes = await nativeFetch(`https://itunes.apple.com/search?term=${encodeURIComponent(`${title} ${artist}`)}&entity=song&limit=3`);
         if (itunesRes.ok) {
