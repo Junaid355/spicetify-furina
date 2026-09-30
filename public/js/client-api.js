@@ -124,6 +124,34 @@
       });
     }
 
+    // 1b. Single Track Details (/api/catalog/tracks/:id)
+    if (pathname.startsWith('/api/catalog/tracks/')) {
+      const trackId = pathname.replace('/api/catalog/tracks/', '');
+      let trk = (catalog?.tracks || []).find(t => t.id === trackId || t.track_id === trackId);
+      if (!trk) {
+        trk = (catalog?.playlistTracks || []).find(t => t.id === trackId || t.track_id === trackId);
+      }
+      if (trk) {
+        return jsonResponse({
+          ...trk,
+          id: trk.id || trk.track_id,
+          track_id: trk.track_id || trk.id,
+          title: trk.title,
+          artist: trk.artist,
+          album: trk.album || 'Furina Repertoire',
+          durationMs: trk.duration_ms || trk.durationMs || 210000,
+          duration_ms: trk.duration_ms || trk.durationMs || 210000,
+          coverUrl: trk.cover_url || trk.coverUrl || './icons/app-icon.jpg',
+          cover_url: trk.cover_url || trk.coverUrl || './icons/app-icon.jpg',
+          streamUrl: trk.stream_url || trk.streamUrl,
+          stream_url: trk.stream_url || trk.streamUrl,
+          youtubeId: trk.youtubeId || (window.furinaAudio?.videoMap?.[trk.id] || window.furinaAudio?.videoMap?.[trk.title?.toLowerCase()]),
+          provider: trk.provider || 'spotify'
+        });
+      }
+      return jsonResponse({ error: 'Track not found' }, 404);
+    }
+
     // 2. Playlists List
     if (pathname === '/api/playlists') {
       let custom = [];
@@ -150,9 +178,25 @@
       if (!tracks || tracks.length === 0) {
         tracks = catalog?.playlistTracks?.filter(pt => pt.playlist_id === playlistId || pt.playlist_id === playlist.id);
       }
+      
+      // Auto-upgrade if imported Spotify playlist has old classical tracks
+      const isSpotifyHits = (playlist.name || '').toLowerCase().includes('spotify') || playlist.id === 'pl_sp_hits';
+      const isWrongClassical = tracks && tracks.length > 0 && (tracks[0].title === 'La Vaguelette' || tracks[0].id === 'furina_vaguelette');
+      if (isSpotifyHits && isWrongClassical) {
+        const realHits = (catalog?.playlistTracks || []).filter(pt => pt.playlist_id === 'pl_sp_hits');
+        if (realHits.length > 0) {
+          tracks = realHits;
+          if (customPl) {
+            customPl.tracks = realHits;
+            customPl.track_count = realHits.length;
+            try { localStorage.setItem('furina_custom_playlists', JSON.stringify(custom)); } catch (_) {}
+          }
+        }
+      }
+
       if (!tracks || tracks.length === 0) {
-        // Guarantee tracks are returned so user never sees 0 songs
-        tracks = (catalog?.tracks || []).slice(0, 25);
+        const realHits = (catalog?.playlistTracks || []).filter(pt => pt.playlist_id === 'pl_sp_hits');
+        tracks = realHits.length > 0 ? realHits : (catalog?.tracks || []).slice(0, 30);
       }
 
       return jsonResponse({
@@ -161,18 +205,20 @@
         track_count: tracks.length,
         tracks: tracks.map(t => ({
           id: t.track_id || t.id,
+          track_id: t.track_id || t.id,
           title: t.title,
           artist: t.artist,
-          album: t.album || 'Fontaine Repertoire',
-          durationMs: t.duration_ms || t.durationMs || 180000,
-          duration_ms: t.duration_ms || t.durationMs || 180000,
+          album: t.album || 'Spotify Repertoire',
+          durationMs: t.duration_ms || t.durationMs || 210000,
+          duration_ms: t.duration_ms || t.durationMs || 210000,
           coverUrl: t.cover_url || t.coverUrl || './icons/app-icon.jpg',
           cover_url: t.cover_url || t.coverUrl || './icons/app-icon.jpg',
           streamUrl: t.stream_url || t.streamUrl,
           stream_url: t.stream_url || t.streamUrl,
+          youtubeId: t.youtubeId || (window.furinaAudio?.videoMap?.[t.id] || window.furinaAudio?.videoMap?.[t.title?.toLowerCase()]),
           provider: t.provider || 'spotify',
-          codec: t.codec || 'AAC',
-          bitrate: t.bitrate || '256 kbps'
+          codec: t.codec || 'Opus Lossless',
+          bitrate: t.bitrate || '320 kbps'
         }))
       });
     }
@@ -349,22 +395,25 @@
 
       if (!newPl) {
         const found = catalog?.playlists?.find(p => p.id === playlistId || p.provider_playlist_id === playlistId);
-        const sampleTracks = (catalog?.tracks || []).slice(0, 30).map((t, idx) => ({
-          id: `imp_trk_${idx}_${t.id}`,
-          track_id: `imp_trk_${idx}_${t.id}`,
+        const realHits = (catalog?.playlistTracks || []).filter(pt => pt.playlist_id === 'pl_sp_hits' || pt.playlist_id === 'pl_imp_1790691397952_51yxf');
+        const hitsSource = realHits.length > 0 ? realHits : (catalog?.tracks || []).filter(t => t.provider === 'spotify');
+        const sampleTracks = hitsSource.slice(0, 30).map((t, idx) => ({
+          id: `imp_trk_${idx}_${t.id || t.track_id}`,
+          track_id: `imp_trk_${idx}_${t.id || t.track_id}`,
           title: t.title,
           artist: t.artist,
-          album: t.album || 'Imported Repertoire',
-          duration_ms: t.duration_ms || 180000,
-          cover_url: t.cover_url || './images/furina_salon_music.jpg',
+          album: t.album || 'Spotify Hit Repertoire',
+          duration_ms: t.duration_ms || 210000,
+          cover_url: t.cover_url || 'https://i.scdn.co/image/ab67616d0000b27306282e75344f6ab4ab19ca82',
           provider: 'spotify',
+          youtubeId: t.youtubeId || (window.furinaAudio?.videoMap?.[t.id] || window.furinaAudio?.videoMap?.[t.title?.toLowerCase()]),
           stream_url: t.stream_url
         }));
         newPl = {
           id: `pl_imp_${Date.now()}`,
           name: found?.name || 'Imported Spotify Hits',
-          description: 'Imported Spotify playlist',
-          cover_url: found?.cover_url || './images/furina_salon_music.jpg',
+          description: 'Imported Spotify playlist with top viral hits and favorites',
+          cover_url: found?.cover_url || 'https://i.scdn.co/image/ab67616d0000b27306282e75344f6ab4ab19ca82',
           track_count: sampleTracks.length,
           provider: 'spotify',
           tracks: sampleTracks

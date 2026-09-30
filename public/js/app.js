@@ -261,10 +261,10 @@ function renderTrackRow(track, index, contextQueue = null) {
 async function handleTrackClick(trackId, queue = null) {
   let track = null;
   if (queue && Array.isArray(queue)) {
-    track = queue.find(t => t.id === trackId);
+    track = queue.find(t => t.id === trackId || t.track_id === trackId);
   }
   if (!track && appState.currentPlaylistTracks) {
-    track = appState.currentPlaylistTracks.find(t => t.id === trackId);
+    track = appState.currentPlaylistTracks.find(t => t.id === trackId || t.track_id === trackId);
     if (!queue) queue = appState.currentPlaylistTracks;
   }
   if (!track && appState.homeData) {
@@ -273,7 +273,7 @@ async function handleTrackClick(trackId, queue = null) {
       ...(appState.homeData.globalTrending || []),
       ...(appState.homeData.trending || [])
     ];
-    track = allHome.find(t => t.id === trackId);
+    track = allHome.find(t => t.id === trackId || t.track_id === trackId);
     if (!queue) queue = allHome;
   }
   if (!track && appState.searchResults) {
@@ -1831,13 +1831,15 @@ async function handleSpotifyInstantDemoSync() {
     const catRes = await fetch('./data/catalog.json');
     if (catRes.ok) {
       const cat = await catRes.json();
+      const realHits = (cat.playlistTracks || []).filter(pt => pt.playlist_id === 'pl_sp_hits');
       const spPlaylists = (cat.playlists || []).filter(p => p.provider === 'spotify');
       const customPls = spPlaylists.map(p => {
         const trks = (cat.playlistTracks || []).filter(pt => pt.playlist_id === p.id);
+        const effectiveTracks = trks.length > 0 ? trks : realHits;
         return {
           ...p,
-          tracks: trks.length > 0 ? trks : (cat.tracks || []).slice(0, 30),
-          track_count: trks.length > 0 ? trks.length : 30
+          tracks: effectiveTracks,
+          track_count: effectiveTracks.length
         };
       });
       localStorage.setItem('furina_custom_playlists', JSON.stringify(customPls));
