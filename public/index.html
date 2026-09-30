@@ -16,12 +16,12 @@
   <link rel="icon" type="image/jpeg" href="icons/app-icon.jpg" />
   <link rel="manifest" href="manifest.json" />
 
-  <!-- Stylesheets -->
-  <link rel="stylesheet" href="css/design-tokens.css?v=4.0" />
-  <link rel="stylesheet" href="css/layout.css?v=4.0" />
-  <link rel="stylesheet" href="css/animations.css?v=4.0" />
-  <link rel="stylesheet" href="css/components.css?v=4.0" />
-  <link rel="stylesheet" href="css/player.css?v=4.0" />
+  <!-- Stylesheets (v6.0 Cache-Busting) -->
+  <link rel="stylesheet" href="css/design-tokens.css?v=6.0" />
+  <link rel="stylesheet" href="css/layout.css?v=6.0" />
+  <link rel="stylesheet" href="css/animations.css?v=6.0" />
+  <link rel="stylesheet" href="css/components.css?v=6.0" />
+  <link rel="stylesheet" href="css/player.css?v=6.0" />
 </head>
 <body>
   <!-- Dynamic Album-Art Reactive Background Mesh & Canvas -->
@@ -34,17 +34,14 @@
     <!-- Desktop Left Sidebar -->
     <aside class="app-sidebar">
       <!-- Furina Music Brand Logo -->
-      <div class="sidebar-logo" onclick="switchTab('home')">
-        <div class="sidebar-logo-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" fill="none"/>
-            <path d="M12 6v6l4 2" stroke="currentColor" stroke-linecap="round"/>
-            <circle cx="12" cy="12" r="3" fill="currentColor"/>
-          </svg>
+      <div class="sidebar-logo" onclick="switchTab('home')" title="Furina Music">
+        <div class="sidebar-avatar-glow">
+          <img src="images/furina_pure_hydro.jpg" class="sidebar-furina-avatar" alt="Furina" />
+          <div class="hydro-orbit-ring"></div>
         </div>
-        <div>
+        <div class="sidebar-logo-text-group">
           <div class="sidebar-logo-text">FURINA MUSIC</div>
-          <div class="sidebar-logo-badge">✦ Opera & Customization</div>
+          <div class="sidebar-logo-badge">✦ All The World's A Stage</div>
         </div>
       </div>
 
@@ -102,6 +99,18 @@
         <div class="sidebar-pl-link" onclick="switchTab('playlist-detail', { playlistId: 'pl_fontaine_abyss' })">🌊 Submerged Memories</div>
       </div>
 
+      <!-- Cute Furina Companion / Mascot Card in Sidebar -->
+      <div class="furina-companion-card" id="furina-mascot-card">
+        <div class="companion-avatar-wrap">
+          <img id="companion-furina-img" src="images/furina_salon_music.jpg" class="companion-img" alt="Lady Furina" />
+          <div class="companion-note-bubble" id="companion-bubble">♪ Listening</div>
+        </div>
+        <div class="companion-info">
+          <span class="companion-title">Lady Furina</span>
+          <span class="companion-status" id="companion-status-text">"The stage awaits your song!"</span>
+        </div>
+      </div>
+
       <!-- Spotify Provider Card -->
       <div class="sidebar-provider-card">
         <div class="sidebar-provider-header">
@@ -131,6 +140,41 @@
           </div>
         </div>
         <div class="header-right">
+          <!-- Multi-Theme Selector Pill Dropdown -->
+          <div class="theme-selector-pill-group">
+            <button class="theme-pill-dropdown-btn" id="theme-active-pill" onclick="toggleThemeDropdown(event)" title="Switch Fontaine Theme">
+              <span class="theme-color-dot" id="theme-color-dot"></span>
+              <span id="theme-active-name">Fontaine Royal</span>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7 10l5 5 5-5z"/></svg>
+            </button>
+            <div class="theme-dropdown-menu" id="theme-dropdown-menu">
+              <div class="theme-option active" data-theme="fontaine-royal" onclick="switchFontaineTheme('', 'Fontaine Royal', '#38bdf8')">
+                <span class="theme-dot" style="background: #38bdf8;"></span>
+                <span>Fontaine Royal</span>
+              </div>
+              <div class="theme-option" data-theme="epiclese-twilight" onclick="switchFontaineTheme('epiclese-twilight', 'Epiclese Twilight', '#c084fc')">
+                <span class="theme-dot" style="background: #c084fc;"></span>
+                <span>Epiclese Twilight</span>
+              </div>
+              <div class="theme-option" data-theme="hydro-pure" onclick="switchFontaineTheme('hydro-pure', 'Azure Crystal', '#22d3ee')">
+                <span class="theme-dot" style="background: #22d3ee;"></span>
+                <span>Azure Crystal</span>
+              </div>
+              <div class="theme-option" data-theme="deep-sea" onclick="switchFontaineTheme('deep-sea', 'Primordial Abyss', '#14b8a6')">
+                <span class="theme-dot" style="background: #14b8a6;"></span>
+                <span>Primordial Abyss</span>
+              </div>
+              <div class="theme-option" data-theme="sakura-fontaine" onclick="switchFontaineTheme('sakura-fontaine', 'Sakura Fontaine', '#f472b6')">
+                <span class="theme-dot" style="background: #f472b6;"></span>
+                <span>Sakura Fontaine</span>
+              </div>
+              <div class="theme-option" data-theme="cyber-hydro" onclick="switchFontaineTheme('cyber-hydro', 'Cyber Hydro', '#00e5ff')">
+                <span class="theme-dot" style="background: #00e5ff;"></span>
+                <span>Cyber Hydro</span>
+              </div>
+            </div>
+          </div>
+
           <!-- Spotify Connection Status Button / Pill -->
           <button class="badge-pill" id="header-spotify-badge" onclick="openSpotifyConnectModal()" title="Connect & Sync Spotify Account" style="cursor: pointer; border: 1px solid rgba(30, 215, 96, 0.4); background: rgba(30, 215, 96, 0.12); color: #fff;">
             <span style="color: #1ed760;">●</span> Connect Spotify
@@ -475,6 +519,9 @@
         <button class="btn-ctrl btn-ctrl-play" id="btn-player-play" title="Play / Pause (Space)">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
         </button>
+        <button class="btn-ctrl" id="btn-player-stop" title="Stop (Halt & Reset)" style="border-radius: 50%;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
+        </button>
         <button class="btn-ctrl" id="btn-player-next" title="Next (N)">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19" stroke="currentColor" stroke-width="3"/></svg>
         </button>
@@ -781,13 +828,14 @@
     </div>
   </div>
 
-  <script src="js/client-api.js?v=5.0"></script>
-  <script src="js/dynamic-bg.js?v=5.0"></script>
-  <script src="js/audio-player.js?v=5.0"></script>
-  <script src="js/offline-storage.js?v=5.0"></script>
-  <script src="js/lyrics-engine.js?v=5.0"></script>
-  <script src="js/spotify-client.js?v=5.0"></script>
-  <script src="js/marketplace.js?v=5.0"></script>
-  <script src="js/app.js?v=5.0"></script>
+  <!-- Core Application Scripts (v6.0 Cache-Busting) -->
+  <script src="js/client-api.js?v=6.0"></script>
+  <script src="js/dynamic-bg.js?v=6.0"></script>
+  <script src="js/audio-player.js?v=6.0"></script>
+  <script src="js/offline-storage.js?v=6.0"></script>
+  <script src="js/lyrics-engine.js?v=6.0"></script>
+  <script src="js/spotify-client.js?v=6.0"></script>
+  <script src="js/marketplace.js?v=6.0"></script>
+  <script src="js/app.js?v=6.0"></script>
 </body>
 </html>

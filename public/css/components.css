@@ -801,3 +801,225 @@
     justify-content: center;
   }
 }
+
+/* ==========================================================================
+   FURINA LUXURY BRANDING & COMPANION MASCOT (Spicetify Aesthetics)
+   ========================================================================== */
+
+.sidebar-avatar-glow {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.sidebar-furina-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--accent-cyan);
+  box-shadow: 0 0 16px var(--dynamic-glow-color);
+  z-index: 2;
+  transition: transform 0.3s ease;
+}
+
+.sidebar-logo:hover .sidebar-furina-avatar {
+  transform: scale(1.08) rotate(3deg);
+}
+
+.hydro-orbit-ring {
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  border: 1.5px dashed var(--accent-cyan);
+  animation: hydroOrbitSpin 8s linear infinite;
+  opacity: 0.85;
+}
+
+@keyframes hydroOrbitSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.sidebar-logo-text-group {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Cute Furina Companion / Mascot Card in Sidebar */
+.furina-companion-card {
+  margin: 18px 12px 6px 12px;
+  padding: 14px;
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.12), rgba(167, 139, 250, 0.08));
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: var(--shadow-card);
+  backdrop-filter: blur(12px);
+  position: relative;
+  overflow: hidden;
+}
+
+.companion-avatar-wrap {
+  position: relative;
+  width: 46px;
+  height: 46px;
+  flex-shrink: 0;
+}
+
+.companion-img {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--accent-hydro);
+  box-shadow: 0 0 12px var(--dynamic-glow-color);
+  animation: furinaHeadbob 2.4s ease-in-out infinite;
+}
+
+@keyframes furinaHeadbob {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-3px) rotate(2deg); }
+  75% { transform: translateY(2px) rotate(-2deg); }
+}
+
+.companion-note-bubble {
+  position: absolute;
+  top: -12px;
+  right: -8px;
+  background: var(--accent-cyan);
+  color: #030712;
+  font-size: 0.62rem;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  white-space: nowrap;
+  animation: floatNote 2s ease-in-out infinite alternate;
+}
+
+@keyframes floatNote {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-4px); }
+}
+
+.companion-info {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.companion-title {
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: 0.3px;
+}
+
+.companion-status {
+  font-size: 0.68rem;
+  color: var(--accent-tear);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Multi-Theme Selector Pill in Header */
+.theme-selector-pill-group {
+  position: relative;
+  display: inline-block;
+}
+
+.theme-pill-dropdown-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-full);
+  padding: 6px 14px;
+  color: var(--text-main);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.theme-pill-dropdown-btn:hover {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 12px var(--dynamic-glow-color);
+}
+
+.theme-color-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--accent-cyan);
+  box-shadow: 0 0 8px var(--accent-cyan);
+}
+
+.theme-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-md);
+  padding: 6px;
+  min-width: 170px;
+  box-shadow: var(--shadow-elevated);
+  backdrop-filter: blur(20px);
+  display: none;
+  flex-direction: column;
+  gap: 4px;
+  z-index: 1000;
+}
+
+.theme-dropdown-menu.show {
+  display: flex;
+  animation: fadeInDown 0.18s ease-out;
+}
+
+@keyframes fadeInDown {
+  0% { opacity: 0; transform: translateY(-8px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.theme-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-sub);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.theme-option:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.theme-option.active {
+  background: rgba(56, 189, 248, 0.16);
+  color: var(--accent-cyan);
+}
+
+.theme-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+

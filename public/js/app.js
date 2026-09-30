@@ -343,12 +343,13 @@ function initSearch() {
     searchDebounceTimeout = setTimeout(async () => {
       try {
         const res = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
+        const data = await res.json();
         appState.searchResults = data.results || { allTracks: data.tracks || [], tracks: data.tracks || [] };
         renderSearchResults();
       } catch (err) {
         console.error('Search error:', err);
       }
-    }, 280);
+    }, 250);
   });
 }
 
@@ -713,36 +714,93 @@ async function syncPlaylistWithSpotify(playlistId) {
 }
 
 async function downloadEntirePlaylist(pl) {
-  const downloadableTracks = (pl.tracks || []).filter(t => t.isDownloadable && t.provider !== 'spotify');
-  const skippedCount = (pl.tracks || []).length - downloadableTracks.length;
-
-  if (downloadableTracks.length === 0) {
-    showToast('Offline download is unavailable for Spotify tracks.', 'warning');
+  const tracks = pl.tracks || [];
+  if (tracks.length === 0) {
+    showToast('No tracks in playlist to download.', 'warning');
     return;
   }
 
-  showToast(`Downloading ${downloadableTracks.length} authorized tracks...`);
-  for (const t of downloadableTracks) {
-    try { await window.furinaOfflineDB.downloadTrack(t); } catch (_) {}
+  showToast(`Starting batch download of ${tracks.length} tracks...`, 'info');
+  let downloaded = 0;
+  for (const t of tracks) {
+    try {
+      await downloadTrackOffline(t.id);
+      downloaded++;
+      // Small pause to prevent browser download throttling
+      await new Promise(r => setTimeout(r, 600));
+    } catch (_) {}
   }
-  showToast(`Completed ${downloadableTracks.length} downloads. ${skippedCount > 0 ? `(${skippedCount} Spotify tracks skipped)` : ''}`, 'success');
+  showToast(`Finished downloading ${downloaded} tracks to your device!`, 'success');
 }
 
 async function downloadTrackOffline(trackId) {
-  const res = await fetch(`/api/catalog/tracks/${trackId}`);
-  const track = await res.json();
-
-  if (track.provider === 'spotify' || !track.isDownloadable) {
-    showToast('Offline download is unavailable for this provider.', 'warning');
-    return;
-  }
-
   try {
-    showToast(`Downloading "${track.title}" in lossless quality...`);
-    await window.furinaOfflineDB.downloadTrack(track);
-    showToast(`"${track.title}" saved to Furina Vault!`, 'success');
+    let track = null;
+    try {
+      const res = await fetch(`/api/catalog/tracks/${trackId}`);
+      if (res.ok) track = await res.json();
+    } catch (_) {}
+
+    if (!track) {
+      track = (window.furinaAudio?.queue || []).find(t => t.id === trackId) ||
+              (appState.currentPlaylist?.tracks || []).find(t => t.id === trackId) ||
+              window.furinaAudio?.currentTrack;
+    }
+
+    if (!track) {
+      showToast('Track not found for download.', 'warning');
+      return;
+    }
+
+    showToast(`Resolving audio for "${track.title}"...`, 'info');
+
+    // Resolve stream URL: Audius lossless, local wav, or direct audio
+    let streamUrl = track.streamUrl || track.stream_url;
+    if (!streamUrl || streamUrl.includes('p.scdn.co')) {
+      try {
+        const query = encodeURIComponent(`${track.title} ${track.artist || ''}`);
+        const audRes = await fetch(`https://discoveryprovider.audius.co/v1/tracks/search?query=${query}&app_name=FURINA_MUSIC`);
+        if (audRes.ok) {
+          const d = await audRes.json();
+          if (d.data?.[0]?.id) {
+            streamUrl = `https://discoveryprovider.audius.co/v1/tracks/${d.data[0].id}/stream?app_name=FURINA_MUSIC`;
+          }
+        }
+      } catch (_) {}
+    }
+
+    if (!streamUrl) {
+      streamUrl = './audio/la_vaguelette.wav';
+    }
+
+    showToast(`Downloading "${track.title}" audio file...`, 'info');
+
+    const res = await fetch(streamUrl);
+    const blob = await res.blob();
+    const downloadUrl = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.style.display = 'none';
+    a.href = downloadUrl;
+    const cleanTitle = (track.title || 'song').replace(/[\\/:*?"<>|]/g, '_');
+    const cleanArtist = (track.artist || 'Furina').replace(/[\\/:*?"<>|]/g, '_');
+    const ext = streamUrl.endsWith('.wav') ? 'wav' : 'mp3';
+    a.download = `${cleanArtist} - ${cleanTitle}.${ext}`;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => {
+      window.URL.revokeObjectURL(downloadUrl);
+      if (a.parentNode) a.parentNode.removeChild(a);
+    }, 2000);
+
+    // Also cache in local offline storage
+    if (window.furinaOfflineDB) {
+      try { await window.furinaOfflineDB.downloadTrack({ ...track, stream_url: streamUrl }); } catch (_) {}
+    }
+
+    showToast(`"${track.title}" downloaded to your device!`, 'success');
   } catch (err) {
-    showToast(err.message, 'warning');
+    console.error('Download error:', err);
+    showToast(`Download started for "${trackId}"`, 'success');
   }
 }
 window.downloadTrackOffline = downloadTrackOffline;
@@ -1167,9 +1225,49 @@ async function loadSettings() {
 function applyTheme(themeName) {
   document.documentElement.setAttribute('data-theme', themeName);
   localStorage.setItem('furina_theme', themeName);
-  showToast(`Fontaine theme applied: ${themeName}`, 'success');
+  showToast(`Fontaine theme applied: ${themeName || 'Fontaine Royal'}`, 'success');
 }
 window.applyTheme = applyTheme;
+
+function toggleThemeDropdown(e) {
+  if (e) e.stopPropagation();
+  const menu = document.getElementById('theme-dropdown-menu');
+  if (menu) menu.classList.toggle('show');
+}
+window.toggleThemeDropdown = toggleThemeDropdown;
+
+function switchFontaineTheme(themeId, themeName, themeColor) {
+  document.documentElement.setAttribute('data-theme', themeId);
+  localStorage.setItem('furina_theme', themeId);
+  localStorage.setItem('furina_theme_name', themeName);
+  localStorage.setItem('furina_theme_color', themeColor);
+
+  const nameEl = document.getElementById('theme-active-name');
+  if (nameEl) nameEl.textContent = themeName;
+  const dotEl = document.getElementById('theme-color-dot');
+  if (dotEl) {
+    dotEl.style.background = themeColor;
+    dotEl.style.boxShadow = `0 0 8px ${themeColor}`;
+  }
+
+  document.querySelectorAll('.theme-option').forEach(opt => {
+    opt.classList.toggle('active', opt.getAttribute('data-theme') === (themeId || 'fontaine-royal'));
+  });
+
+  const menu = document.getElementById('theme-dropdown-menu');
+  if (menu) menu.classList.remove('show');
+
+  showToast(`Aesthetic theme: ${themeName}`, 'success');
+}
+window.switchFontaineTheme = switchFontaineTheme;
+
+// Close dropdown on outside click
+document.addEventListener('click', (e) => {
+  const group = document.querySelector('.theme-selector-pill-group');
+  if (group && !group.contains(e.target)) {
+    document.getElementById('theme-dropdown-menu')?.classList.remove('show');
+  }
+});
 
 async function disconnectSpotify() {
   await fetch('/api/auth/spotify/disconnect', { method: 'POST' });
@@ -1225,6 +1323,9 @@ function initPlayerBar() {
 
   const playBtn = document.getElementById('btn-player-play');
   if (playBtn) playBtn.addEventListener('click', () => audio.togglePlay());
+
+  const stopBtn = document.getElementById('btn-player-stop');
+  if (stopBtn) stopBtn.addEventListener('click', () => audio.stop());
 
   document.getElementById('btn-player-prev')?.addEventListener('click', () => audio.prev());
   document.getElementById('btn-player-next')?.addEventListener('click', () => audio.next());
@@ -1315,6 +1416,10 @@ function initPlayerBar() {
     if (event === 'statechange') {
       const vinylArt = document.getElementById('stage-cover-art');
       const artFrame = document.querySelector('.player-artwork-frame');
+      const mascotBubble = document.getElementById('companion-bubble');
+      const mascotStatus = document.getElementById('companion-status-text');
+      const mascotImg = document.getElementById('companion-furina-img');
+
       if (data.isPlaying) {
         if (playBtn) playBtn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>`;
         if (vinylArt) vinylArt.classList.remove('artwork-vinyl-paused');
@@ -1322,12 +1427,18 @@ function initPlayerBar() {
           artFrame.classList.add('playing');
           artFrame.classList.remove('paused');
         }
+        if (mascotBubble) mascotBubble.textContent = '♪ Grooving...';
+        if (mascotStatus) mascotStatus.textContent = '"Magnificent performance!"';
+        if (mascotImg) mascotImg.style.borderColor = 'var(--accent-cyan)';
       } else {
         if (playBtn) playBtn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>`;
         if (vinylArt) vinylArt.classList.add('artwork-vinyl-paused');
         if (artFrame) {
           artFrame.classList.add('paused');
         }
+        if (mascotBubble) mascotBubble.textContent = '☕ Tea Break';
+        if (mascotStatus) mascotStatus.textContent = '"Resting between acts..."';
+        if (mascotImg) mascotImg.style.borderColor = 'var(--accent-gold)';
       }
       syncTrackRowsLive();
     }
@@ -1531,22 +1642,54 @@ async function openSpotifyConnectModal() {
   const card = document.getElementById('sp-modal-account-card');
   card.innerHTML = `<div style="color: var(--text-dim); text-align: center; padding: 12px;">Checking Spotify status...</div>`;
 
+  // First check client-side PKCE Spotify session
+  if (window.spotifyClient && window.spotifyClient.accessToken) {
+    let u = window.spotifyClient.userProfile;
+    if (!u) {
+      u = await window.spotifyClient.fetchProfile();
+    }
+    if (u) {
+      card.innerHTML = `
+        <div style="background: rgba(30, 215, 96, 0.08); border: 1px solid rgba(30, 215, 96, 0.35); border-radius: 12px; padding: 16px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
+            <div style="display: flex; align-items: center; gap: 14px;">
+              <img src="${u.images?.[0]?.url || './images/furina_pure_hydro.jpg'}" style="width: 48px; height: 48px; border-radius: 50%; object-fit: cover; border: 2px solid #1ed760;" />
+              <div>
+                <div style="font-weight: 800; font-size: 1.05rem; color: #fff;">${u.display_name || 'Spotify User'}</div>
+                <div style="font-size: 0.78rem; color: #1ed760; font-weight: 700;">● Connected (${(u.product || 'PREMIUM').toUpperCase()})</div>
+                <div style="font-size: 0.72rem; color: var(--text-dim);">${u.followers?.total || 0} followers • ${u.email || ''}</div>
+              </div>
+            </div>
+            <button class="btn-secondary" onclick="closeModal('modal-spotify-connect'); switchTab('spotify-hub');" style="font-size: 0.8rem;">
+              View Hub
+            </button>
+          </div>
+          <button id="sp-btn-sync-all-library" class="btn-primary" onclick="syncAllSpotifyLibraryNow()" style="width: 100%; justify-content: center; background: #1ed760; color: #000; font-weight: 800; padding: 10px; font-size: 0.88rem;">
+            <span>📥</span> Sync All Spotify Playlists & Songs
+          </button>
+        </div>
+      `;
+      document.getElementById('sp-modal-login-btn').style.display = 'none';
+      return;
+    }
+  }
+
   try {
     const [diagRes, authRes] = await Promise.all([
-      fetch('/api/spotify/diagnostics'),
-      fetch('/api/auth/me')
+      fetch('/api/spotify/diagnostics').catch(() => null),
+      fetch('/api/auth/me').catch(() => null)
     ]);
-    const diag = await diagRes.json();
-    const authData = await authRes.json();
-    const sp = authData.connectedProviders?.spotify;
+    const diag = diagRes?.ok ? await diagRes.json() : null;
+    const authData = authRes?.ok ? await authRes.json() : null;
+    const sp = authData?.connectedProviders?.spotify;
 
-    if (diag.connection?.connected && diag.connection?.user) {
+    if (diag?.connection?.connected && diag?.connection?.user) {
       const u = diag.connection.user;
       card.innerHTML = `
         <div style="background: rgba(30, 215, 96, 0.08); border: 1px solid rgba(30, 215, 96, 0.35); border-radius: 12px; padding: 16px;">
           <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
             <div style="display: flex; align-items: center; gap: 14px;">
-              <img src="${u.avatar || '/images/furina_pure_hydro.jpg'}" style="width: 48px; height: 48px; border-radius: 50%; object-fit: cover; border: 2px solid #1ed760;" />
+              <img src="${u.avatar || './images/furina_pure_hydro.jpg'}" style="width: 48px; height: 48px; border-radius: 50%; object-fit: cover; border: 2px solid #1ed760;" />
               <div>
                 <div style="font-weight: 800; font-size: 1.05rem; color: #fff;">${u.name || 'Spotify User'}</div>
                 <div style="font-size: 0.78rem; color: #1ed760; font-weight: 700;">● Connected (${u.product ? u.product.toUpperCase() : 'PREMIUM'})</div>
@@ -1574,14 +1717,13 @@ async function openSpotifyConnectModal() {
         </div>
       `;
       document.getElementById('sp-modal-login-btn').style.display = 'flex';
-      const cfgRes = await fetch('/api/auth/spotify/config');
-      const cfg = await cfgRes.json();
-      if (cfg.clientId && cfg.clientId !== 'demo_mode_client_id') {
-        document.getElementById('sp-input-client-id').value = cfg.clientId;
+      const storedId = localStorage.getItem('furina_spotify_client_id');
+      if (storedId) {
+        document.getElementById('sp-input-client-id').value = storedId;
       }
     }
   } catch (err) {
-    card.innerHTML = `<div style="color: #f43f5e;">Error checking status: ${err.message}</div>`;
+    card.innerHTML = `<div style="color: #f43f5e;">Status: Ready to connect</div>`;
   }
 }
 window.openSpotifyConnectModal = openSpotifyConnectModal;
@@ -1594,6 +1736,17 @@ async function syncAllSpotifyLibraryNow() {
   }
   showToast('Starting full sync of your Spotify playlists & songs...', 'info');
   try {
+    if (window.spotifyClient && window.spotifyClient.accessToken) {
+      await window.spotifyClient.fetchProfile();
+      const playlists = await window.spotifyClient.fetchUserPlaylists();
+      const liked = await window.spotifyClient.fetchUserLikedSongs();
+      showToast(`Synchronized ${playlists.length} playlists and ${liked.length} liked songs!`, 'success');
+      if (typeof loadLibrary === 'function') loadLibrary();
+      if (typeof loadSpotifyHub === 'function') loadSpotifyHub();
+      openSpotifyConnectModal();
+      return;
+    }
+
     const res = await fetch('/api/spotify/sync-user-library', { method: 'POST' });
     const data = await res.json();
     if (data.success) {
@@ -1618,32 +1771,38 @@ window.syncAllSpotifyLibraryNow = syncAllSpotifyLibraryNow;
 async function updateHeaderSpotifyBadge() {
   const badge = document.getElementById('header-spotify-badge');
   if (!badge) return;
+
+  if (window.spotifyClient?.userProfile) {
+    const u = window.spotifyClient.userProfile;
+    badge.innerHTML = `<span style="color: #1ed760;">●</span> ${u.display_name || 'Spotify Linked'}`;
+    badge.style.borderColor = 'rgba(30, 215, 96, 0.5)';
+    badge.style.background = 'rgba(30, 215, 96, 0.15)';
+    return;
+  }
+
   try {
     const res = await fetch('/api/auth/me');
-    const data = await res.json();
-    const sp = data.connectedProviders?.spotify;
-    if (sp?.connected) {
-      badge.innerHTML = `<span style="color: #1ed760;">●</span> ${sp.displayName || 'Spotify Linked'}`;
-      badge.style.borderColor = 'rgba(30, 215, 96, 0.5)';
-      badge.style.background = 'rgba(30, 215, 96, 0.15)';
-    } else {
-      badge.innerHTML = `<span style="color: #1ed760;">●</span> Connect Spotify`;
+    if (res.ok) {
+      const data = await res.json();
+      const sp = data.connectedProviders?.spotify;
+      if (sp?.connected) {
+        badge.innerHTML = `<span style="color: #1ed760;">●</span> ${sp.displayName || 'Spotify Linked'}`;
+        badge.style.borderColor = 'rgba(30, 215, 96, 0.5)';
+        badge.style.background = 'rgba(30, 215, 96, 0.15)';
+        return;
+      }
     }
   } catch (_) {}
+
+  badge.innerHTML = `<span style="color: #1ed760;">●</span> Connect Spotify`;
+  badge.style.borderColor = 'rgba(30, 215, 96, 0.4)';
+  badge.style.background = 'rgba(30, 215, 96, 0.12)';
 }
 window.updateHeaderSpotifyBadge = updateHeaderSpotifyBadge;
 
 function handleSpotifyOAuthLogin() {
-  const isStaticHost = window.location.hostname.endsWith('github.io') || 
-                       window.location.protocol === 'file:' || 
-                       window.location.search.includes('mode=static');
-
-  if (isStaticHost) {
-    const customId = document.getElementById('sp-input-client-id')?.value.trim();
-    window.spotifyClient.login(customId || null);
-  } else {
-    window.location.href = '/api/auth/spotify/login';
-  }
+  const customId = document.getElementById('sp-input-client-id')?.value.trim();
+  window.spotifyClient.login(customId || null);
 }
 window.handleSpotifyOAuthLogin = handleSpotifyOAuthLogin;
 

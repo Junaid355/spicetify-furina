@@ -1,5 +1,5 @@
-// Furina Music — Service Worker v5.0 (Network-First Strategy)
-const CACHE_NAME = 'furina-music-v5.0';
+// Furina Music — Service Worker v6.0 (Network-First Strategy)
+const CACHE_NAME = 'furina-music-v6.0';
 
 const STATIC_ASSETS = [
   '/',

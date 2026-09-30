@@ -154,3 +154,36 @@
   --dynamic-glow-color: rgba(56, 189, 248, 0.15);
   --dynamic-accent: #38bdf8;
 }
+
+/* Theme 9: Sakura Fontaine (Blossom Romance & Rose Gold) */
+[data-theme="sakura-fontaine"] {
+  --bg-abyss: #0f050b;
+  --bg-primary: #190915;
+  --bg-surface: rgba(45, 16, 36, 0.76);
+  --bg-surface-elevated: rgba(65, 24, 52, 0.88);
+  --bg-glass-card: rgba(50, 18, 40, 0.58);
+  --border-glass: rgba(244, 114, 182, 0.32);
+  --accent-cyan: #f472b6;
+  --accent-hydro: #fb7185;
+  --accent-blue-deep: #db2777;
+  --accent-gold: #fde047;
+  --dynamic-glow-color: rgba(244, 114, 182, 0.3);
+  --dynamic-accent: #f472b6;
+}
+
+/* Theme 10: Cyber Hydro (Neo Fontaine Electric Aqua) */
+[data-theme="cyber-hydro"] {
+  --bg-abyss: #01020a;
+  --bg-primary: #020716;
+  --bg-surface: rgba(4, 18, 48, 0.78);
+  --bg-surface-elevated: rgba(6, 28, 72, 0.9);
+  --bg-glass-card: rgba(5, 22, 58, 0.6);
+  --border-glass: rgba(0, 229, 255, 0.35);
+  --accent-cyan: #00e5ff;
+  --accent-hydro: #00f0ff;
+  --accent-blue-deep: #3b82f6;
+  --accent-gold: #a78bfa;
+  --dynamic-glow-color: rgba(0, 229, 255, 0.35);
+  --dynamic-accent: #00e5ff;
+}
+

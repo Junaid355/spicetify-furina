@@ -453,10 +453,53 @@ class FurinaAudioEngine {
       }
     }
 
-    // Route C: Real Full Song via YouTube Audio Streamer (Plays 100% Complete Song, Not 30s)
-    let videoId = this.resolveTrackVideoId(track);
+    // Route C: Ad-Free Full-Length Audius Stream (Direct Native Audio, Zero Ads)
+    try {
+      const q = encodeURIComponent(`${track.title} ${track.artist || ''}`);
+      const audRes = await fetch(`https://discoveryprovider.audius.co/v1/tracks/search?query=${q}&app_name=FURINA_MUSIC`);
+      if (audRes.ok) {
+        const audData = await audRes.json();
+        const first = audData.data?.[0];
+        if (first && first.id) {
+          const streamUrl = `https://discoveryprovider.audius.co/v1/tracks/${first.id}/stream?app_name=FURINA_MUSIC`;
+          console.log(`[AudioEngine] Streaming 100% ad-free full track from Audius: "${first.title}" (${first.duration}s)`);
+          this.activeBackend = 'html5';
+          this.stopYtProgressTimer();
+          if (this.ytPlayer && typeof this.ytPlayer.pauseVideo === 'function') {
+            try { this.ytPlayer.pauseVideo(); } catch (_) {}
+          }
+          this.audioElement.src = streamUrl;
+          this.audioElement.load();
+          await this.audioElement.play().catch(() => {});
+          this.isPlaying = true;
+          this.emit('statechange', { isPlaying: true });
+          this.emit('trackchange', track);
+          return;
+        }
+      }
+    } catch (audErr) {
+      console.warn('[AudioEngine] Audius stream check notice:', audErr);
+    }
 
-    // If not in pre-loaded map, query backend resolver
+    // Route D: Direct non-preview audio stream
+    if (stream && !stream.includes('p.scdn.co') && !stream.includes('la_vaguelette')) {
+      console.log(`[AudioEngine] Streaming direct audio stream: ${track.title}`);
+      this.activeBackend = 'html5';
+      this.stopYtProgressTimer();
+      if (this.ytPlayer && typeof this.ytPlayer.pauseVideo === 'function') {
+        try { this.ytPlayer.pauseVideo(); } catch (_) {}
+      }
+      this.audioElement.src = stream;
+      this.audioElement.load();
+      await this.audioElement.play().catch(() => {});
+      this.isPlaying = true;
+      this.emit('statechange', { isPlaying: true });
+      this.emit('trackchange', track);
+      return;
+    }
+
+    // Route E: YouTube Streamer (As secondary fallback)
+    let videoId = this.resolveTrackVideoId(track);
     if (!videoId) {
       try {
         const res = await fetch(`/api/catalog/resolve-audio?title=${encodeURIComponent(track.title)}&artist=${encodeURIComponent(track.artist || '')}`);
@@ -484,22 +527,15 @@ class FurinaAudioEngine {
       }
     }
 
-    // Route D: Multi-Source Full Audio Stream Fallback
-    if (track.id?.startsWith('furina_') || track.provider === 'furina') {
-      this.activeBackend = 'html5';
-      this.stopYtProgressTimer();
-      const finalAudioUrl = stream || './audio/la_vaguelette.wav';
-      this.audioElement.src = finalAudioUrl;
-      this.audioElement.load();
-      await this.audioElement.play().catch(() => {});
-      this.isPlaying = true;
-      this.emit('statechange', { isPlaying: true });
-      this.emit('trackchange', track);
-      return;
-    }
-
-    // For regular songs, resolve via full-length Audius stream
-    await this.fallbackToFullAudioOrNext();
+    // Route F: Fallback to Fontaine Master
+    this.activeBackend = 'html5';
+    this.stopYtProgressTimer();
+    this.audioElement.src = './audio/la_vaguelette.wav';
+    this.audioElement.load();
+    await this.audioElement.play().catch(() => {});
+    this.isPlaying = true;
+    this.emit('statechange', { isPlaying: true });
+    this.emit('trackchange', track);
   }
 
   executeYouTubePlay(videoId, track) {
@@ -604,15 +640,51 @@ class FurinaAudioEngine {
 
   pause() {
     this.isPlaying = false;
-    if (this.activeBackend === 'youtube' && this.ytPlayer && typeof this.ytPlayer.pauseVideo === 'function') {
-      try { this.ytPlayer.pauseVideo(); } catch (_) {}
-      this.stopYtProgressTimer();
-    } else if (this.activeBackend === 'spotify' && window.spotifyClient && window.spotifyClient.isReady) {
-      window.spotifyClient.pause();
-    } else {
-      this.audioElement.pause();
+    // Unconditionally pause HTML5 audio
+    try { this.audioElement.pause(); } catch (_) {}
+
+    // Unconditionally pause YouTube player if active
+    if (this.ytPlayer) {
+      try {
+        if (typeof this.ytPlayer.pauseVideo === 'function') this.ytPlayer.pauseVideo();
+      } catch (_) {}
     }
+
+    // Unconditionally pause Spotify SDK if active
+    if (window.spotifyClient && typeof window.spotifyClient.pause === 'function') {
+      try { window.spotifyClient.pause(); } catch (_) {}
+    }
+
+    this.stopYtProgressTimer();
     this.stopVisualizer();
+    this.emit('statechange', { isPlaying: false });
+  }
+
+  stop() {
+    this.isPlaying = false;
+
+    // Unconditionally halt HTML5 audio and reset time
+    try {
+      this.audioElement.pause();
+      this.audioElement.currentTime = 0;
+    } catch (_) {}
+
+    // Unconditionally stop YouTube player
+    if (this.ytPlayer) {
+      try {
+        if (typeof this.ytPlayer.stopVideo === 'function') this.ytPlayer.stopVideo();
+        if (typeof this.ytPlayer.pauseVideo === 'function') this.ytPlayer.pauseVideo();
+      } catch (_) {}
+    }
+
+    // Unconditionally pause Spotify SDK
+    if (window.spotifyClient && typeof window.spotifyClient.pause === 'function') {
+      try { window.spotifyClient.pause(); } catch (_) {}
+    }
+
+    this.stopYtProgressTimer();
+    this.stopVisualizer();
+    this.emit('timeupdate', { currentTime: 0, duration: this.audioElement.duration || 0, progress: 0 });
     this.emit('statechange', { isPlaying: false });
   }
 

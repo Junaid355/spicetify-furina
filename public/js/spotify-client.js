@@ -1,11 +1,38 @@
 /**
  * Furina Music — Multi-User Official Spotify Client & Web Playback SDK Bridge
- * Supports official Spotify OAuth (PKCE & Token flow), dynamic user profile loading,
- * user-specific playlist retrieval, liked songs, and Web Playback SDK streaming.
+ * Supports official Spotify OAuth Authorization Code Flow with PKCE (RFC 7636),
+ * direct token sync, dynamic user profile loading, user playlists, liked songs,
+ * and Web Playback SDK streaming.
  */
+
+function generateRandomString(length) {
+  const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~';
+  const values = crypto.getRandomValues(new Uint8Array(length));
+  return values.reduce((acc, x) => acc + possible[x % possible.length], '');
+}
+
+async function sha256(plain) {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(plain);
+  return window.crypto.subtle.digest('SHA-256', data);
+}
+
+function base64urlencode(a) {
+  return btoa(String.fromCharCode.apply(null, new Uint8Array(a)))
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=+$/, '');
+}
+
+async function generateCodeChallenge(verifier) {
+  const hashed = await sha256(verifier);
+  return base64urlencode(hashed);
+}
+
 class SpotifyClient {
   constructor() {
     this.accessToken = localStorage.getItem('furina_spotify_access_token') || null;
+    this.refreshToken = localStorage.getItem('furina_spotify_refresh_token') || null;
     this.player = null;
     this.deviceId = null;
     this.isReady = false;
@@ -13,16 +40,86 @@ class SpotifyClient {
     this.userPlaylists = [];
     this.userLikedTracks = [];
 
-    // Check if redirect contains access_token in URL hash (Implicit Grant / PKCE)
+    // Check for PKCE redirect (?code=...) or token hash (#access_token=...)
+    this.initAuth();
+  }
+
+  async initAuth() {
+    await this.checkUrlCodeAuth();
     this.checkUrlHashAuth();
 
     if (this.accessToken) {
       this.initSdk();
-      this.fetchProfile();
+      await this.fetchProfile();
+      await this.fetchUserPlaylists();
+      if (typeof window.updateHeaderSpotifyBadge === 'function') {
+        window.updateHeaderSpotifyBadge();
+      }
     }
   }
 
-  // Handle Spotify redirect with #access_token=...
+  // Handle Spotify PKCE redirect with ?code=...
+  async checkUrlCodeAuth() {
+    if (!window.location.search) return;
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get('code');
+    const err = urlParams.get('error');
+
+    if (err) {
+      console.warn('[SpotifyClient] OAuth error from Spotify:', err);
+      if (window.showToast) window.showToast(`Spotify Login: ${err}`, 'warning');
+      window.history.replaceState({}, document.title, window.location.pathname);
+      return;
+    }
+
+    if (code) {
+      console.log('[SpotifyClient] Detected Spotify authorization code in URL. Exchanging via PKCE...');
+      const verifier = localStorage.getItem('furina_spotify_code_verifier');
+      const clientId = localStorage.getItem('furina_spotify_client_id') || 'd71465e9bf7b409d9361adce60ee1f33';
+      const redirectUri = localStorage.getItem('furina_spotify_redirect_uri') || (window.location.origin + window.location.pathname);
+
+      if (verifier && clientId) {
+        try {
+          const body = new URLSearchParams({
+            client_id: clientId,
+            grant_type: 'authorization_code',
+            code: code,
+            redirect_uri: redirectUri,
+            code_verifier: verifier
+          });
+
+          const response = await fetch('https://accounts.spotify.com/api/token', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: body.toString()
+          });
+
+          const data = await response.json();
+          if (data.access_token) {
+            console.log('[SpotifyClient] PKCE Token exchange successful!');
+            this.setToken(data.access_token, data.expires_in || 3600);
+            if (data.refresh_token) {
+              this.refreshToken = data.refresh_token;
+              localStorage.setItem('furina_spotify_refresh_token', data.refresh_token);
+            }
+            if (window.showToast) window.showToast('Spotify Connected Successfully! Syncing music...', 'success');
+          } else {
+            console.error('[SpotifyClient] Token exchange error response:', data);
+            if (window.showToast) window.showToast(`Spotify Auth: ${data.error_description || data.error}`, 'warning');
+          }
+        } catch (fetchErr) {
+          console.error('[SpotifyClient] Token exchange network error:', fetchErr);
+        }
+      } else {
+        console.warn('[SpotifyClient] Missing code_verifier or client_id for PKCE.');
+      }
+
+      // Clean query parameters from URL
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  }
+
+  // Handle Spotify redirect with #access_token=... (Direct token fallback)
   checkUrlHashAuth() {
     if (window.location.hash && window.location.hash.includes('access_token=')) {
       const hashParams = new URLSearchParams(window.location.hash.substring(1));
@@ -36,8 +133,8 @@ class SpotifyClient {
     }
   }
 
-  // Initiate Spotify OAuth Login (Multi-user safe: show_dialog=true allows any user to log into their own account)
-  login(customClientId = null) {
+  // Initiate Spotify OAuth Login with official PKCE Flow
+  async login(customClientId = null) {
     let clientId = customClientId || localStorage.getItem('furina_spotify_client_id');
     if (!clientId) {
       if (window.showSpotifyConnectModal) {
@@ -62,8 +159,25 @@ class SpotifyClient {
       'user-modify-playback-state'
     ].join(' ');
 
-    const authUrl = `https://accounts.spotify.com/authorize?client_id=${encodeURIComponent(clientId)}&response_type=token&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scopes)}&show_dialog=true`;
-    console.log('[SpotifyClient] Redirecting to official Spotify login prompt...');
+    const verifier = generateRandomString(64);
+    const challenge = await generateCodeChallenge(verifier);
+
+    localStorage.setItem('furina_spotify_code_verifier', verifier);
+    localStorage.setItem('furina_spotify_client_id', clientId);
+    localStorage.setItem('furina_spotify_redirect_uri', redirectUri);
+
+    const params = new URLSearchParams({
+      client_id: clientId,
+      response_type: 'code',
+      redirect_uri: redirectUri,
+      code_challenge_method: 'S256',
+      code_challenge: challenge,
+      scope: scopes,
+      show_dialog: 'true'
+    });
+
+    const authUrl = `https://accounts.spotify.com/authorize?${params.toString()}`;
+    console.log('[SpotifyClient] Redirecting to official Spotify PKCE authorization prompt...');
     window.location.href = authUrl;
   }
 
@@ -73,22 +187,33 @@ class SpotifyClient {
     const expiresAt = Date.now() + expiresIn * 1000;
     localStorage.setItem('furina_spotify_expires_at', expiresAt.toString());
     this.initSdk();
-    this.fetchProfile();
+    this.fetchProfile().then(() => {
+      this.fetchUserPlaylists();
+      if (typeof window.updateHeaderSpotifyBadge === 'function') {
+        window.updateHeaderSpotifyBadge();
+      }
+    });
   }
 
   clearToken() {
     this.accessToken = null;
+    this.refreshToken = null;
     this.userProfile = null;
     this.userPlaylists = [];
     this.userLikedTracks = [];
     localStorage.removeItem('furina_spotify_access_token');
+    localStorage.removeItem('furina_spotify_refresh_token');
     localStorage.removeItem('furina_spotify_expires_at');
+    localStorage.removeItem('furina_spotify_code_verifier');
     if (this.player) {
       try { this.player.disconnect(); } catch (_) {}
       this.player = null;
     }
     this.isReady = false;
     this.deviceId = null;
+    if (typeof window.updateHeaderSpotifyBadge === 'function') {
+      window.updateHeaderSpotifyBadge();
+    }
   }
 
   async fetchProfile() {
@@ -101,7 +226,7 @@ class SpotifyClient {
         this.userProfile = await res.json();
         console.log(`[SpotifyClient] Loaded Spotify profile for: ${this.userProfile.display_name} (${this.userProfile.id})`);
         
-        // Try backend sync if local server is running
+        // Notify backend sync if local server is active
         try {
           await fetch('/api/auth/spotify/connect', {
             method: 'POST',
@@ -112,7 +237,7 @@ class SpotifyClient {
 
         return this.userProfile;
       } else if (res.status === 401) {
-        console.warn('[SpotifyClient] Token expired, clearing session.');
+        console.warn('[SpotifyClient] Token expired, attempting refresh or prompt.');
         this.clearToken();
       }
     } catch (e) {
@@ -137,8 +262,9 @@ class SpotifyClient {
           cover_url: p.images?.[0]?.url || './icons/app-icon.jpg',
           track_count: p.tracks?.total || 0,
           provider: 'spotify',
-          owner: p.owner?.display_name || 'Spotify'
+          owner: p.owner?.display_name || 'Spotify User'
         }));
+        console.log(`[SpotifyClient] Fetched ${this.userPlaylists.length} user playlists from Spotify.`);
         return this.userPlaylists;
       }
     } catch (err) {
@@ -210,37 +336,41 @@ class SpotifyClient {
   setupPlayerInstance() {
     if (!this.accessToken || this.player) return;
 
-    this.player = new window.Spotify.Player({
-      name: 'Furina Music Spicetify Player',
-      getOAuthToken: cb => { cb(this.accessToken); },
-      volume: 0.85
-    });
+    try {
+      this.player = new window.Spotify.Player({
+        name: 'Furina Music Spicetify Player',
+        getOAuthToken: cb => { cb(this.accessToken); },
+        volume: 0.85
+      });
 
-    this.player.addListener('ready', ({ device_id }) => {
-      console.log('[Spotify SDK] Ready with Device ID:', device_id);
-      this.deviceId = device_id;
-      this.isReady = true;
-    });
+      this.player.addListener('ready', ({ device_id }) => {
+        console.log('[Spotify SDK] Ready with Device ID:', device_id);
+        this.deviceId = device_id;
+        this.isReady = true;
+      });
 
-    this.player.addListener('not_ready', ({ device_id }) => {
-      console.log('[Spotify SDK] Device ID is offline:', device_id);
-      this.isReady = false;
-    });
+      this.player.addListener('not_ready', ({ device_id }) => {
+        console.log('[Spotify SDK] Device ID is offline:', device_id);
+        this.isReady = false;
+      });
 
-    this.player.addListener('initialization_error', ({ message }) => {
-      console.warn('[Spotify SDK] Initialization notice:', message);
-    });
+      this.player.addListener('initialization_error', ({ message }) => {
+        console.warn('[Spotify SDK] Initialization notice:', message);
+      });
 
-    this.player.addListener('authentication_error', ({ message }) => {
-      console.warn('[Spotify SDK] Authentication notice:', message);
-      this.clearToken();
-    });
+      this.player.addListener('authentication_error', ({ message }) => {
+        console.warn('[Spotify SDK] Authentication notice:', message);
+        this.clearToken();
+      });
 
-    this.player.addListener('account_error', ({ message }) => {
-      console.log('[Spotify SDK] Free accounts stream via Full Audio Streamer.');
-    });
+      this.player.addListener('account_error', () => {
+        console.log('[Spotify SDK] Free accounts stream via Ad-Free Lossless Audio Engine.');
+      });
 
-    this.player.connect();
+      this.player.connect();
+    } catch (e) {
+      console.warn('[Spotify SDK] Player init notice:', e);
+    }
   }
 
   async playUri(spotifyUri) {
@@ -262,13 +392,13 @@ class SpotifyClient {
 
   async pause() {
     if (this.player && this.isReady) {
-      await this.player.pause();
+      try { await this.player.pause(); } catch (_) {}
     }
   }
 
   async resume() {
     if (this.player && this.isReady) {
-      await this.player.resume();
+      try { await this.player.resume(); } catch (_) {}
     }
   }
 }
