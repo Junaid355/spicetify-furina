@@ -441,4 +441,16 @@ body {
     height: calc(100vh - var(--player-height) - 56px);
     height: calc(100dvh - var(--player-height) - 56px);
   }
+  .header-search-quick {
+    display: none !important;
+  }
+  .btn-subtle {
+    display: none !important;
+  }
+  .user-profile-name {
+    display: none;
+  }
+  .header-right {
+    gap: 8px;
+  }
 }
