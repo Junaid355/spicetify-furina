@@ -282,6 +282,18 @@ async function handleTrackClick(trackId, queue = null) {
     if (!queue) queue = allSearch;
   }
   if (!track) {
+    const custom = JSON.parse(localStorage.getItem('furina_custom_playlists') || '[]');
+    for (const pl of custom) {
+      if (pl.tracks) {
+        track = pl.tracks.find(t => t.id === trackId || t.track_id === trackId);
+        if (track) {
+          if (!queue) queue = pl.tracks;
+          break;
+        }
+      }
+    }
+  }
+  if (!track) {
     try {
       const res = await fetch(`/api/catalog/tracks/${trackId}`);
       if (res.ok) track = await res.json();
@@ -454,22 +466,38 @@ async function loadLibrary() {
 
       <!-- Playlists Grid -->
       <div class="section-header">
-        <h3 class="section-title">All Playlists (${playlists.length})</h3>
+        <h3 class="section-title">All Playlists (${(() => {
+          const custom = JSON.parse(localStorage.getItem('furina_custom_playlists') || '[]');
+          const sp = window.spotifyClient?.userPlaylists || [];
+          return custom.length + sp.length + playlists.length;
+        })()})</h3>
         <button class="btn-subtle" onclick="openCreatePlaylistModal()">+ New Playlist</button>
       </div>
       <div class="shelf-scroll">
-        ${playlists.map(pl => `
-          <div class="card-item" onclick="switchTab('playlist-detail', { playlistId: '${pl.id}' })">
-            <div class="card-cover-wrapper">
-              <img class="card-cover" src="${pl.cover_url || '/images/default_artwork.jpg'}" alt="${pl.name}" loading="lazy" />
-              <div class="card-play-overlay">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        ${(() => {
+          const custom = JSON.parse(localStorage.getItem('furina_custom_playlists') || '[]');
+          const sp = (window.spotifyClient?.userPlaylists || []).map(p => ({
+            id: p.id,
+            name: p.name,
+            description: p.description,
+            cover_url: p.cover_url || './images/default_artwork.jpg',
+            track_count: p.track_count,
+            provider: 'spotify'
+          }));
+          const allPlaylists = [...custom, ...sp, ...playlists];
+          return allPlaylists.map(pl => `
+            <div class="card-item" onclick="switchTab('playlist-detail', { playlistId: '${pl.id}' })">
+              <div class="card-cover-wrapper">
+                <img class="card-cover" src="${pl.cover_url || '/images/default_artwork.jpg'}" alt="${pl.name}" loading="lazy" />
+                <div class="card-play-overlay">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                </div>
               </div>
+              <div class="card-title">${pl.name}</div>
+              <div class="card-subtitle">${pl.track_count || 0} tracks • <span class="badge-provider ${pl.provider}">${pl.provider}</span></div>
             </div>
-            <div class="card-title">${pl.name}</div>
-            <div class="card-subtitle">${pl.track_count || 0} tracks • <span class="badge-provider ${pl.provider}">${pl.provider}</span></div>
-          </div>
-        `).join('')}
+          `).join('');
+        })()}
       </div>
     `;
   } catch (err) {
@@ -911,8 +939,63 @@ async function loadSpotifyHub() {
   }
 }
 
+window.showSpotifyConnectModal = () => {
+  const m = document.getElementById('spotify-connect-modal');
+  if (m) m.style.display = 'flex';
+};
+window.closeSpotifyConnectModal = () => {
+  const m = document.getElementById('spotify-connect-modal');
+  if (m) m.style.display = 'none';
+};
 window.openSpotifyLogin = () => {
-  window.location.href = '/api/auth/spotify/login';
+  window.showSpotifyConnectModal();
+};
+window.executeSpotifyOAuthRedirect = () => {
+  window.spotifyClient.login();
+};
+window.saveManualSpotifyAuth = async () => {
+  const token = document.getElementById('sp-token-input')?.value?.trim();
+  const clientId = document.getElementById('sp-client-id-input')?.value?.trim();
+  if (clientId) {
+    localStorage.setItem('furina_spotify_client_id', clientId);
+  }
+  if (token) {
+    window.spotifyClient.setToken(token.replace(/^Bearer\s+/i, ''));
+    showToast('Spotify Token applied! Loading profile...', 'success');
+    window.closeSpotifyConnectModal();
+    await window.spotifyClient.fetchProfile();
+    await window.spotifyClient.fetchUserPlaylists();
+    if (appState.currentTab === 'spotify-hub') loadSpotifyHub();
+    if (appState.currentTab === 'library') loadLibrary();
+  } else if (clientId) {
+    showToast('Saved Client ID! Launching login...', 'success');
+    window.spotifyClient.login(clientId);
+  } else {
+    showToast('Please enter a valid Spotify token or Client ID.');
+  }
+};
+window.disconnectSpotify = () => {
+  window.spotifyClient.clearToken();
+  localStorage.removeItem('furina_spotify_profile');
+  localStorage.removeItem('furina_spotify_playlists');
+  showToast('Disconnected from Spotify. Switched to offline session.');
+  window.closeSpotifyConnectModal();
+  if (appState.currentTab === 'spotify-hub') loadSpotifyHub();
+  if (appState.currentTab === 'library') loadLibrary();
+};
+window.toggleStreamDock = () => {
+  const dock = document.getElementById('furina-yt-wrapper');
+  if (!dock) return;
+  const isExpanded = dock.classList.contains('expanded');
+  if (isExpanded) {
+    dock.classList.remove('expanded');
+    dock.classList.add('minimized');
+    showToast('Live stream window docked');
+  } else {
+    dock.classList.remove('minimized');
+    dock.classList.add('expanded');
+    showToast('Live stream window opened');
+  }
 };
 
 async function handleSpotifyUrlPreview() {

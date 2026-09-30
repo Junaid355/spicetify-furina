@@ -38,9 +38,13 @@ class SpotifyClient {
 
   // Initiate Spotify OAuth Login (Multi-user safe: show_dialog=true allows any user to log into their own account)
   login(customClientId = null) {
-    const clientId = customClientId || 
-                     localStorage.getItem('furina_spotify_client_id') || 
-                     '23WxsmliKISYaCfam8iPPG'; // Fallback configured ID or prompt user
+    let clientId = customClientId || localStorage.getItem('furina_spotify_client_id');
+    if (!clientId) {
+      if (window.showSpotifyConnectModal) {
+        window.showSpotifyConnectModal();
+        return;
+      }
+    }
 
     const redirectUri = window.location.origin + window.location.pathname;
     const scopes = [

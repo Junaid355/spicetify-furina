@@ -78,14 +78,15 @@ class FurinaAudioEngine {
       if (this.ytPlayer || !window.YT || !window.YT.Player) return;
       try {
         this.ytPlayer = new window.YT.Player('furina-yt-streamer', {
-          height: '10',
-          width: '10',
+          height: '100%',
+          width: '100%',
           playerVars: {
             autoplay: 1,
-            controls: 0,
-            disablekb: 1,
-            fs: 0,
+            controls: 1,
+            disablekb: 0,
+            fs: 1,
             playsinline: 1,
+            rel: 0,
             origin: window.location.origin
           },
           events: {
@@ -107,7 +108,7 @@ class FurinaAudioEngine {
             onError: (err) => {
               console.warn('[FullStreamEngine] YouTube playback notice:', err);
               if (this.activeBackend === 'youtube') {
-                this.fallbackToHtml5();
+                this.handleYtPlaybackError(err);
               }
             }
           }
@@ -286,10 +287,13 @@ class FurinaAudioEngine {
           }
         } catch (_) {}
 
-        console.log('[AudioEngine] Recovered with Fontaine master audio');
-        this.audioElement.src = './audio/la_vaguelette.wav';
-        this.audioElement.load();
-        await this.audioElement.play().catch(() => {});
+        if (this.currentTrack.id === 'furina_vaguelette' || this.currentTrack.provider === 'furina') {
+          this.audioElement.src = './audio/la_vaguelette.wav';
+          this.audioElement.load();
+          await this.audioElement.play().catch(() => {});
+        } else {
+          await this.fallbackToFullAudioOrNext();
+        }
         this.isRetryingFallback = false;
       }
       this.emit('error', e);
@@ -327,16 +331,36 @@ class FurinaAudioEngine {
     if (track.youtubeId) return track.youtubeId;
     if (track.videoId) return track.videoId;
 
-    if (this.videoMap[track.id]) return this.videoMap[track.id];
+    // Check all ID properties
+    const idKeys = [track.id, track.track_id, track.provider_track_id, track.nativeId].filter(Boolean);
+    for (const key of idKeys) {
+      if (this.videoMap[key]) return this.videoMap[key];
+    }
 
-    const cleanTitle = (track.title || '').replace(/\(.*?\)/g, '').replace(/\[.*?\]/g, '').trim().toLowerCase();
-    const cleanArtist = (track.artist || '').replace(/\u00a0/g, ' ').split(/[,&]/)[0].trim().toLowerCase();
-    const fullKey = `${track.title} - ${track.artist}`.toLowerCase().trim();
+    const title = (track.title || '').trim();
+    const artist = (track.artist || '').replace(/\u00a0/g, ' ').trim();
+    const cleanTitle = title.replace(/\(.*?\)/g, '').replace(/\[.*?\]/g, '').trim().toLowerCase();
+    const cleanArtist = artist.split(/[,&]/)[0].trim().toLowerCase();
+    const fullKey = `${title} - ${artist}`.toLowerCase().trim();
 
     if (this.videoMap[fullKey]) return this.videoMap[fullKey];
     if (this.videoMap[`${cleanTitle} - ${cleanArtist}`]) return this.videoMap[`${cleanTitle} - ${cleanArtist}`];
     if (this.videoMap[cleanTitle]) return this.videoMap[cleanTitle];
-    if (this.videoMap[track.title?.toLowerCase()?.trim()]) return this.videoMap[track.title?.toLowerCase()?.trim()];
+    if (this.videoMap[title.toLowerCase().trim()]) return this.videoMap[title.toLowerCase().trim()];
+
+    // Fuzzy matching for requested titles
+    if (cleanTitle.includes('baby girl') || cleanTitle.includes('baby boy')) {
+      return this.videoMap['oh my little baby boy'] || 'SkFAV5MXa0I';
+    }
+    if (cleanTitle.includes('golden hour')) {
+      return this.videoMap['golden hour'] || 'PEM0Vs8jf1w';
+    }
+    if (cleanTitle.includes('lover girl')) {
+      return this.videoMap['lover girl'] || 'q3BEA3ew77Y';
+    }
+    if (cleanTitle === 'her' || cleanTitle.startsWith('her ')) {
+      return this.videoMap['her'] || 'f5-IY_Ja1RM';
+    }
 
     return null;
   }
@@ -460,16 +484,22 @@ class FurinaAudioEngine {
       }
     }
 
-    // Route D: HTML5 Direct Audio Stream Fallback
-    this.activeBackend = 'html5';
-    this.stopYtProgressTimer();
-    const finalAudioUrl = stream || './audio/la_vaguelette.wav';
-    this.audioElement.src = finalAudioUrl;
-    this.audioElement.load();
-    await this.audioElement.play().catch(() => {});
-    this.isPlaying = true;
-    this.emit('statechange', { isPlaying: true });
-    this.emit('trackchange', track);
+    // Route D: Multi-Source Full Audio Stream Fallback
+    if (track.id?.startsWith('furina_') || track.provider === 'furina') {
+      this.activeBackend = 'html5';
+      this.stopYtProgressTimer();
+      const finalAudioUrl = stream || './audio/la_vaguelette.wav';
+      this.audioElement.src = finalAudioUrl;
+      this.audioElement.load();
+      await this.audioElement.play().catch(() => {});
+      this.isPlaying = true;
+      this.emit('statechange', { isPlaying: true });
+      this.emit('trackchange', track);
+      return;
+    }
+
+    // For regular songs, resolve via full-length Audius stream
+    await this.fallbackToFullAudioOrNext();
   }
 
   executeYouTubePlay(videoId, track) {
@@ -493,20 +523,75 @@ class FurinaAudioEngine {
       this.emit('trackchange', track);
       this.startYtProgressTimer();
     } catch (ytErr) {
-      console.warn('[FullStreamEngine] loadVideoById error, falling back to HTML5:', ytErr);
-      this.fallbackToHtml5();
+      console.warn('[FullStreamEngine] loadVideoById error, resolving alternate stream:', ytErr);
+      this.handleYtPlaybackError(ytErr);
     }
   }
 
-  fallbackToHtml5() {
-    this.activeBackend = 'html5';
+  async handleYtPlaybackError(err) {
+    console.warn('[FullStreamEngine] YouTube playback error handler invoked for:', this.currentTrack?.title, err);
+    await this.fallbackToFullAudioOrNext();
+  }
+
+  async fallbackToFullAudioOrNext() {
     this.stopYtProgressTimer();
-    const stream = this.currentTrack?.streamUrl || this.currentTrack?.stream_url || './audio/la_vaguelette.wav';
-    this.audioElement.src = stream;
-    this.audioElement.load();
-    this.audioElement.play().catch(() => {});
-    this.isPlaying = true;
-    this.emit('statechange', { isPlaying: true });
+    const track = this.currentTrack;
+    if (!track) return;
+
+    if (track.id?.startsWith('furina_') || track.provider === 'furina') {
+      this.activeBackend = 'html5';
+      const fontaineSrc = track.streamUrl || track.stream_url || './audio/la_vaguelette.wav';
+      this.audioElement.src = fontaineSrc;
+      this.audioElement.load();
+      await this.audioElement.play().catch(() => {});
+      this.isPlaying = true;
+      this.emit('statechange', { isPlaying: true });
+      this.emit('trackchange', track);
+      return;
+    }
+
+    // 1. Check Audius Full Length Lossless Stream API
+    try {
+      console.log(`[FullStreamEngine] Resolving Audius full track stream for: "${track.title}"`);
+      const query = encodeURIComponent(`${track.title} ${track.artist || ''}`);
+      const audRes = await fetch(`https://discoveryprovider.audius.co/v1/tracks/search?query=${query}&app_name=FURINA_MUSIC`);
+      if (audRes.ok) {
+        const d = await audRes.json();
+        const first = d.data?.[0];
+        if (first && first.id) {
+          const streamUrl = `https://discoveryprovider.audius.co/v1/tracks/${first.id}/stream?app_name=FURINA_MUSIC`;
+          console.log(`[FullStreamEngine] Streaming full song from Audius: "${first.title}" by ${first.user?.name}`);
+          this.activeBackend = 'html5';
+          this.audioElement.src = streamUrl;
+          this.audioElement.load();
+          await this.audioElement.play().catch(() => {});
+          this.isPlaying = true;
+          this.emit('statechange', { isPlaying: true });
+          this.emit('trackchange', track);
+          return;
+        }
+      }
+    } catch (audErr) {
+      console.warn('[FullStreamEngine] Audius stream lookup failed:', audErr);
+    }
+
+    // 2. If track has direct non-preview stream
+    if (track.streamUrl && !track.streamUrl.includes('la_vaguelette') && !track.streamUrl.includes('p.scdn.co')) {
+      this.activeBackend = 'html5';
+      this.audioElement.src = track.streamUrl;
+      this.audioElement.load();
+      await this.audioElement.play().catch(() => {});
+      this.isPlaying = true;
+      this.emit('statechange', { isPlaying: true });
+      this.emit('trackchange', track);
+      return;
+    }
+
+    // 3. Skip gracefully with toast notification
+    if (window.showToast) {
+      window.showToast(`Unable to stream full track for "${track.title}". Skipping to next track...`, 'info');
+    }
+    setTimeout(() => this.next(), 1200);
   }
 
   togglePlay() {

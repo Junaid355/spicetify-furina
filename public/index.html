@@ -506,6 +506,9 @@
       <button class="btn-icon-subtle" onclick="toggleQueueDrawer()" title="Queue (Q)">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
       </button>
+      <button class="btn-icon-subtle" onclick="toggleStreamDock()" id="btn-toggle-stream-dock" title="Toggle Live Stream Window">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="15" rx="2" ry="2"/><polyline points="17 2 12 7 7 2"/></svg>
+      </button>
       <button class="btn-icon-subtle" onclick="document.getElementById('btn-toggle-stage').click()" title="Theater Stage Mode">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
       </button>
@@ -719,8 +722,64 @@
       }
     })();
   </script>
-  <!-- Dedicated YouTube Full Audio Streamer Element (Hidden) -->
-  <div id="furina-yt-streamer" style="position:fixed;bottom:-999px;right:-999px;width:10px;height:10px;opacity:0.001;pointer-events:none;z-index:-10;"></div>
+  <!-- Dedicated Furina Live Stream Dock / Canvas Window -->
+  <div id="furina-yt-wrapper" class="furina-stream-dock minimized">
+    <div class="furina-stream-dock-bar">
+      <span>✦ Furina Live Audio Stage</span>
+      <button class="dock-btn" onclick="toggleStreamDock()" title="Toggle Window">✕</button>
+    </div>
+    <div id="furina-yt-streamer"></div>
+  </div>
+
+  <!-- Multi-User Spotify Account Modal -->
+  <div id="spotify-connect-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-content" style="max-width: 500px; background: rgba(10, 18, 36, 0.95); backdrop-filter: blur(24px); border: 1px solid rgba(30, 215, 96, 0.35); box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 40px rgba(30, 215, 96, 0.2);">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div style="width: 42px; height: 42px; border-radius: 50%; background: #1ed760; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 16px rgba(30, 215, 96, 0.4);">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="#000"><path d="M12 2C6.477 2 2 6.477 2 12c0 5.524 4.477 10 10 10 5.524 0 10-4.476 10-10 0-5.523-4.476-10-10-10zm4.586 14.424c-.18.295-.563.387-.857.207-2.35-1.434-5.308-1.758-8.793-.963-.335.077-.67-.133-.746-.469-.077-.334.132-.67.467-.747 3.808-.871 7.076-.496 9.721 1.121.295.18.388.563.208.851zm1.224-2.72c-.226.367-.71.482-1.077.256-2.69-1.653-6.79-2.133-9.97-1.167-.413.125-.852-.107-.977-.52-.125-.413.107-.852.52-.977 3.632-1.102 8.147-.568 11.248 1.331.367.226.482.71.256 1.077zm.106-2.828c-3.226-1.916-8.544-2.093-11.621-1.158-.496.15-1.022-.135-1.172-.63-.15-.497.135-1.022.63-1.173 3.535-1.073 9.404-.866 13.115 1.337.447.265.592.846.327 1.293-.266.448-.847.593-1.279.331z"/></svg>
+          </div>
+          <div>
+            <h3 style="font-size: 1.2rem; font-weight: 800; color: #fff; margin: 0;">Connect Spotify</h3>
+            <p style="font-size: 0.78rem; color: var(--text-dim); margin: 0;">Multi-User Spotify Isolation & Library Sync</p>
+          </div>
+        </div>
+        <button class="btn-icon-subtle" onclick="closeSpotifyConnectModal()" style="font-size: 1.4rem;">✕</button>
+      </div>
+
+      <div style="margin-bottom: 20px; font-size: 0.86rem; color: var(--text-sub); line-height: 1.5;">
+        Connect your Spotify account to sync your playlists, liked songs, and library into Furina. Different users can log in from their own accounts with dedicated sessions.
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <button class="btn-primary" style="background: #1ed760; color: #000; font-weight: 700; padding: 14px; border-radius: 30px; justify-content: center; font-size: 0.95rem; box-shadow: 0 4px 20px rgba(30, 215, 96, 0.4);" onclick="executeSpotifyOAuthRedirect()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12c0 5.524 4.477 10 10 10 5.524 0 10-4.476 10-10 0-5.523-4.476-10-10-10zm4.586 14.424c-.18.295-.563.387-.857.207-2.35-1.434-5.308-1.758-8.793-.963-.335.077-.67-.133-.746-.469-.077-.334.132-.67.467-.747 3.808-.871 7.076-.496 9.721 1.121.295.18.388.563.208.851zm1.224-2.72c-.226.367-.71.482-1.077.256-2.69-1.653-6.79-2.133-9.97-1.167-.413.125-.852-.107-.977-.52-.125-.413.107-.852.52-.977 3.632-1.102 8.147-.568 11.248 1.331.367.226.482.71.256 1.077zm.106-2.828c-3.226-1.916-8.544-2.093-11.621-1.158-.496.15-1.022-.135-1.172-.63-.15-.497.135-1.022.63-1.173 3.535-1.073 9.404-.866 13.115 1.337.447.265.592.846.327 1.293-.266.448-.847.593-1.279.331z"/></svg>
+          1-Click Official Spotify Login
+        </button>
+
+        <div style="display: flex; align-items: center; gap: 12px; margin: 8px 0;">
+          <div style="flex: 1; height: 1px; background: var(--border-glass-subtle);"></div>
+          <span style="font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px;">OR DIRECT TOKEN / CLIENT ID</span>
+          <div style="flex: 1; height: 1px; background: var(--border-glass-subtle);"></div>
+        </div>
+
+        <div>
+          <label style="font-size: 0.78rem; color: var(--text-sub); display: block; margin-bottom: 6px;">Paste Spotify OAuth Token (Optional)</label>
+          <input type="text" class="input-field" id="sp-token-input" placeholder="Bearer BQC7..." style="font-size: 0.85rem;" />
+        </div>
+
+        <div>
+          <label style="font-size: 0.78rem; color: var(--text-sub); display: block; margin-bottom: 6px;">Your Spotify App Client ID (Optional)</label>
+          <input type="text" class="input-field" id="sp-client-id-input" placeholder="e.g. 32-character hex ID" style="font-size: 0.85rem;" />
+        </div>
+
+        <div style="display: flex; gap: 10px; margin-top: 10px;">
+          <button class="btn-secondary" style="flex: 1; justify-content: center;" onclick="saveManualSpotifyAuth()">Save & Sync Profile</button>
+          <button class="btn-subtle" style="color: #f43f5e;" onclick="disconnectSpotify()">Disconnect / Switch</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <script src="js/client-api.js?v=5.0"></script>
   <script src="js/dynamic-bg.js?v=5.0"></script>
