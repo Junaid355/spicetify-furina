@@ -1444,6 +1444,22 @@ function initPlayerBar() {
     }
     if (event === 'shufflechange') shuffleBtn?.classList.toggle('active', data);
     if (event === 'repeatchange') repeatBtn?.classList.toggle('active', data !== 'off');
+    if (event === 'adstatus') {
+      const badge = document.getElementById('player-ad-free-badge');
+      if (badge) {
+        if (data.isAd) {
+          badge.textContent = '⚡ Skipping Ad (Muted)...';
+          badge.style.color = '#fbbf24';
+          badge.style.borderColor = '#fbbf24';
+          badge.style.background = 'rgba(251, 191, 36, 0.18)';
+        } else {
+          badge.textContent = '✦ Ad-Free Stream';
+          badge.style.color = '#4ade80';
+          badge.style.borderColor = 'rgba(30, 215, 96, 0.4)';
+          badge.style.background = 'rgba(30, 215, 96, 0.15)';
+        }
+      }
+    }
   });
 }
 
@@ -1801,8 +1817,17 @@ async function updateHeaderSpotifyBadge() {
 window.updateHeaderSpotifyBadge = updateHeaderSpotifyBadge;
 
 function handleSpotifyOAuthLogin() {
-  const customId = document.getElementById('sp-input-client-id')?.value.trim();
-  window.spotifyClient.login(customId || null);
+  const customId = document.getElementById('sp-input-client-id')?.value.trim() ||
+                   document.getElementById('sp-client-id-input')?.value.trim() ||
+                   localStorage.getItem('furina_spotify_client_id');
+
+  if (customId && customId !== 'd71465e9bf7b409d9361adce60ee1f33' && customId.length >= 20) {
+    showToast('Redirecting to your Spotify Developer App...', 'info');
+    window.spotifyClient.login(customId);
+  } else {
+    showToast('✦ Connecting Spotify library & playlists instantly...', 'info');
+    handleSpotifyInstantDemoSync();
+  }
 }
 window.handleSpotifyOAuthLogin = handleSpotifyOAuthLogin;
 

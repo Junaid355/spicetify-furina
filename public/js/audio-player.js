@@ -85,21 +85,24 @@ class FurinaAudioEngine {
       if (this.ytPlayer || !window.YT || !window.YT.Player) return;
       try {
         this.ytPlayer = new window.YT.Player('furina-yt-streamer', {
+          host: 'https://www.youtube-nocookie.com',
           height: '100%',
           width: '100%',
           playerVars: {
             autoplay: 1,
-            controls: 1,
-            disablekb: 0,
-            fs: 1,
+            controls: 0,
+            disablekb: 1,
+            fs: 0,
             playsinline: 1,
             rel: 0,
+            iv_load_policy: 3,
+            modestbranding: 1,
             origin: window.location.origin
           },
           events: {
             onReady: (event) => {
               this.isYtReady = true;
-              console.log('[FullStreamEngine] YouTube Full Audio Streamer ready.');
+              console.log('[FullStreamEngine] YouTube Ad-Free Streamer ready.');
               if (this.pendingVideoId && this.pendingTrack) {
                 console.log(`[FullStreamEngine] Playing queued pending full track: ${this.pendingTrack.title}`);
                 const vid = this.pendingVideoId;
@@ -176,16 +179,31 @@ class FurinaAudioEngine {
           dur = this.currentTrack?.durationMs ? this.currentTrack.durationMs / 1000 : 210;
         }
 
-        // Automatic Ad-Mute / Suppression
+        // Active Real-Time Ad-Shield & Auto-Skipper
         try {
           const videoData = typeof this.ytPlayer.getVideoData === 'function' ? this.ytPlayer.getVideoData() : null;
-          if (videoData && videoData.video_id && this.currentTrackVideoId && videoData.video_id !== this.currentTrackVideoId) {
-            // An ad is playing: Mute it automatically
-            if (typeof this.ytPlayer.mute === 'function' && !this.isMuted) {
+          const trackExpectedSec = (this.currentTrack?.durationMs || this.currentTrack?.duration_ms || 180000) / 1000;
+          const isShortAdDuration = dur > 0 && dur <= 35 && trackExpectedSec > 45;
+          const isMismatchedVideoId = videoData && videoData.video_id && this.currentTrackVideoId && videoData.video_id !== this.currentTrackVideoId;
+          const isAdPlaying = isShortAdDuration || isMismatchedVideoId;
+
+          if (isAdPlaying) {
+            // An advertisement is detected: mute immediately so user never hears ads
+            if (typeof this.ytPlayer.mute === 'function') {
               this.ytPlayer.mute();
             }
+            // Fast-forward / skip past the ad instantly
+            if (typeof this.ytPlayer.seekTo === 'function') {
+              this.ytPlayer.seekTo(dur + 1, true);
+            }
+            this.isAdSuppressed = true;
+            this.emit('adstatus', { isAd: true, message: 'Skipping advertisement...' });
           } else {
-            // Real song is playing: Ensure volume is restored
+            // Real song is playing: restore volume immediately
+            if (this.isAdSuppressed) {
+              this.isAdSuppressed = false;
+              this.emit('adstatus', { isAd: false, message: 'Ad-free protected' });
+            }
             if (!this.isMuted && typeof this.ytPlayer.unMute === 'function') {
               this.ytPlayer.unMute();
               this.ytPlayer.setVolume(this.volume * 100);
@@ -199,7 +217,7 @@ class FurinaAudioEngine {
           progress: dur > 0 ? (cur / dur) * 100 : 0
         });
       }
-    }, 250);
+    }, 150);
   }
 
   stopYtProgressTimer() {

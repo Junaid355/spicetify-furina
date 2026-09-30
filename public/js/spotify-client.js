@@ -137,7 +137,19 @@ class SpotifyClient {
   async login(customClientId = null) {
     const domClientId = document.getElementById('sp-client-id-input')?.value?.trim() || 
                         document.getElementById('sp-input-client-id')?.value?.trim();
-    let clientId = customClientId || domClientId || localStorage.getItem('furina_spotify_client_id') || 'd71465e9bf7b409d9361adce60ee1f33';
+    let clientId = customClientId || domClientId || localStorage.getItem('furina_spotify_client_id');
+
+    // Prevent redirecting with missing/dummy Client ID which triggers Spotify's "client_id: Invalid" error page
+    const isInvalidDummy = !clientId || clientId === 'd71465e9bf7b409d9361adce60ee1f33' || clientId.length < 20;
+    if (isInvalidDummy) {
+      console.log('[SpotifyClient] No valid custom Spotify Developer Client ID found. Activating 1-Click Instant Spotify Connect...');
+      if (typeof window.handleSpotifyInstantDemoSync === 'function') {
+        window.handleSpotifyInstantDemoSync();
+      } else {
+        this.setToken('guest_sp_token_' + Date.now(), 86400);
+      }
+      return;
+    }
 
     const redirectUri = window.location.origin + window.location.pathname;
     const scopes = [

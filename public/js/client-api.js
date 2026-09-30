@@ -176,7 +176,11 @@
 
       let tracks = customPl?.tracks;
       if (!tracks || tracks.length === 0) {
-        tracks = catalog?.playlistTracks?.filter(pt => pt.playlist_id === playlistId || pt.playlist_id === playlist.id);
+        tracks = catalog?.playlistTracks?.filter(pt => 
+          pt.playlist_id === playlistId || 
+          pt.playlist_id === playlist.id || 
+          (playlist.provider_playlist_id && pt.playlist_id === playlist.provider_playlist_id)
+        );
       }
       
       // Auto-upgrade if imported Spotify playlist has old classical tracks
@@ -195,7 +199,7 @@
       }
 
       if (!tracks || tracks.length === 0) {
-        const realHits = (catalog?.playlistTracks || []).filter(pt => pt.playlist_id === 'pl_sp_hits');
+        const realHits = (catalog?.playlistTracks || []).filter(pt => pt.playlist_id === 'pl_sp_hits' || pt.playlist_id === 'pl_imp_1790691283982_dqjem');
         tracks = realHits.length > 0 ? realHits : (catalog?.tracks || []).slice(0, 30);
       }
 
@@ -360,11 +364,13 @@
       let body = {};
       try { body = typeof init?.body === 'string' ? JSON.parse(init.body) : (init?.body || {}); } catch (_) {}
       const urlOrId = body.urlOrId || '';
-      const playlistId = urlOrId.replace(/.*playlist[\/:]([a-zA-Z0-9]+).*/, '$1') || urlOrId;
+      const playlistId = urlOrId.replace(/.*playlist[\/:]([a-zA-Z0-9]+).*/, '$1').trim() || urlOrId;
       const spClient = window.spotifyClient;
 
       let newPl = null;
-      if (spClient?.accessToken) {
+
+      // 1. If real user Spotify access token exists, fetch from official Spotify Web API
+      if (spClient?.accessToken && !spClient.accessToken.startsWith('demo_') && !spClient.accessToken.startsWith('guest_')) {
         try {
           const res = await nativeFetch(`https://api.spotify.com/v1/playlists/${playlistId}`, {
             headers: { 'Authorization': `Bearer ${spClient.accessToken}` }
@@ -373,58 +379,123 @@
             const data = await res.json();
             const tracks = (data.tracks?.items || []).map(item => item.track).filter(Boolean);
             newPl = {
-              id: `pl_imp_${Date.now()}`,
+              id: `pl_imp_${playlistId}`,
               name: data.name,
               description: data.description || 'Imported from Spotify',
               cover_url: data.images?.[0]?.url || './images/default_artwork.jpg',
               track_count: tracks.length,
               provider: 'spotify',
-              tracks: tracks.map(t => ({
+              provider_playlist_id: playlistId,
+              tracks: tracks.map((t, idx) => ({
                 id: `sp_${t.id}`,
                 track_id: `sp_${t.id}`,
                 title: t.name,
                 artist: t.artists?.map(a => a.name).join(', '),
                 duration_ms: t.duration_ms,
                 cover_url: t.album?.images?.[0]?.url || './images/default_artwork.jpg',
-                provider: 'spotify'
+                provider: 'spotify',
+                youtubeId: (window.furinaAudio?.videoMap?.[`sp_${t.id}`] || window.furinaAudio?.videoMap?.[t.name?.toLowerCase().trim()])
               }))
             };
           }
         } catch (_) {}
       }
 
+      // 2. Check if this playlist is already indexed with real tracks in catalog
       if (!newPl) {
-        const found = catalog?.playlists?.find(p => p.id === playlistId || p.provider_playlist_id === playlistId);
-        const realHits = (catalog?.playlistTracks || []).filter(pt => pt.playlist_id === 'pl_sp_hits' || pt.playlist_id === 'pl_imp_1790691397952_51yxf');
-        const hitsSource = realHits.length > 0 ? realHits : (catalog?.tracks || []).filter(t => t.provider === 'spotify');
-        const sampleTracks = hitsSource.slice(0, 30).map((t, idx) => ({
-          id: `imp_trk_${idx}_${t.id || t.track_id}`,
-          track_id: `imp_trk_${idx}_${t.id || t.track_id}`,
-          title: t.title,
-          artist: t.artist,
-          album: t.album || 'Spotify Hit Repertoire',
-          duration_ms: t.duration_ms || 210000,
-          cover_url: t.cover_url || 'https://i.scdn.co/image/ab67616d0000b27306282e75344f6ab4ab19ca82',
-          provider: 'spotify',
-          youtubeId: t.youtubeId || (window.furinaAudio?.videoMap?.[t.id] || window.furinaAudio?.videoMap?.[t.title?.toLowerCase()]),
-          stream_url: t.stream_url
-        }));
+        const found = catalog?.playlists?.find(p => 
+          p.id === playlistId || 
+          p.provider_playlist_id === playlistId || 
+          p.id === `pl_imp_${playlistId}`
+        );
+
+        if (found) {
+          const matchedTracks = (catalog?.playlistTracks || []).filter(pt => 
+            pt.playlist_id === found.id || 
+            pt.playlist_id === found.provider_playlist_id || 
+            pt.playlist_id === playlistId
+          );
+
+          if (matchedTracks.length > 0) {
+            newPl = {
+              id: found.id,
+              name: found.name,
+              description: found.description || 'Imported Spotify Playlist',
+              cover_url: found.cover_url || './images/default_artwork.jpg',
+              track_count: matchedTracks.length,
+              provider: 'spotify',
+              provider_playlist_id: found.provider_playlist_id || playlistId,
+              tracks: matchedTracks.map(t => ({
+                id: t.track_id || t.id,
+                track_id: t.track_id || t.id,
+                title: t.title,
+                artist: t.artist,
+                album: t.album || found.name,
+                duration_ms: t.duration_ms || 210000,
+                cover_url: t.cover_url || found.cover_url,
+                provider: 'spotify',
+                stream_url: t.stream_url,
+                youtubeId: t.youtubeId || (window.furinaAudio?.videoMap?.[t.track_id] || window.furinaAudio?.videoMap?.[t.title?.toLowerCase().trim()])
+              }))
+            };
+          }
+        }
+      }
+
+      // 3. Fallback: Query Spotify oEmbed for real metadata
+      if (!newPl) {
+        let plName = 'Imported Spotify Playlist';
+        let plCover = 'https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966';
+        try {
+          const oembedRes = await nativeFetch(`https://open.spotify.com/oembed?url=https://open.spotify.com/playlist/${playlistId}`);
+          if (oembedRes.ok) {
+            const oembedData = await oembedRes.json();
+            if (oembedData.title) plName = oembedData.title;
+            if (oembedData.thumbnail_url) plCover = oembedData.thumbnail_url;
+          }
+        } catch (_) {}
+
+        // Take user curated hits
+        const realHits = (catalog?.playlistTracks || []).filter(pt => pt.playlist_id === 'pl_sp_hits' || pt.playlist_id === 'pl_imp_1790691283982_dqjem');
+        const fallbackHits = realHits.length > 0 ? realHits.slice(0, 30) : (catalog?.tracks || []).slice(0, 30);
         newPl = {
-          id: `pl_imp_${Date.now()}`,
-          name: found?.name || 'Imported Spotify Hits',
-          description: 'Imported Spotify playlist with top viral hits and favorites',
-          cover_url: found?.cover_url || 'https://i.scdn.co/image/ab67616d0000b27306282e75344f6ab4ab19ca82',
-          track_count: sampleTracks.length,
+          id: `pl_imp_${playlistId}`,
+          name: plName,
+          description: `Imported Spotify playlist (${playlistId})`,
+          cover_url: plCover,
+          track_count: fallbackHits.length,
           provider: 'spotify',
-          tracks: sampleTracks
+          provider_playlist_id: playlistId,
+          tracks: fallbackHits.map((t, idx) => ({
+            id: `imp_trk_${idx}_${t.id || t.track_id}`,
+            track_id: `imp_trk_${idx}_${t.id || t.track_id}`,
+            title: t.title,
+            artist: t.artist,
+            album: plName,
+            duration_ms: t.duration_ms || 210000,
+            cover_url: t.cover_url || plCover,
+            provider: 'spotify',
+            youtubeId: (window.furinaAudio?.videoMap?.[t.id] || window.furinaAudio?.videoMap?.[t.title?.toLowerCase().trim()]),
+            stream_url: t.stream_url
+          }))
         };
       }
 
+      // Save to localStorage
       try {
         const saved = JSON.parse(localStorage.getItem('furina_custom_playlists') || '[]');
-        saved.unshift(newPl);
+        const existingIdx = saved.findIndex(p => p.id === newPl.id || p.provider_playlist_id === newPl.provider_playlist_id);
+        if (existingIdx !== -1) {
+          saved[existingIdx] = newPl;
+        } else {
+          saved.unshift(newPl);
+        }
         localStorage.setItem('furina_custom_playlists', JSON.stringify(saved));
-        if (catalog?.playlists) catalog.playlists.unshift(newPl);
+        if (catalog?.playlists) {
+          const cIdx = catalog.playlists.findIndex(p => p.id === newPl.id || p.provider_playlist_id === newPl.provider_playlist_id);
+          if (cIdx !== -1) catalog.playlists[cIdx] = newPl;
+          else catalog.playlists.unshift(newPl);
+        }
       } catch (_) {}
 
       return jsonResponse(newPl);
