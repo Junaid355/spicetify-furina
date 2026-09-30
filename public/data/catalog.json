@@ -2755,7 +2755,10 @@
       "sync_status": "synced",
       "created_at": "2026-09-29 12:06:33",
       "updated_at": "2026-09-29 12:06:33",
-      "coverUrl": "./images/furina_opera_tears.jpg"
+      "coverUrl": "./images/furina_opera_tears.jpg",
+      "track_count": 3,
+      "tracks_count": 3,
+      "total_tracks": 3
     },
     {
       "id": "pl_salon_tea",
@@ -2772,7 +2775,10 @@
       "sync_status": "synced",
       "created_at": "2026-09-29 12:06:33",
       "updated_at": "2026-09-29 12:06:33",
-      "coverUrl": "./images/furina_salon_music.jpg"
+      "coverUrl": "./images/furina_salon_music.jpg",
+      "track_count": 2,
+      "tracks_count": 2,
+      "total_tracks": 2
     },
     {
       "id": "pl_fontaine_abyss",
@@ -2789,7 +2795,10 @@
       "sync_status": "synced",
       "created_at": "2026-09-29 12:06:33",
       "updated_at": "2026-09-29 12:06:33",
-      "coverUrl": "./images/furina_ocean_abyss.jpg"
+      "coverUrl": "./images/furina_ocean_abyss.jpg",
+      "track_count": 3,
+      "tracks_count": 3,
+      "total_tracks": 3
     },
     {
       "id": "pl_imp_1790685577873_xji21",
@@ -2806,7 +2815,10 @@
       "sync_status": "synced",
       "created_at": "2026-09-29 12:39:37",
       "updated_at": "2026-09-29 12:39:37",
-      "coverUrl": "./images/media_1790683198143.jpg"
+      "coverUrl": "./images/media_1790683198143.jpg",
+      "track_count": 54,
+      "tracks_count": 54,
+      "total_tracks": 54
     },
     {
       "id": "pl_imp_1790691283982_dqjem",
@@ -2823,7 +2835,10 @@
       "sync_status": "synced",
       "created_at": "2026-09-29 14:14:43",
       "updated_at": "2026-09-29 14:14:43",
-      "coverUrl": "./images/media_1790683175532.jpg"
+      "coverUrl": "./images/media_1790683175532.jpg",
+      "track_count": 37,
+      "tracks_count": 37,
+      "total_tracks": 37
     },
     {
       "id": "pl_imp_1790691397952_51yxf",
@@ -2840,7 +2855,10 @@
       "sync_status": "synced",
       "created_at": "2026-09-29 14:16:37",
       "updated_at": "2026-09-29 14:16:37",
-      "coverUrl": "./images/media_1790683183816.jpg"
+      "coverUrl": "./images/media_1790683183816.jpg",
+      "track_count": 55,
+      "tracks_count": 55,
+      "total_tracks": 55
     },
     {
       "id": "pl_imp_1790691398637_2jyf9",
@@ -2857,7 +2875,10 @@
       "sync_status": "synced",
       "created_at": "2026-09-29 14:16:38",
       "updated_at": "2026-09-29 14:16:38",
-      "coverUrl": "./images/media_1790683203668.jpg"
+      "coverUrl": "./images/media_1790683203668.jpg",
+      "track_count": 4,
+      "tracks_count": 4,
+      "total_tracks": 4
     }
   ],
   "playlistTracks": [

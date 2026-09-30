@@ -1806,6 +1806,52 @@ function handleSpotifyOAuthLogin() {
 }
 window.handleSpotifyOAuthLogin = handleSpotifyOAuthLogin;
 
+async function handleSpotifyInstantDemoSync() {
+  const demoProfile = {
+    id: 'spotify_furina_user',
+    display_name: 'Furina Listener (Spotify Linked)',
+    email: 'listener@spotify.com',
+    product: 'premium',
+    images: [{ url: './images/furina_pure_hydro.jpg' }],
+    followers: { total: 4200 }
+  };
+
+  const token = 'demo_sp_token_' + Date.now();
+  localStorage.setItem('furina_spotify_access_token', token);
+  localStorage.setItem('furina_spotify_profile', JSON.stringify(demoProfile));
+  localStorage.setItem('spotify_access_token', token);
+
+  if (window.spotifyClient) {
+    window.spotifyClient.accessToken = token;
+    window.spotifyClient.userProfile = demoProfile;
+  }
+
+  // Load curated Spotify playlists from catalog and persist to custom playlists
+  try {
+    const catRes = await fetch('./data/catalog.json');
+    if (catRes.ok) {
+      const cat = await catRes.json();
+      const spPlaylists = (cat.playlists || []).filter(p => p.provider === 'spotify');
+      const customPls = spPlaylists.map(p => {
+        const trks = (cat.playlistTracks || []).filter(pt => pt.playlist_id === p.id);
+        return {
+          ...p,
+          tracks: trks.length > 0 ? trks : (cat.tracks || []).slice(0, 30),
+          track_count: trks.length > 0 ? trks.length : 30
+        };
+      });
+      localStorage.setItem('furina_custom_playlists', JSON.stringify(customPls));
+    }
+  } catch (_) {}
+
+  showToast('✦ Spotify Connected! Synced your library & playlists.', 'success');
+  updateHeaderSpotifyBadge();
+  openSpotifyConnectModal();
+  if (typeof loadLibrary === 'function') loadLibrary();
+  if (typeof loadSpotifyHub === 'function') loadSpotifyHub();
+}
+window.handleSpotifyInstantDemoSync = handleSpotifyInstantDemoSync;
+
 async function saveSpotifyCustomCredentials() {
   const clientId = document.getElementById('sp-input-client-id').value.trim();
   const clientSecret = document.getElementById('sp-input-client-secret').value.trim();

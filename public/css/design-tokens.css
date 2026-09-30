@@ -1,3 +1,7 @@
+html {
+  font-size: 14px;
+}
+
 :root {
   /* Default: Furina Ocean (Fontaine Royal) */
   --bg-abyss: #030712;
@@ -37,12 +41,12 @@
   --shadow-card: 0 10px 30px -10px rgba(0, 0, 0, 0.6);
   --shadow-elevated: 0 20px 40px -15px rgba(0, 0, 0, 0.8);
 
-  --sidebar-width: 260px;
-  --player-height: 90px;
-  --header-height: 64px;
+  --sidebar-width: 220px;
+  --player-height: 74px;
+  --header-height: 52px;
   --radius-sm: 8px;
-  --radius-md: 14px;
-  --radius-lg: 22px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
   --radius-full: 9999px;
 
   --transition-fast: 0.18s cubic-bezier(0.4, 0, 0.2, 1);

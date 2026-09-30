@@ -135,13 +135,9 @@ class SpotifyClient {
 
   // Initiate Spotify OAuth Login with official PKCE Flow
   async login(customClientId = null) {
-    let clientId = customClientId || localStorage.getItem('furina_spotify_client_id');
-    if (!clientId) {
-      if (window.showSpotifyConnectModal) {
-        window.showSpotifyConnectModal();
-        return;
-      }
-    }
+    const domClientId = document.getElementById('sp-client-id-input')?.value?.trim() || 
+                        document.getElementById('sp-input-client-id')?.value?.trim();
+    let clientId = customClientId || domClientId || localStorage.getItem('furina_spotify_client_id') || 'd71465e9bf7b409d9361adce60ee1f33';
 
     const redirectUri = window.location.origin + window.location.pathname;
     const scopes = [

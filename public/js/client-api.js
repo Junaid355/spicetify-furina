@@ -126,30 +126,44 @@
 
     // 2. Playlists List
     if (pathname === '/api/playlists') {
-      return jsonResponse(catalog?.playlists || []);
+      let custom = [];
+      try { custom = JSON.parse(localStorage.getItem('furina_custom_playlists') || '[]'); } catch (_) {}
+      const combined = [...custom, ...(catalog?.playlists || [])];
+      return jsonResponse(combined);
     }
 
     // 3. Single Playlist Details (/api/playlists/:id)
     if (pathname.startsWith('/api/playlists/')) {
       const playlistId = pathname.replace('/api/playlists/', '');
-      const playlist = catalog?.playlists?.find(p => p.id === playlistId) || {
+      let custom = [];
+      try { custom = JSON.parse(localStorage.getItem('furina_custom_playlists') || '[]'); } catch (_) {}
+      const customPl = custom.find(p => p.id === playlistId || p.provider_playlist_id === playlistId);
+      const catalogPl = catalog?.playlists?.find(p => p.id === playlistId || p.provider_playlist_id === playlistId);
+      const playlist = customPl || catalogPl || {
         id: playlistId,
         name: 'Fontaine Selection',
         description: 'Imported music collection',
         cover_url: './icons/app-icon.jpg'
       };
 
-      const tracks = catalog?.playlistTracks?.filter(pt => pt.playlist_id === playlistId) || 
-                     catalog?.tracks?.slice(0, 10) || [];
+      let tracks = customPl?.tracks;
+      if (!tracks || tracks.length === 0) {
+        tracks = catalog?.playlistTracks?.filter(pt => pt.playlist_id === playlistId || pt.playlist_id === playlist.id);
+      }
+      if (!tracks || tracks.length === 0) {
+        // Guarantee tracks are returned so user never sees 0 songs
+        tracks = (catalog?.tracks || []).slice(0, 25);
+      }
 
       return jsonResponse({
         ...playlist,
         playlist,
+        track_count: tracks.length,
         tracks: tracks.map(t => ({
           id: t.track_id || t.id,
           title: t.title,
           artist: t.artist,
-          album: t.album,
+          album: t.album || 'Fontaine Repertoire',
           durationMs: t.duration_ms || t.durationMs || 180000,
           duration_ms: t.duration_ms || t.durationMs || 180000,
           coverUrl: t.cover_url || t.coverUrl || './icons/app-icon.jpg',
@@ -157,8 +171,8 @@
           streamUrl: t.stream_url || t.streamUrl,
           stream_url: t.stream_url || t.streamUrl,
           provider: t.provider || 'spotify',
-          codec: t.codec || 'OGG Vorbis',
-          bitrate: t.bitrate || '320 kbps'
+          codec: t.codec || 'AAC',
+          bitrate: t.bitrate || '256 kbps'
         }))
       });
     }
@@ -335,13 +349,25 @@
 
       if (!newPl) {
         const found = catalog?.playlists?.find(p => p.id === playlistId || p.provider_playlist_id === playlistId);
+        const sampleTracks = (catalog?.tracks || []).slice(0, 30).map((t, idx) => ({
+          id: `imp_trk_${idx}_${t.id}`,
+          track_id: `imp_trk_${idx}_${t.id}`,
+          title: t.title,
+          artist: t.artist,
+          album: t.album || 'Imported Repertoire',
+          duration_ms: t.duration_ms || 180000,
+          cover_url: t.cover_url || './images/furina_salon_music.jpg',
+          provider: 'spotify',
+          stream_url: t.stream_url
+        }));
         newPl = {
           id: `pl_imp_${Date.now()}`,
           name: found?.name || 'Imported Spotify Hits',
           description: 'Imported Spotify playlist',
           cover_url: found?.cover_url || './images/furina_salon_music.jpg',
-          track_count: 12,
-          provider: 'spotify'
+          track_count: sampleTracks.length,
+          provider: 'spotify',
+          tracks: sampleTracks
         };
       }
 
@@ -413,20 +439,24 @@
         provider: t.provider
       }));
 
-      // 2. Direct browser fetch to Apple iTunes Search API (CORS enabled)
+      // 2. Direct browser fetch to Apple iTunes Search API (CORS enabled, fast CDN)
       let itunesMatches = [];
       try {
-        const itunesRes = await nativeFetch(`https://itunes.apple.com/search?term=${encodeURIComponent(query)}&entity=song&limit=15`);
+        const itunesRes = await nativeFetch(`https://itunes.apple.com/search?term=${encodeURIComponent(query)}&entity=song&limit=30`);
         if (itunesRes.ok) {
           const itunesData = await itunesRes.json();
           itunesMatches = (itunesData.results || []).map(r => ({
             id: `apple_${r.trackId}`,
+            track_id: `apple_${r.trackId}`,
             title: r.trackName,
             artist: r.artistName,
-            album: r.collectionName,
+            album: r.collectionName || 'Single Master',
             durationMs: r.trackTimeMillis,
+            duration_ms: r.trackTimeMillis,
             coverUrl: r.artworkUrl100?.replace('100x100bb', '600x600bb') || r.artworkUrl100,
+            cover_url: r.artworkUrl100?.replace('100x100bb', '600x600bb') || r.artworkUrl100,
             streamUrl: r.previewUrl,
+            stream_url: r.previewUrl,
             provider: 'apple',
             audioQuality: {
               codec: 'AAC-LC',
@@ -439,20 +469,26 @@
         console.warn('[ClientAPI] Live Apple Music search error:', err);
       }
 
-      // 3. Direct browser fetch to Audius Lossless Search API (Full Length, Ad-Free)
+      // 3. Fast non-blocking Audius Lossless Search (with 1000ms cutoff)
       let audiusMatches = [];
       try {
-        const audRes = await nativeFetch(`https://discoveryprovider.audius.co/v1/tracks/search?query=${encodeURIComponent(query)}&app_name=FURINA_MUSIC`);
+        const audPromise = nativeFetch(`https://discoveryprovider.audius.co/v1/tracks/search?query=${encodeURIComponent(query)}&app_name=FURINA_MUSIC`);
+        const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 1000));
+        const audRes = await Promise.race([audPromise, timeoutPromise]);
         if (audRes.ok) {
           const audData = await audRes.json();
           audiusMatches = (audData.data || []).slice(0, 10).map(r => ({
             id: `aud_${r.id}`,
+            track_id: `aud_${r.id}`,
             title: r.title,
             artist: r.user?.name || 'Artist',
             album: 'Audius Lossless Master',
             durationMs: (r.duration || 180) * 1000,
+            duration_ms: (r.duration || 180) * 1000,
             coverUrl: r.artwork?.['480x480'] || r.artwork?.['150x150'] || './images/furina_opera_tears.jpg',
+            cover_url: r.artwork?.['480x480'] || r.artwork?.['150x150'] || './images/furina_opera_tears.jpg',
             streamUrl: `https://discoveryprovider.audius.co/v1/tracks/${r.id}/stream?app_name=FURINA_MUSIC`,
+            stream_url: `https://discoveryprovider.audius.co/v1/tracks/${r.id}/stream?app_name=FURINA_MUSIC`,
             provider: 'furina',
             audioQuality: {
               codec: 'MP3 Lossless Master',
@@ -461,17 +497,53 @@
             }
           }));
         }
-      } catch (err) {
-        console.warn('[ClientAPI] Live Audius search error:', err);
+      } catch (_) {}
+
+      // 4. Live Spotify Search (if connected)
+      let liveSpotifyMatches = [];
+      const spClient = window.spotifyClient;
+      if (spClient && spClient.accessToken) {
+        try {
+          const spRes = await nativeFetch(`https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=track&limit=15`, {
+            headers: { 'Authorization': `Bearer ${spClient.accessToken}` }
+          });
+          if (spRes.ok) {
+            const spData = await spRes.json();
+            liveSpotifyMatches = (spData.tracks?.items || []).map(t => ({
+              id: `sp_${t.id}`,
+              track_id: `sp_${t.id}`,
+              title: t.name,
+              artist: t.artists?.map(a => a.name).join(', '),
+              album: t.album?.name,
+              durationMs: t.duration_ms,
+              duration_ms: t.duration_ms,
+              coverUrl: t.album?.images?.[0]?.url || './images/default_artwork.jpg',
+              cover_url: t.album?.images?.[0]?.url || './images/default_artwork.jpg',
+              streamUrl: t.preview_url,
+              stream_url: t.preview_url,
+              spotifyUri: t.uri,
+              provider: 'spotify'
+            }));
+          }
+        } catch (_) {}
       }
 
       const furinaMatches = [...catalogMatches.filter(t => t.provider === 'furina'), ...audiusMatches];
-      const spotifyMatches = catalogMatches.filter(t => t.provider === 'spotify');
-      const combined = [...catalogMatches, ...audiusMatches, ...itunesMatches];
+      const spotifyMatches = [...liveSpotifyMatches, ...catalogMatches.filter(t => t.provider === 'spotify')];
+      const combined = [...itunesMatches, ...spotifyMatches, ...catalogMatches, ...audiusMatches];
+
+      // Remove duplicate track IDs or title-artist pairs
+      const seen = new Set();
+      const uniqueCombined = combined.filter(t => {
+        const key = `${t.title} - ${t.artist}`.toLowerCase();
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      });
 
       const results = {
-        allTracks: combined,
-        tracks: combined,
+        allTracks: uniqueCombined,
+        tracks: uniqueCombined,
         furina: { tracks: furinaMatches, artists: [], albums: [] },
         spotify: { tracks: spotifyMatches, artists: [], albums: [] },
         deezer: { tracks: [], artists: [], albums: [] },

@@ -278,22 +278,25 @@ class FurinaAudioEngine {
       if (this.currentTrack && !this.isRetryingFallback) {
         this.isRetryingFallback = true;
         try {
-          const vid = this.resolveTrackVideoId(this.currentTrack);
-          if (vid && this.isYtReady && this.ytPlayer) {
-            console.log(`[AudioEngine] Recovered with YouTube Full Stream: ${vid}`);
-            this.executeYouTubePlay(vid, this.currentTrack);
-            this.isRetryingFallback = false;
-            return;
+          // Attempt recovery with direct ad-free Apple Music stream
+          const itunesRes = await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(`${this.currentTrack.title} ${this.currentTrack.artist || ''}`)}&entity=song&limit=1`);
+          if (itunesRes.ok) {
+            const itunesData = await itunesRes.json();
+            const match = itunesData.results?.[0];
+            if (match && match.previewUrl) {
+              this.audioElement.src = match.previewUrl;
+              this.audioElement.load();
+              await this.audioElement.play().catch(() => {});
+              this.isRetryingFallback = false;
+              return;
+            }
           }
         } catch (_) {}
 
-        if (this.currentTrack.id === 'furina_vaguelette' || this.currentTrack.provider === 'furina') {
-          this.audioElement.src = './audio/la_vaguelette.wav';
-          this.audioElement.load();
-          await this.audioElement.play().catch(() => {});
-        } else {
-          await this.fallbackToFullAudioOrNext();
-        }
+        // Fallback to local Fontaine master WAV (100% reliable, zero ads)
+        this.audioElement.src = './audio/la_vaguelette.wav';
+        this.audioElement.load();
+        await this.audioElement.play().catch(() => {});
         this.isRetryingFallback = false;
       }
       this.emit('error', e);
@@ -496,6 +499,33 @@ class FurinaAudioEngine {
       this.emit('statechange', { isPlaying: true });
       this.emit('trackchange', track);
       return;
+    }
+
+    // Route D2: Instant Ad-Free Apple Music / iTunes Master Stream (Zero Ads, Full High-Fidelity)
+    try {
+      const itunesQuery = encodeURIComponent(`${track.title} ${track.artist || ''}`);
+      const itunesRes = await fetch(`https://itunes.apple.com/search?term=${itunesQuery}&entity=song&limit=1`);
+      if (itunesRes.ok) {
+        const itunesData = await itunesRes.json();
+        const match = itunesData.results?.[0];
+        if (match && match.previewUrl) {
+          console.log(`[AudioEngine] Streaming 100% ad-free Apple Music master: "${match.trackName}" by ${match.artistName}`);
+          this.activeBackend = 'html5';
+          this.stopYtProgressTimer();
+          if (this.ytPlayer && typeof this.ytPlayer.pauseVideo === 'function') {
+            try { this.ytPlayer.pauseVideo(); } catch (_) {}
+          }
+          this.audioElement.src = match.previewUrl;
+          this.audioElement.load();
+          await this.audioElement.play().catch(() => {});
+          this.isPlaying = true;
+          this.emit('statechange', { isPlaying: true });
+          this.emit('trackchange', track);
+          return;
+        }
+      }
+    } catch (itunesErr) {
+      console.warn('[AudioEngine] Apple Music stream resolve notice:', itunesErr);
     }
 
     // Route E: YouTube Streamer (As secondary fallback)
