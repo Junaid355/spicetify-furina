@@ -1,7 +1,7 @@
 /**
- * Furina Music — Cozy Web Audio Haptic & Sound Effects Engine
- * Generates tactile mechanical clicks and soft crystalline hydro droplet chimes
- * using purely native Web Audio API oscillators (zero external audio files needed).
+ * Furina Music — Ultra-Cozy Acoustic Haptic & Sound Effects Engine
+ * Produces velvet micro-taps and soothing crystalline Fontaine marimba droplets
+ * via native Web Audio API (zero external audio files needed).
  */
 
 (function () {
@@ -11,7 +11,9 @@
     constructor() {
       this.ctx = null;
       this.isEnabled = localStorage.getItem('furina_cozy_sounds') !== 'false';
-      this.volume = parseFloat(localStorage.getItem('furina_cozy_volume') || '0.25');
+      // Pleasant, gentle whisper volume default (0.12)
+      this.volume = parseFloat(localStorage.getItem('furina_cozy_volume') || '0.12');
+      this.lastPlayTime = 0;
 
       this.initEventListeners();
     }
@@ -28,42 +30,53 @@
       }
     }
 
-    // Cozy Hydro Water Droplet Chime
-    playHydroChime(pitchMultiplier = 1.0) {
+    // Soothing Fontaine Crystal Drop (Acoustic Kalimba / Warm Water Marimba)
+    playHydroChime(pitch = 1.0) {
       if (!this.isEnabled) return;
       try {
         this.initContext();
         if (!this.ctx) return;
 
         const now = this.ctx.currentTime;
+        if (now - this.lastPlayTime < 0.06) return; // Debounce rapid triggers
+        this.lastPlayTime = now;
+
         const osc = this.ctx.createOscillator();
+        const subOsc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
         const filter = this.ctx.createBiquadFilter();
 
+        const baseFreq = 440 * pitch; // Warm concert A4
         osc.type = 'sine';
-        // Elegant hydro chime pitch bend
-        const startFreq = 880 * pitchMultiplier;
-        const endFreq = 1320 * pitchMultiplier;
-        osc.frequency.setValueAtTime(startFreq, now);
-        osc.frequency.exponentialRampToValueAtTime(endFreq, now + 0.08);
+        osc.frequency.setValueAtTime(baseFreq, now);
 
+        subOsc.type = 'triangle';
+        subOsc.frequency.setValueAtTime(baseFreq * 0.5, now);
+
+        // Warm acoustic low-pass filtering
         filter.type = 'lowpass';
-        filter.frequency.setValueAtTime(3200, now);
+        filter.frequency.setValueAtTime(1100, now);
+        filter.frequency.exponentialRampToValueAtTime(320, now + 0.12);
+        filter.Q.setValueAtTime(1.5, now);
 
-        gain.gain.setValueAtTime(0.001, now);
-        gain.gain.linearRampToValueAtTime(this.volume * 0.45, now + 0.015);
-        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.28);
+        // Smooth velvet envelope
+        gain.gain.setValueAtTime(0.0001, now);
+        gain.gain.linearRampToValueAtTime(this.volume * 0.15, now + 0.008);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.14);
 
         osc.connect(filter);
+        subOsc.connect(filter);
         filter.connect(gain);
         gain.connect(this.ctx.destination);
 
         osc.start(now);
-        osc.stop(now + 0.3);
+        subOsc.start(now);
+        osc.stop(now + 0.15);
+        subOsc.stop(now + 0.15);
       } catch (_) {}
     }
 
-    // Soft Tactile Mechanical Switch Tap
+    // Ultra-Delicate Haptic Micro-Tap (Tactile Key Feel, Zero Harshness)
     playTactileClick() {
       if (!this.isEnabled) return;
       try {
@@ -71,26 +84,34 @@
         if (!this.ctx) return;
 
         const now = this.ctx.currentTime;
+        if (now - this.lastPlayTime < 0.04) return; // Debounce rapid clicks
+        this.lastPlayTime = now;
+
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
+        const filter = this.ctx.createBiquadFilter();
 
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(240, now);
-        osc.frequency.exponentialRampToValueAtTime(80, now + 0.035);
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(175, now);
+        osc.frequency.exponentialRampToValueAtTime(75, now + 0.022);
 
-        gain.gain.setValueAtTime(0.001, now);
-        gain.gain.linearRampToValueAtTime(this.volume * 0.3, now + 0.005);
-        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.04);
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(450, now);
 
-        osc.connect(gain);
+        gain.gain.setValueAtTime(0.0001, now);
+        gain.gain.linearRampToValueAtTime(this.volume * 0.12, now + 0.003);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.025);
+
+        osc.connect(filter);
+        filter.connect(gain);
         gain.connect(this.ctx.destination);
 
         osc.start(now);
-        osc.stop(now + 0.045);
+        osc.stop(now + 0.03);
       } catch (_) {}
     }
 
-    // Playback Action (Play / Pause) Hydro Chord
+    // Gentle Warm Two-Note Harmony on Play/Pause
     playChord(action = 'play') {
       if (!this.isEnabled) return;
       try {
@@ -98,25 +119,31 @@
         if (!this.ctx) return;
 
         const now = this.ctx.currentTime;
-        const baseFreq = action === 'play' ? 523.25 : 659.25; // C5 or E5
-        const freqs = action === 'play' ? [523.25, 659.25, 783.99] : [783.99, 659.25, 523.25];
+        const notes = action === 'play' ? [329.63, 493.88] : [493.88, 329.63]; // E4 + B4 (Pure Fifth)
 
-        freqs.forEach((f, idx) => {
+        notes.forEach((freq, idx) => {
           const osc = this.ctx.createOscillator();
           const gain = this.ctx.createGain();
+          const filter = this.ctx.createBiquadFilter();
+
+          const startTime = now + idx * 0.035;
 
           osc.type = 'sine';
-          osc.frequency.setValueAtTime(f, now + idx * 0.04);
+          osc.frequency.setValueAtTime(freq, startTime);
 
-          gain.gain.setValueAtTime(0.001, now + idx * 0.04);
-          gain.gain.linearRampToValueAtTime(this.volume * 0.25, now + idx * 0.04 + 0.015);
-          gain.gain.exponentialRampToValueAtTime(0.0001, now + idx * 0.04 + 0.22);
+          filter.type = 'lowpass';
+          filter.frequency.setValueAtTime(800, startTime);
 
-          osc.connect(gain);
+          gain.gain.setValueAtTime(0.0001, startTime);
+          gain.gain.linearRampToValueAtTime(this.volume * 0.1, startTime + 0.01);
+          gain.gain.exponentialRampToValueAtTime(0.0001, startTime + 0.16);
+
+          osc.connect(filter);
+          filter.connect(gain);
           gain.connect(this.ctx.destination);
 
-          osc.start(now + idx * 0.04);
-          osc.stop(now + idx * 0.04 + 0.25);
+          osc.start(startTime);
+          osc.stop(startTime + 0.18);
         });
       } catch (_) {}
     }
@@ -124,25 +151,25 @@
     toggle(enabled = null) {
       this.isEnabled = (enabled !== null) ? enabled : !this.isEnabled;
       localStorage.setItem('furina_cozy_sounds', String(this.isEnabled));
-      if (this.isEnabled) this.playHydroChime(1.2);
+      if (this.isEnabled) this.playHydroChime(1.0);
       return this.isEnabled;
     }
 
     setVolume(val) {
-      this.volume = Math.max(0, Math.min(1, parseFloat(val) || 0.25));
+      this.volume = Math.max(0, Math.min(1, parseFloat(val) || 0.12));
       localStorage.setItem('furina_cozy_volume', String(this.volume));
     }
 
     initEventListeners() {
-      // Delegate clicks across interactive elements
+      // Delegate gentle haptic feedback across interactive elements
       document.addEventListener('click', (e) => {
-        const target = e.target.closest('button, .nav-item, .card-item, .theme-option, .search-pill, .control-btn, .logger-filter-pill, .logger-btn-action');
+        const target = e.target.closest('button, .nav-item, .card-item, .theme-option, .search-pill, .control-btn, .logger-filter-pill, .logger-btn-action, .sidebar-pl-link');
         if (!target) return;
 
         if (target.classList.contains('control-btn') || target.classList.contains('btn-play-hero')) {
           this.playChord('play');
         } else if (target.classList.contains('nav-item') || target.classList.contains('theme-option') || target.classList.contains('search-pill')) {
-          this.playHydroChime(1.1);
+          this.playHydroChime(1.05);
         } else {
           this.playTactileClick();
         }

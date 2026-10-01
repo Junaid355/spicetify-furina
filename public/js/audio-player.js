@@ -198,27 +198,41 @@ class FurinaAudioEngine {
         try {
           const videoData = typeof this.ytPlayer.getVideoData === 'function' ? this.ytPlayer.getVideoData() : null;
           const trackExpectedSec = (this.currentTrack?.durationMs || this.currentTrack?.duration_ms || 180000) / 1000;
-          const isShortAdDuration = dur > 0 && dur <= 35 && trackExpectedSec > 45;
+          const isShortAdDuration = dur > 0 && dur <= 45 && trackExpectedSec > 50;
           const isMismatchedVideoId = videoData && videoData.video_id && this.currentTrackVideoId && videoData.video_id !== this.currentTrackVideoId;
-          const isAdPlaying = isShortAdDuration || isMismatchedVideoId;
+          const isAdTitle = videoData && videoData.title && (videoData.title.toLowerCase().startsWith('ad ') || videoData.author === 'YouTube');
+          const isAdPlaying = isShortAdDuration || isMismatchedVideoId || isAdTitle;
 
           if (isAdPlaying) {
             // An advertisement is detected: mute immediately so user never hears ads
             if (typeof this.ytPlayer.mute === 'function') {
               this.ytPlayer.mute();
             }
-            // Fast-forward / skip past the ad instantly
+            // Turbo skip: accelerate playback rate to max supported
+            try {
+              if (typeof this.ytPlayer.setPlaybackRate === 'function') {
+                const rates = this.ytPlayer.getAvailablePlaybackRates?.() || [1, 1.5, 2];
+                const maxRate = Math.max(...rates);
+                this.ytPlayer.setPlaybackRate(maxRate);
+              }
+            } catch (_) {}
+            // Fast-forward past ad
             if (typeof this.ytPlayer.seekTo === 'function') {
               this.ytPlayer.seekTo(dur + 1, true);
             }
             this.isAdSuppressed = true;
-            this.emit('adstatus', { isAd: true, message: 'Skipping advertisement...' });
+            this.emit('adstatus', { isAd: true, message: 'Ad Shield Active — Skipping commercial...' });
           } else {
-            // Real song is playing: restore volume immediately
+            // Real song is playing: restore playback rate & volume
             if (this.isAdSuppressed) {
               this.isAdSuppressed = false;
               this.emit('adstatus', { isAd: false, message: 'Ad-free protected' });
             }
+            try {
+              if (typeof this.ytPlayer.setPlaybackRate === 'function') {
+                this.ytPlayer.setPlaybackRate(1.0);
+              }
+            } catch (_) {}
             if (!this.isMuted && typeof this.ytPlayer.unMute === 'function') {
               this.ytPlayer.unMute();
               this.ytPlayer.setVolume(this.volume * 100);
@@ -232,7 +246,7 @@ class FurinaAudioEngine {
           progress: dur > 0 ? (cur / dur) * 100 : 0
         });
       }
-    }, 150);
+    }, 75);
   }
 
   stopYtProgressTimer() {
@@ -773,16 +787,14 @@ class FurinaAudioEngine {
     this.audioElement.pause();
 
     try {
+      // Start muted initially until track integrity is verified by ad shield
+      if (typeof this.ytPlayer.mute === 'function') {
+        this.ytPlayer.mute();
+      }
       this.ytPlayer.loadVideoById({
         videoId: videoId,
         startSeconds: 0
       });
-      if (typeof this.ytPlayer.setVolume === 'function') {
-        this.ytPlayer.setVolume(this.volume * 100);
-      }
-      if (this.isMuted && typeof this.ytPlayer.mute === 'function') {
-        this.ytPlayer.mute();
-      }
       this.isPlaying = true;
       this.emit('statechange', { isPlaying: true });
       this.emit('trackchange', track);
@@ -793,31 +805,54 @@ class FurinaAudioEngine {
     }
   }
 
-  executeYouTubeSearchPlay(query, track) {
+  async executeYouTubeSearchPlay(query, track) {
     console.log(`[FullStreamEngine] Searching and streaming 100% full song via YouTube: "${query}"`);
     this.activeBackend = 'youtube';
     this.currentTrack = track;
-    this.currentTrackVideoId = null;
     this.isTemporaryPreview = false;
     this.audioElement.pause();
     this.stopYtProgressTimer();
 
+    // Fast-path: query piped to obtain direct videoId to avoid playlist pre-roll ads
+    const cleanTitle = (track.title || '').replace(/[\(\[].*?[\)\]]/g, '').trim();
+    const cleanArtist = (track.artist || '').split(/[,&]/)[0].trim();
+    const pipedInstances = [
+      'https://pipedapi.kavin.rocks',
+      'https://api.piped.private.coffee'
+    ];
+    for (const inst of pipedInstances) {
+      try {
+        const res = await fetch(`${inst}/search?q=${encodeURIComponent(`${cleanTitle} ${cleanArtist}`)}&filter=all`, {
+          signal: AbortSignal.timeout(1800)
+        });
+        if (res.ok) {
+          const data = await res.json();
+          const it = (data.items || []).find(item => item.url && item.url.includes('watch?v='));
+          if (it) {
+            const vid = it.url.replace(/.*watch\?v=/, '').split('&')[0];
+            if (vid && vid.length === 11) {
+              this.videoMap[track.id] = vid;
+              this.videoMap[cleanTitle.toLowerCase()] = vid;
+              this.executeYouTubePlay(vid, track);
+              return;
+            }
+          }
+        }
+      } catch (_) {}
+    }
+
     try {
       if (this.ytPlayer && typeof this.ytPlayer.loadPlaylist === 'function') {
+        // Start muted to prevent pre-roll ads from playing out loud
+        if (typeof this.ytPlayer.mute === 'function') {
+          this.ytPlayer.mute();
+        }
         this.ytPlayer.loadPlaylist({
           listType: 'search',
           list: query,
           index: 0,
           startSeconds: 0
         });
-        if (typeof this.ytPlayer.setVolume === 'function') {
-          this.ytPlayer.setVolume(this.volume * 100);
-        }
-        if (this.isMuted && typeof this.ytPlayer.mute === 'function') {
-          this.ytPlayer.mute();
-        } else if (typeof this.ytPlayer.unMute === 'function') {
-          this.ytPlayer.unMute();
-        }
         this.isPlaying = true;
         this.emit('statechange', { isPlaying: true });
         this.emit('trackchange', track);

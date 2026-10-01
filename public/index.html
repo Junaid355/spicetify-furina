@@ -22,15 +22,15 @@
   <link rel="manifest" href="manifest.json" />
 
   <!-- Stylesheets (v7.4 3D Motion System & Aceternity Primitives) -->
-  <link rel="stylesheet" href="css/design-tokens.css?v=7.5.5" />
-  <link rel="stylesheet" href="css/layout.css?v=7.5.5" />
-  <link rel="stylesheet" href="css/animations.css?v=7.5.5" />
-  <link rel="stylesheet" href="css/components.css?v=7.5.5" />
-  <link rel="stylesheet" href="css/player.css?v=7.5.5" />
+  <link rel="stylesheet" href="css/design-tokens.css?v=7.6.0" />
+  <link rel="stylesheet" href="css/layout.css?v=7.6.0" />
+  <link rel="stylesheet" href="css/animations.css?v=7.6.0" />
+  <link rel="stylesheet" href="css/components.css?v=7.6.0" />
+  <link rel="stylesheet" href="css/player.css?v=7.6.0" />
   <!-- Core Diagnostic Logger (Loads Early to Intercept All Events) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <script src="js/bug-logger.js?v=7.5.5"></script>
-  <script src="js/audio-effects.js?v=7.5.5"></script>
+  <script src="js/bug-logger.js?v=7.6.0"></script>
+  <script src="js/audio-effects.js?v=7.6.0"></script>
 </head>
 <body>
   <!-- Dynamic Album-Art Reactive Background Mesh & Canvas -->
@@ -55,82 +55,81 @@
         </div>
       </div>
 
-      <!-- Core Navigation -->
-      <div class="sidebar-section-title">Navigation</div>
-      <ul class="sidebar-menu">
-        <li class="nav-item active" data-tab="home" onclick="switchTab('home')" title="Home">
-          <svg viewBox="0 0 24 24" fill="none"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-          <span class="nav-item-text">Home</span>
-        </li>
-        <li class="nav-item" data-tab="search" onclick="switchTab('search')" title="Search">
-          <svg viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          <span class="nav-item-text">Search</span>
-        </li>
-        <li class="nav-item" data-tab="library" onclick="switchTab('library')" title="Your Library">
-          <svg viewBox="0 0 24 24" fill="none"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-          <span class="nav-item-text">Your Library</span>
-        </li>
-      </ul>
+      <!-- Smooth Scrollable Body -->
+      <div class="sidebar-scroll-wrapper">
+        <!-- Core Navigation -->
+        <div class="sidebar-section-title">Navigation</div>
+        <ul class="sidebar-menu">
+          <li class="nav-item active" data-tab="home" onclick="switchTab('home')" title="Home">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            <span class="nav-item-text">Home</span>
+          </li>
+          <li class="nav-item" data-tab="search" onclick="switchTab('search')" title="Search">
+            <svg viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <span class="nav-item-text">Search</span>
+          </li>
+          <li class="nav-item" data-tab="library" onclick="switchTab('library')" title="Your Library">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+            <span class="nav-item-text">Your Library</span>
+          </li>
+        </ul>
 
-      <div class="sidebar-divider"></div>
+        <div class="sidebar-divider"></div>
 
-      <!-- Custom Apps (Spicetify Ecosystem) -->
-      <div class="sidebar-section-title">Custom Apps & Ecosystem</div>
-      <ul class="sidebar-menu">
-        <li class="nav-item" data-tab="marketplace" onclick="switchTab('marketplace')" title="Marketplace">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-          <span class="nav-item-text">Marketplace</span>
-        </li>
-        <li class="nav-item" data-tab="spotify-hub" onclick="switchTab('spotify-hub')" title="Spotify Hub">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12c0 5.524 4.477 10 10 10 5.524 0 10-4.476 10-10 0-5.523-4.476-10-10-10zm4.586 14.424c-.18.295-.563.387-.857.207-2.35-1.434-5.308-1.758-8.793-.963-.335.077-.67-.133-.746-.469-.077-.334.132-.67.467-.747 3.808-.871 7.076-.496 9.721 1.121.295.18.388.563.208.851zm1.224-2.72c-.226.367-.71.482-1.077.256-2.69-1.653-6.79-2.133-9.97-1.167-.413.125-.852-.107-.977-.52-.125-.413.107-.852.52-.977 3.632-1.102 8.147-.568 11.248 1.331.367.226.482.71.256 1.077zm.106-2.828c-3.226-1.916-8.544-2.093-11.621-1.158-.496.15-1.022-.135-1.172-.63-.15-.497.135-1.022.63-1.173 3.535-1.073 9.404-.866 13.115 1.337.447.265.592.846.327 1.293-.266.448-.847.593-1.279.331z"/></svg>
-          <span class="nav-item-text">Spotify Hub & Sync</span>
-        </li>
-        <li class="nav-item" data-tab="equalizer" onclick="switchTab('equalizer')" title="10-Band Equalizer">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
-          <span class="nav-item-text">10-Band Equalizer FX</span>
-        </li>
-        <li class="nav-item" data-tab="stats" onclick="switchTab('stats')" title="Listening Statistics">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-          <span class="nav-item-text">Listening Statistics</span>
-        </li>
-        <li class="nav-item" data-tab="settings" onclick="switchTab('settings')" title="Settings">
-          <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-          <span class="nav-item-text">Settings</span>
-        </li>
-      </ul>
+        <!-- Custom Apps (Spicetify Ecosystem) -->
+        <div class="sidebar-section-title">Custom Apps & Ecosystem</div>
+        <ul class="sidebar-menu">
+          <li class="nav-item" data-tab="marketplace" onclick="switchTab('marketplace')" title="Marketplace">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+            <span class="nav-item-text">Marketplace</span>
+          </li>
+          <li class="nav-item" data-tab="spotify-hub" onclick="switchTab('spotify-hub')" title="Spotify Hub">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12c0 5.524 4.477 10 10 10 5.524 0 10-4.476 10-10 0-5.523-4.476-10-10-10zm4.586 14.424c-.18.295-.563.387-.857.207-2.35-1.434-5.308-1.758-8.793-.963-.335.077-.67-.133-.746-.469-.077-.334.132-.67.467-.747 3.808-.871 7.076-.496 9.721 1.121.295.18.388.563.208.851zm1.224-2.72c-.226.367-.71.482-1.077.256-2.69-1.653-6.79-2.133-9.97-1.167-.413.125-.852-.107-.977-.52-.125-.413.107-.852.52-.977 3.632-1.102 8.147-.568 11.248 1.331.367.226.482.71.256 1.077zm.106-2.828c-3.226-1.916-8.544-2.093-11.621-1.158-.496.15-1.022-.135-1.172-.63-.15-.497.135-1.022.63-1.173 3.535-1.073 9.404-.866 13.115 1.337.447.265.592.846.327 1.293-.266.448-.847.593-1.279.331z"/></svg>
+            <span class="nav-item-text">Spotify Hub & Sync</span>
+          </li>
+          <li class="nav-item" data-tab="equalizer" onclick="switchTab('equalizer')" title="10-Band Equalizer">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
+            <span class="nav-item-text">10-Band Equalizer FX</span>
+          </li>
+          <li class="nav-item" data-tab="stats" onclick="switchTab('stats')" title="Listening Statistics">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+            <span class="nav-item-text">Listening Statistics</span>
+          </li>
+          <li class="nav-item" data-tab="settings" onclick="switchTab('settings')" title="Settings">
+            <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            <span class="nav-item-text">Settings</span>
+          </li>
+        </ul>
 
-      <div class="sidebar-divider"></div>
+        <div class="sidebar-divider"></div>
 
-      <!-- Quick Playlists -->
-      <div class="sidebar-section-title">Fontaine Suites</div>
-      <div class="sidebar-playlists">
-        <div class="sidebar-pl-link" onclick="switchTab('playlist-detail', { playlistId: 'pl_opera_epiclese' })">🎭 Opera Epiclese Repertoire</div>
-        <div class="sidebar-pl-link" onclick="switchTab('playlist-detail', { playlistId: 'pl_salon_tea' })">☕ Salon Solitaire High Tea</div>
-        <div class="sidebar-pl-link" onclick="switchTab('playlist-detail', { playlistId: 'pl_fontaine_abyss' })">🌊 Submerged Memories</div>
+        <!-- Quick Playlists -->
+        <div class="sidebar-section-title">Fontaine Suites</div>
+        <div class="sidebar-playlists">
+          <div class="sidebar-pl-link" onclick="switchTab('playlist-detail', { playlistId: 'pl_opera_epiclese' })">🎭 Opera Epiclese Repertoire</div>
+          <div class="sidebar-pl-link" onclick="switchTab('playlist-detail', { playlistId: 'pl_salon_tea' })">☕ Salon Solitaire High Tea</div>
+          <div class="sidebar-pl-link" onclick="switchTab('playlist-detail', { playlistId: 'pl_fontaine_abyss' })">🌊 Submerged Memories</div>
+        </div>
       </div>
 
-      <!-- Cute Furina Companion / Mascot Card in Sidebar -->
-      <div class="furina-companion-card" id="furina-mascot-card">
-        <div class="companion-avatar-wrap">
-          <img id="companion-furina-img" src="images/furina_dance.gif" class="companion-img furina-animated-float" alt="Lady Furina" onerror="this.src='images/furina_salon_music.jpg'" />
+      <!-- Compact Fontaine Glass Dock at Bottom (Never Overflows) -->
+      <div class="sidebar-bottom-dock" id="furina-mascot-card">
+        <div class="dock-furina-avatar-wrap" onclick="if(window.furinaAudioEffects) window.furinaAudioEffects.playHydroChime(1.2)" title="Lady Furina Mascot">
+          <img id="companion-furina-img" src="images/furina_dance.gif" class="dock-furina-avatar furina-animated-float" alt="Furina" onerror="this.src='images/furina_pure_hydro.jpg'" />
           <div class="companion-note-bubble" id="companion-bubble">♪ Dancing</div>
         </div>
-        <div class="companion-info">
-          <span class="companion-title">Lady Furina</span>
-          <span class="companion-status" id="companion-status-text">"The stage awaits your song!"</span>
+        <div class="dock-info">
+          <div class="dock-title-row">
+            <span class="dock-title">Lady Furina</span>
+            <span class="dock-badge-pill">Archon</span>
+          </div>
+          <span class="dock-status-text" id="companion-status-text">"The stage awaits your song!"</span>
         </div>
-      </div>
-
-      <!-- Spotify Provider Card -->
-      <div class="sidebar-provider-card">
-        <div class="sidebar-provider-header">
-          <span>SPOTIFY STATUS</span>
-          <span style="color: #4ade80;">✦ Official API</span>
+        <div class="dock-actions">
+          <button class="dock-action-btn" onclick="switchTab('spotify-hub')" title="Open Spotify Hub">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="#1ed760"><path d="M12 2C6.477 2 2 6.477 2 12c0 5.524 4.477 10 10 10 5.524 0 10-4.476 10-10 0-5.523-4.476-10-10-10zm4.586 14.424c-.18.295-.563.387-.857.207-2.35-1.434-5.308-1.758-8.793-.963-.335.077-.67-.133-.746-.469-.077-.334.132-.67.467-.747 3.808-.871 7.076-.496 9.721 1.121.295.18.388.563.208.851zm1.224-2.72c-.226.367-.71.482-1.077.256-2.69-1.653-6.79-2.133-9.97-1.167-.413.125-.852-.107-.977-.52-.125-.413.107-.852.52-.977 3.632-1.102 8.147-.568 11.248 1.331.367.226.482.71.256 1.077zm.106-2.828c-3.226-1.916-8.544-2.093-11.621-1.158-.496.15-1.022-.135-1.172-.63-.15-.497.135-1.022.63-1.173 3.535-1.073 9.404-.866 13.115 1.337.447.265.592.846.327 1.293-.266.448-.847.593-1.279.331z"/></svg>
+          </button>
         </div>
-        <button class="sidebar-provider-btn" onclick="switchTab('spotify-hub')">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12c0 5.524 4.477 10 10 10 5.524 0 10-4.476 10-10 0-5.523-4.476-10-10-10zm4.586 14.424c-.18.295-.563.387-.857.207-2.35-1.434-5.308-1.758-8.793-.963-.335.077-.67-.133-.746-.469-.077-.334.132-.67.467-.747 3.808-.871 7.076-.496 9.721 1.121.295.18.388.563.208.851zm1.224-2.72c-.226.367-.71.482-1.077.256-2.69-1.653-6.79-2.133-9.97-1.167-.413.125-.852-.107-.977-.52-.125-.413.107-.852.52-.977 3.632-1.102 8.147-.568 11.248 1.331.367.226.482.71.256 1.077zm.106-2.828c-3.226-1.916-8.544-2.093-11.621-1.158-.496.15-1.022-.135-1.172-.63-.15-.497.135-1.022.63-1.173 3.535-1.073 9.404-.866 13.115 1.337.447.265.592.846.327 1.293-.266.448-.847.593-1.279.331z"/></svg>
-          Open Spotify Hub
-        </button>
       </div>
     </aside>
 
@@ -1151,16 +1150,16 @@
     <div class="logger-entries-wrap" id="logger-entries-container"></div>
   </aside>
 
-  <!-- Core Application Scripts (v7.5.5 3D Motion, Cozy Audio & Full Song Engine) -->
-  <script src="js/client-api.js?v=7.5.5"></script>
-  <script src="js/dynamic-bg.js?v=7.5.5"></script>
-  <script src="js/audio-player.js?v=7.5.5"></script>
-  <script src="js/offline-storage.js?v=7.5.5"></script>
-  <script src="js/lyrics-engine.js?v=7.5.5"></script>
-  <script src="js/spotify-client.js?v=7.5.5"></script>
-  <script src="js/marketplace.js?v=7.5.5"></script>
-  <script src="js/motion-3d.js?v=7.5.5"></script>
-  <script src="js/three-scene.js?v=7.5.5"></script>
-  <script src="js/app.js?v=7.5.5"></script>
+  <!-- Core Application Scripts (v7.6.0 3D Motion, Velvet Haptics, Ad Shield & Fast Engine) -->
+  <script src="js/client-api.js?v=7.6.0"></script>
+  <script src="js/dynamic-bg.js?v=7.6.0"></script>
+  <script src="js/audio-player.js?v=7.6.0"></script>
+  <script src="js/offline-storage.js?v=7.6.0"></script>
+  <script src="js/lyrics-engine.js?v=7.6.0"></script>
+  <script src="js/spotify-client.js?v=7.6.0"></script>
+  <script src="js/marketplace.js?v=7.6.0"></script>
+  <script src="js/motion-3d.js?v=7.6.0"></script>
+  <script src="js/three-scene.js?v=7.6.0"></script>
+  <script src="js/app.js?v=7.6.0"></script>
 </body>
 </html>

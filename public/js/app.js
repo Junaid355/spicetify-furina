@@ -821,7 +821,7 @@ async function downloadTrackOffline(trackId) {
       return;
     }
 
-    showToast(`Resolving audio for "${track.title}"...`, 'info');
+    showToast(`⚡ Fast-resolving audio stream for "${track.title}"...`, 'info');
 
     // Resolve stream URL: Audius lossless, local wav, or direct audio
     let streamUrl = track.streamUrl || track.stream_url;
@@ -832,26 +832,44 @@ async function downloadTrackOffline(trackId) {
       isFullAudio = true;
     }
 
-    // Check Audius lossless stream
-    if (!isFullAudio) {
+    // High-speed parallel multi-node race for full lossless audio
+    if (!isFullAudio && (!streamUrl || streamUrl.includes('p.scdn.co'))) {
+      const cleanTitle = (track.title || '').replace(/[\(\[].*?[\)\]]/g, '').trim();
+      const cleanArtist = (track.artist || '').split(/[,&]/)[0].trim();
+      const query = encodeURIComponent(`${cleanTitle} ${cleanArtist}`);
+
+      const audiusNodes = [
+        'https://discoveryprovider.audius.co',
+        'https://audius-discovery-1.cultur3stake.com',
+        'https://discoveryprovider3.audius.co',
+        'https://audius-dp.amsterdam.creatorseed.com'
+      ];
+
+      const audiusPromises = audiusNodes.map(node =>
+        fetch(`${node}/v1/tracks/search?query=${query}&app_name=FURINA_MUSIC`, {
+          signal: AbortSignal.timeout(2000)
+        }).then(r => r.ok ? r.json() : Promise.reject())
+          .then(d => {
+            if (d.data?.[0]?.id) {
+              return `${node}/v1/tracks/${d.data[0].id}/stream?app_name=FURINA_MUSIC`;
+            }
+            throw new Error('Not found');
+          })
+      );
+
       try {
-        const query = encodeURIComponent(`${(track.title || '').replace(/[\(\[].*?[\)\]]/g, '').trim()} ${(track.artist || '').split(/[,&]/)[0].trim()}`);
-        const audRes = await fetch(`https://discoveryprovider.audius.co/v1/tracks/search?query=${query}&app_name=FURINA_MUSIC`);
-        if (audRes.ok) {
-          const d = await audRes.json();
-          if (d.data?.[0]?.id) {
-            streamUrl = `https://discoveryprovider.audius.co/v1/tracks/${d.data[0].id}/stream?app_name=FURINA_MUSIC`;
-            isFullAudio = true;
-          }
-        }
+        streamUrl = await Promise.any(audiusPromises);
+        isFullAudio = true;
       } catch (_) {}
     }
 
-    // Check open iTunes high-quality master stream
+    // Check open high-quality master stream via iTunes if still needed
     if (!streamUrl || streamUrl.includes('p.scdn.co')) {
       try {
         const cleanQ = `${(track.title || '').replace(/[\(\[].*?[\)\]]/g, '').trim()} ${(track.artist || '').split(/[,&]/)[0].trim()}`;
-        const itRes = await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(cleanQ)}&entity=song&limit=1`);
+        const itRes = await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(cleanQ)}&entity=song&limit=1`, {
+          signal: AbortSignal.timeout(2000)
+        });
         if (itRes.ok) {
           const itData = await itRes.json();
           if (itData.results?.[0]?.previewUrl) {
@@ -872,12 +890,39 @@ async function downloadTrackOffline(trackId) {
       }
     }
 
-    showToast(`Downloading "${track.title}" (${isFullAudio ? 'Lossless Master' : 'High Quality Audio'})...`, 'info');
+    showToast(`⬇ Downloading "${track.title}" (${isFullAudio ? 'Lossless Master' : 'High Quality Audio'})...`, 'info');
 
     try {
       const res = await fetch(streamUrl);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const blob = await res.blob();
+
+      let blob;
+      // Progressive streaming reader if content-length is present
+      const contentLength = res.headers.get('content-length');
+      if (contentLength && res.body && window.ReadableStream) {
+        const total = parseInt(contentLength, 10);
+        let loaded = 0;
+        const reader = res.body.getReader();
+        const chunks = [];
+        let lastReport = 0;
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          chunks.push(value);
+          loaded += value.length;
+          const percent = Math.round((loaded / total) * 100);
+          const now = Date.now();
+          if (percent - lastReport >= 25 && now - lastReport > 400) {
+            lastReport = percent;
+            showToast(`Downloading "${track.title}" (${percent}%)...`, 'info');
+          }
+        }
+        blob = new Blob(chunks, { type: res.headers.get('content-type') || 'audio/mpeg' });
+      } else {
+        blob = await res.blob();
+      }
+
       const downloadUrl = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.style.display = 'none';
@@ -891,14 +936,14 @@ async function downloadTrackOffline(trackId) {
       setTimeout(() => {
         window.URL.revokeObjectURL(downloadUrl);
         if (a.parentNode) a.parentNode.removeChild(a);
-      }, 2000);
+      }, 2500);
 
-      // Also cache in local offline storage
+      // Cache in background IndexedDB asynchronously
       if (window.furinaOfflineDB) {
-        try { await window.furinaOfflineDB.downloadTrack({ ...track, stream_url: streamUrl, isDownloadable: true }); } catch (_) {}
+        window.furinaOfflineDB.downloadTrack({ ...track, stream_url: streamUrl, isDownloadable: true }).catch(() => {});
       }
 
-      showToast(`✦ "${track.title}" downloaded to your device!`, 'success');
+      showToast(`✦ "${track.title}" downloaded at high speed!`, 'success');
     } catch (fetchErr) {
       console.warn('[DownloadEngine] Direct blob fetch restricted, triggering direct link download:', fetchErr.message);
       const a = document.createElement('a');
