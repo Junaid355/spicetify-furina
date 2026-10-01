@@ -173,19 +173,19 @@
 
     // 4. 3D Stage Vinyl Record Deck
     initStageVinyl3D() {
-      const stage = document.getElementById('stage-player');
+      const stage = document.getElementById('stage-player-overlay');
       if (!stage) return;
 
-      const vinylDisc = stage.querySelector('.stage-vinyl-disc') || document.createElement('div');
-      if (!vinylDisc.classList.contains('stage-vinyl-disc')) {
+      const artContainer = stage.querySelector('.stage-cover-frame');
+      if (!artContainer) return;
+
+      if (!artContainer.querySelector('.stage-vinyl-disc')) {
+        const vinylDisc = document.createElement('div');
         vinylDisc.className = 'stage-vinyl-disc';
         const innerGroove = document.createElement('div');
         innerGroove.className = 'vinyl-groove-ring';
         vinylDisc.appendChild(innerGroove);
-        const artContainer = stage.querySelector('.stage-artwork-container');
-        if (artContainer && !artContainer.querySelector('.stage-vinyl-disc')) {
-          artContainer.appendChild(vinylDisc);
-        }
+        artContainer.appendChild(vinylDisc);
       }
     }
 
