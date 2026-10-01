@@ -454,7 +454,9 @@ class FurinaAudioEngine {
     }
 
     if (cleanTitle.includes('thousand years')) {
-      return this.videoMap['a thousand years'] || '5ptdEemGjrQ';
+      const lowArtist = (track.artist || '').toLowerCase();
+      if (lowArtist.includes('howell') || lowArtist.includes('jvke')) return '5ptdEemGjrQ';
+      return 'rtOvBOTyX00';
     }
 
     if (cleanTitle === 'lust' || cleanTitle.includes('lust')) {
