@@ -1,5 +1,5 @@
-// Furina Music — Service Worker v7.4 (Network-First Strategy)
-const CACHE_NAME = 'furina-music-v7.4';
+// Furina Music — Service Worker v7.5.3 (Network-First Strategy)
+const CACHE_NAME = 'furina-music-v7.5.3';
 
 const STATIC_ASSETS = [
   '/',
@@ -11,6 +11,8 @@ const STATIC_ASSETS = [
   '/css/animations.css',
   '/css/player.css',
   '/js/bug-logger.js',
+  '/js/audio-effects.js',
+  '/js/client-api.js',
   '/js/motion-3d.js',
   '/js/dynamic-bg.js',
   '/js/audio-player.js',
