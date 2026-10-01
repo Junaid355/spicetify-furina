@@ -270,6 +270,149 @@ button:active {
   transform: scale(0.92);
 }
 
+/* 5b. Aceternity UI: 3D Perspective Tilt Container */
+.card-3d-perspective {
+  perspective: 1000px;
+  transform-style: preserve-3d;
+}
+
+.card-3d-body {
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.18s cubic-bezier(0.2, 0, 0, 1), box-shadow 0.25s ease;
+  will-change: transform;
+}
+
+.card-3d-layer-1 {
+  transform: translateZ(16px);
+  transform-style: preserve-3d;
+}
+
+.card-3d-layer-2 {
+  transform: translateZ(28px);
+  transform-style: preserve-3d;
+}
+
+.card-3d-layer-3 {
+  transform: translateZ(42px);
+  transform-style: preserve-3d;
+}
+
+.card-3d-glare {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(circle at var(--glare-x, 50%) var(--glare-y, 50%), rgba(255, 255, 255, 0.18), transparent 60%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+  z-index: 5;
+}
+
+.card-3d-body:hover .card-3d-glare {
+  opacity: 1;
+}
+
+/* 5c. Aceternity UI: 3D Floating Pin Container */
+.pin-container-3d {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 600px;
+}
+
+.pin-perspective {
+  position: relative;
+  transform-style: preserve-3d;
+  transform: rotateX(25deg) translateZ(0px);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.pin-container-3d:hover .pin-perspective {
+  transform: rotateX(0deg) translateZ(12px);
+}
+
+.pin-pulse-wave {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  border: 1.5px solid var(--accent-cyan);
+  animation: pinWave 2.4s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+  pointer-events: none;
+}
+
+@keyframes pinWave {
+  0% { transform: scale(0.95); opacity: 0.8; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+
+.pin-beam-ray {
+  position: absolute;
+  top: -24px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 24px;
+  background: linear-gradient(180deg, var(--accent-cyan), transparent);
+  box-shadow: 0 0 10px var(--accent-cyan);
+}
+
+/* 5d. Magic UI: Retro Grid Background Plane */
+.retro-grid-plane {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  opacity: 0.22;
+  perspective: 200px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.retro-grid-lines {
+  position: absolute;
+  inset: 0;
+  transform: rotateX(65deg);
+  background-size: 32px 32px;
+  background-image: 
+    linear-gradient(to right, rgba(56, 189, 248, 0.3) 1px, transparent 0),
+    linear-gradient(to bottom, rgba(56, 189, 248, 0.3) 1px, transparent 0);
+  animation: retroGridMove 16s linear infinite;
+}
+
+@keyframes retroGridMove {
+  0% { transform: rotateX(65deg) translateY(0); }
+  100% { transform: rotateX(65deg) translateY(32px); }
+}
+
+/* 5e. Magic UI: Celestial Meteors */
+.meteors-layer {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.meteor-streak {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  height: 2px;
+  width: 50px;
+  background: linear-gradient(to right, #38bdf8, transparent);
+  transform: rotate(-45deg);
+  animation: meteorShoot 5s linear infinite;
+  opacity: 0;
+}
+
+@keyframes meteorShoot {
+  0% { transform: rotate(-45deg) translateX(0); opacity: 1; }
+  70% { opacity: 1; }
+  100% { transform: rotate(-45deg) translateX(-600px); opacity: 0; }
+}
+
 /* 6. Marquee for long titles */
 @keyframes marqueeScroll {
   0% { transform: translateX(0); }
@@ -584,4 +727,73 @@ button:active {
 .logger-badge-pill.error { background: #f43f5e; color: #fff; }
 .logger-badge-pill.warn { background: #f59e0b; color: #000; }
 .logger-badge-pill.clean { background: rgba(56, 189, 248, 0.2); color: var(--accent-cyan); }
+
+/* ==========================================================================
+   ACETERNITY UI & MAGIC UI 3D ENHANCEMENTS
+   ========================================================================== */
+
+/* 3D Card Depth & Specular Glare */
+.card-item, .bento-card, .furina-companion-card, .playlist-hero-card {
+  transform-style: preserve-3d;
+  position: relative;
+  overflow: hidden;
+}
+
+.card-item::before, .bento-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(350px circle at var(--mouse-x, -500px) var(--mouse-y, -500px), rgba(0, 242, 254, 0.12), transparent 80%);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 1;
+}
+
+.card-item:hover::before, .bento-card:hover::before {
+  opacity: 1;
+}
+
+/* 3D Vinyl LP Record Deck */
+.stage-artwork-container {
+  perspective: 1200px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.stage-vinyl-disc {
+  position: absolute;
+  width: 260px;
+  height: 260px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #0a0a0a 0%, #151515 45%, #050505 50%, #1a1a1a 70%, #000 100%);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.9), inset 0 0 10px rgba(255, 255, 255, 0.1);
+  right: -30px;
+  z-index: -1;
+  transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.playing .stage-vinyl-disc {
+  transform: translateX(45px) rotate(360deg);
+  animation: vinylSpin 6s linear infinite;
+}
+
+.vinyl-groove-ring {
+  position: absolute;
+  inset: 12px;
+  border-radius: 50%;
+  border: 1px dashed rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.8);
+}
+
+.vinyl-groove-ring::after {
+  content: '';
+  position: absolute;
+  inset: 40px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 242, 254, 0.15);
+}
+
 

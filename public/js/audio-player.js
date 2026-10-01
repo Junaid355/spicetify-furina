@@ -110,6 +110,13 @@ class FurinaAudioEngine {
                 this.pendingVideoId = null;
                 this.pendingTrack = null;
                 this.executeYouTubePlay(vid, trk);
+              } else if (this.pendingSearchQuery && this.pendingTrack) {
+                console.log(`[FullStreamEngine] Playing queued pending search query: ${this.pendingSearchQuery}`);
+                const q = this.pendingSearchQuery;
+                const trk = this.pendingTrack;
+                this.pendingSearchQuery = null;
+                this.pendingTrack = null;
+                this.executeYouTubeSearchPlay(q, trk);
               }
             },
             onStateChange: (event) => {
@@ -168,61 +175,9 @@ class FurinaAudioEngine {
 
   async handleYtPlaybackError(err) {
     const errCode = err?.data !== undefined ? err.data : err;
-    console.warn(`[AudioEngine] YouTube stream restriction (code ${errCode}), switching to audio stream fallback for "${this.currentTrack?.title}"`);
+    console.warn(`[AudioEngine] YouTube stream restriction (code ${errCode}), resolving full song audio stream for "${this.currentTrack?.title}"`);
     this.stopYtProgressTimer();
-
-    if (this.currentTrack && !this.isRetryingFallback) {
-      this.isRetryingFallback = true;
-      try {
-        const cleanTitle = (this.currentTrack.title || '').replace(/\(.*?\)/g, '').replace(/\[.*?\]/g, '').trim();
-        const cleanArtist = (this.currentTrack.artist || '').split(/[,&]/)[0].trim();
-        const itRes = await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(`${cleanTitle} ${cleanArtist}`)}&entity=song&limit=1`);
-        if (itRes.ok) {
-          const itData = await itRes.json();
-          const match = itData.results?.[0];
-          if (match?.previewUrl) {
-            console.log(`[AudioEngine] Playing fallback iTunes stream for: ${this.currentTrack.title}`);
-            this.activeBackend = 'html5';
-            this.audioElement.src = match.previewUrl;
-            this.audioElement.load();
-            await this.audioElement.play().catch(() => {});
-            this.isPlaying = true;
-            this.emit('statechange', { isPlaying: true });
-            this.isRetryingFallback = false;
-            return;
-          }
-        }
-      } catch (_) {}
-
-      try {
-        const audRes = await fetch(`https://discoveryprovider.audius.co/v1/tracks/search?query=${encodeURIComponent(`${this.currentTrack.title} ${this.currentTrack.artist || ''}`)}&app_name=FURINA_MUSIC`);
-        if (audRes.ok) {
-          const audData = await audRes.json();
-          const match = audData.data?.[0];
-          if (match?.id) {
-            console.log(`[AudioEngine] Playing fallback Audius stream for: ${this.currentTrack.title}`);
-            this.activeBackend = 'html5';
-            this.audioElement.src = `https://discoveryprovider.audius.co/v1/tracks/${match.id}/stream?app_name=FURINA_MUSIC`;
-            this.audioElement.load();
-            await this.audioElement.play().catch(() => {});
-            this.isPlaying = true;
-            this.emit('statechange', { isPlaying: true });
-            this.isRetryingFallback = false;
-            return;
-          }
-        }
-      } catch (_) {}
-
-      if (this.currentTrack.id?.startsWith('furina_') || (this.currentTrack.title || '').toLowerCase().includes('vaguelette')) {
-        this.activeBackend = 'html5';
-        this.audioElement.src = './audio/la_vaguelette.wav';
-        this.audioElement.load();
-        await this.audioElement.play().catch(() => {});
-        this.isPlaying = true;
-        this.emit('statechange', { isPlaying: true });
-      }
-      this.isRetryingFallback = false;
-    }
+    await this.fallbackToFullAudioOrNext();
   }
 
   startYtProgressTimer() {
@@ -291,10 +246,11 @@ class FurinaAudioEngine {
       const d = this.ytPlayer.getDuration();
       if (d && d > 0) return d;
     }
-    if (this.activeBackend === 'html5' && this.audioElement.duration) {
+    const expected = (this.currentTrack?.durationMs || this.currentTrack?.duration_ms || 180000) / 1000;
+    if (this.activeBackend === 'html5' && this.audioElement.duration && !this.isTemporaryPreview && this.audioElement.duration > 35) {
       return this.audioElement.duration;
     }
-    return (this.currentTrack?.durationMs ? this.currentTrack.durationMs / 1000 : 180);
+    return expected;
   }
 
   getCurrentTime() {
@@ -343,11 +299,15 @@ class FurinaAudioEngine {
     this.audioElement.addEventListener('timeupdate', () => {
       if (this.activeBackend === 'html5') {
         const cur = this.audioElement.currentTime;
-        const dur = this.audioElement.duration || (this.currentTrack?.durationMs ? this.currentTrack.durationMs / 1000 : 0);
+        let dur = this.audioElement.duration;
+        const expectedDur = (this.currentTrack?.durationMs || this.currentTrack?.duration_ms || 180000) / 1000;
+        if (!dur || dur <= 35 || this.isTemporaryPreview) {
+          dur = expectedDur;
+        }
         this.emit('timeupdate', {
           currentTime: cur,
           duration: dur,
-          progress: dur > 0 ? (cur / dur) * 100 : 0
+          progress: dur > 0 ? Math.min(100, (cur / dur) * 100) : 0
         });
       }
     });
@@ -371,6 +331,13 @@ class FurinaAudioEngine {
 
     this.audioElement.addEventListener('ended', () => {
       if (this.activeBackend === 'html5') {
+        if (this.isTemporaryPreview) {
+          console.log('[AudioEngine] Preview reached end, verifying full song stream...');
+          if (this.currentTrack) {
+            this.resolveAndUpgradeFullSong(this.currentTrack);
+            return;
+          }
+        }
         this.handleTrackEnded();
       }
     });
@@ -605,14 +572,65 @@ class FurinaAudioEngine {
             videoId = data.videoId;
             this.videoMap[track.id] = videoId;
             this.videoMap[track.title.toLowerCase().trim()] = videoId;
-          } else if (data.streamUrl && !stream) {
+          } else if (data.streamUrl) {
             stream = data.streamUrl;
           }
         }
       } catch (_) {}
     }
 
+    // Direct Audius full-length search if videoId not yet resolved
+    if (!videoId && (!stream || stream.includes('itunes') || stream.includes('apple.com'))) {
+      try {
+        const cleanTitle = (track.title || '').replace(/\(.*?\)/g, '').replace(/\[.*?\]/g, '').trim();
+        const cleanArtist = (track.artist || '').split(/[,&]/)[0].trim();
+        const audRes = await fetch(`https://discoveryprovider.audius.co/v1/tracks/search?query=${encodeURIComponent(`${cleanTitle} ${cleanArtist}`)}&app_name=FURINA_MUSIC`);
+        if (audRes.ok) {
+          const audData = await audRes.json();
+          const match = audData.data?.[0];
+          if (match && match.id) {
+            stream = `https://discoveryprovider.audius.co/v1/tracks/${match.id}/stream?app_name=FURINA_MUSIC`;
+            track.streamUrl = stream;
+            track.stream_url = stream;
+            console.log(`[FullStreamEngine] Audius full song resolved on the fly: ${track.title} => ${stream}`);
+          }
+        }
+      } catch (_) {}
+    }
+
+    // Direct Piped public API search for YouTube videoId if still unmapped
+    if (!videoId && (!stream || stream.includes('itunes') || stream.includes('apple.com'))) {
+      const pipedInstances = [
+        'https://pipedapi.kavin.rocks',
+        'https://api.piped.private.coffee'
+      ];
+      for (const inst of pipedInstances) {
+        try {
+          const cleanTitle = (track.title || '').replace(/\(.*?\)/g, '').replace(/\[.*?\]/g, '').trim();
+          const cleanArtist = (track.artist || '').split(/[,&]/)[0].trim();
+          const pipedRes = await fetch(`${inst}/search?q=${encodeURIComponent(`${cleanTitle} ${cleanArtist}`)}&filter=all`, {
+            signal: AbortSignal.timeout(3000)
+          });
+          if (pipedRes.ok) {
+            const pipedData = await pipedRes.json();
+            const firstItem = (pipedData.items || []).find(it => it.url && it.url.includes('watch?v='));
+            if (firstItem) {
+              const matchedVid = firstItem.url.replace(/.*watch\?v=/, '').split('&')[0];
+              if (matchedVid && matchedVid.length === 11) {
+                videoId = matchedVid;
+                this.videoMap[track.id] = videoId;
+                this.videoMap[cleanTitle.toLowerCase()] = videoId;
+                break;
+              }
+            }
+          }
+        } catch (_) {}
+      }
+    }
+
+    // Play via YouTube Streamer if videoId available
     if (videoId) {
+      this.isTemporaryPreview = false;
       if (this.isYtReady && this.ytPlayer && typeof this.ytPlayer.loadVideoById === 'function') {
         this.executeYouTubePlay(videoId, track);
         return;
@@ -626,9 +644,10 @@ class FurinaAudioEngine {
       }
     }
 
-    // Route D: Authentic Direct Song Audio Stream (Apple Music / Audius / Deezer / High Quality Preview)
-    if (stream && !stream.includes('la_vaguelette')) {
-      console.log(`[AudioEngine] Playing authentic song stream: ${track.title} => ${stream}`);
+    // Route D: Full Song Audio Stream (Audius Lossless or Direct Master)
+    if (stream && (stream.includes('audius.co') || stream.includes('.wav') || stream.includes('.mp3') || !stream.includes('itunes.apple.com'))) {
+      console.log(`[FullStreamEngine] Playing full song audio stream: ${track.title} => ${stream}`);
+      this.isTemporaryPreview = false;
       this.activeBackend = 'html5';
       this.stopYtProgressTimer();
       if (this.ytPlayer && typeof this.ytPlayer.pauseVideo === 'function') {
@@ -643,33 +662,23 @@ class FurinaAudioEngine {
       return;
     }
 
-    // Route E: Dynamic search resolution from open iTunes API
-    try {
-      const cleanQ = `${(track.title || '').replace(/\(.*?\)/g, '').trim()} ${(track.artist || '').split(/[,&]/)[0].trim()}`;
-      const itRes = await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(cleanQ)}&entity=song&limit=1`);
-      if (itRes.ok) {
-        const itData = await itRes.json();
-        const found = itData.results?.[0];
-        if (found?.previewUrl) {
-          console.log(`[AudioEngine] Dynamically playing resolved iTunes stream for: ${track.title}`);
-          this.activeBackend = 'html5';
-          this.stopYtProgressTimer();
-          if (this.ytPlayer && typeof this.ytPlayer.pauseVideo === 'function') {
-            try { this.ytPlayer.pauseVideo(); } catch (_) {}
-          }
-          this.audioElement.src = found.previewUrl;
-          this.audioElement.load();
-          await this.audioElement.play().catch(() => {});
-          this.isPlaying = true;
-          this.emit('statechange', { isPlaying: true });
-          this.emit('trackchange', track);
-          return;
-        }
-      }
-    } catch (_) {}
+    // Route E: 100% Full Song Streaming via YouTube Native Search (Eliminates 30-sec limit)
+    const cleanSearchQuery = `${(track.title || '').replace(/[\(\[].*?[\)\]]/g, '').trim()} ${(track.artist || '').split(/[,&]/)[0].trim()}`;
+    if (this.isYtReady && this.ytPlayer && typeof this.ytPlayer.loadPlaylist === 'function') {
+      this.executeYouTubeSearchPlay(cleanSearchQuery, track);
+      return;
+    } else {
+      console.log(`[FullStreamEngine] Queueing YouTube search play for: ${track.title}`);
+      this.pendingSearchQuery = cleanSearchQuery;
+      this.pendingTrack = track;
+      this.emit('trackchange', track);
+      this.initYouTubeStreamer();
+      return;
+    }
 
-    // Route F: ONLY if explicitly a Furina Fontaine repertoire track
+    // Route F: Fallback to Fontaine master
     if (track.id?.startsWith('furina_') || (track.title || '').toLowerCase().includes('vaguelette')) {
+      this.isTemporaryPreview = false;
       this.activeBackend = 'html5';
       this.stopYtProgressTimer();
       this.audioElement.src = './audio/la_vaguelette.wav';
@@ -681,11 +690,68 @@ class FurinaAudioEngine {
       return;
     }
 
-    // Never play random French opera for third-party pop/phonk music!
-    console.warn(`[AudioEngine] No stream available for: ${track.title}`);
+    console.warn(`[AudioEngine] Resolving stream for: ${track.title}`);
     if (typeof showToast === 'function') {
-      showToast(`Finding audio source for "${track.title}"...`, 'info');
+      showToast(`Resolving full audio stream for "${track.title}"...`, 'info');
     }
+    this.resolveAndUpgradeFullSong(track);
+  }
+
+  async resolveAndUpgradeFullSong(track) {
+    if (!track || this.isUpgradingFullSong) return;
+    this.isUpgradingFullSong = true;
+    try {
+      const cleanTitle = (track.title || '').replace(/\(.*?\)/g, '').replace(/\[.*?\]/g, '').trim();
+      const cleanArtist = (track.artist || '').split(/[,&]/)[0].trim();
+
+      // Try Audius search first
+      const audRes = await fetch(`https://discoveryprovider.audius.co/v1/tracks/search?query=${encodeURIComponent(`${cleanTitle} ${cleanArtist}`)}&app_name=FURINA_MUSIC`);
+      if (audRes.ok) {
+        const audData = await audRes.json();
+        const match = audData.data?.[0];
+        if (match && match.id && this.currentTrack?.id === track.id) {
+          const audUrl = `https://discoveryprovider.audius.co/v1/tracks/${match.id}/stream?app_name=FURINA_MUSIC`;
+          console.log(`[FullStreamEngine] Seamlessly upgraded to full Audius stream: ${track.title}`);
+          const curTime = this.audioElement.currentTime || 0;
+          this.isTemporaryPreview = false;
+          this.audioElement.src = audUrl;
+          this.audioElement.currentTime = curTime;
+          await this.audioElement.play().catch(() => {});
+          this.isUpgradingFullSong = false;
+          return;
+        }
+      }
+
+      // Try Piped API for direct YouTube videoId
+      const pipedInstances = [
+        'https://pipedapi.kavin.rocks',
+        'https://api.piped.private.coffee'
+      ];
+      for (const inst of pipedInstances) {
+        try {
+          const res = await fetch(`${inst}/search?q=${encodeURIComponent(`${cleanTitle} ${cleanArtist}`)}&filter=all`, {
+            signal: AbortSignal.timeout(3000)
+          });
+          if (res.ok) {
+            const data = await res.json();
+            const it = (data.items || []).find(item => item.url && item.url.includes('watch?v='));
+            if (it && this.currentTrack?.id === track.id) {
+              const vid = it.url.replace(/.*watch\?v=/, '').split('&')[0];
+              if (vid && vid.length === 11) {
+                console.log(`[FullStreamEngine] Seamlessly upgraded to full YouTube stream: ${track.title} (${vid})`);
+                this.isTemporaryPreview = false;
+                this.videoMap[track.id] = vid;
+                this.videoMap[cleanTitle.toLowerCase()] = vid;
+                this.executeYouTubePlay(vid, track);
+                this.isUpgradingFullSong = false;
+                return;
+              }
+            }
+          }
+        } catch (_) {}
+      }
+    } catch (_) {}
+    this.isUpgradingFullSong = false;
   }
 
   executeYouTubePlay(videoId, track) {
@@ -712,6 +778,43 @@ class FurinaAudioEngine {
     } catch (ytErr) {
       console.warn('[FullStreamEngine] loadVideoById error, resolving alternate stream:', ytErr);
       this.handleYtPlaybackError(ytErr);
+    }
+  }
+
+  executeYouTubeSearchPlay(query, track) {
+    console.log(`[FullStreamEngine] Searching and streaming 100% full song via YouTube: "${query}"`);
+    this.activeBackend = 'youtube';
+    this.currentTrack = track;
+    this.currentTrackVideoId = null;
+    this.isTemporaryPreview = false;
+    this.audioElement.pause();
+    this.stopYtProgressTimer();
+
+    try {
+      if (this.ytPlayer && typeof this.ytPlayer.loadPlaylist === 'function') {
+        this.ytPlayer.loadPlaylist({
+          listType: 'search',
+          list: query,
+          index: 0,
+          startSeconds: 0
+        });
+        if (typeof this.ytPlayer.setVolume === 'function') {
+          this.ytPlayer.setVolume(this.volume * 100);
+        }
+        if (this.isMuted && typeof this.ytPlayer.mute === 'function') {
+          this.ytPlayer.mute();
+        } else if (typeof this.ytPlayer.unMute === 'function') {
+          this.ytPlayer.unMute();
+        }
+        this.isPlaying = true;
+        this.emit('statechange', { isPlaying: true });
+        this.emit('trackchange', track);
+        this.startYtProgressTimer();
+        return;
+      }
+    } catch (searchErr) {
+      console.warn('[FullStreamEngine] YouTube search playlist error, trying fallback:', searchErr);
+      this.handleYtPlaybackError(searchErr);
     }
   }
 

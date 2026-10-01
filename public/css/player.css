@@ -547,12 +547,17 @@
 
   .app-player-bar {
     height: var(--player-height);
-    padding: 0 12px;
-    bottom: 54px; /* Sits above mobile navbar */
+    padding: 0 10px;
+    bottom: 58px; /* Sits cleanly above mobile navbar */
+    left: 8px;
+    right: 8px;
+    width: auto;
+    border-radius: 14px;
     background: rgba(8, 16, 32, 0.94);
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
-    border-top: 1px solid var(--border-glass-subtle);
+    backdrop-filter: blur(28px);
+    -webkit-backdrop-filter: blur(28px);
+    border: 1px solid var(--border-glass);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.65), 0 0 18px rgba(56, 189, 248, 0.2);
   }
 
   .player-now-playing {

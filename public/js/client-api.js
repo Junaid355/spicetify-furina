@@ -219,6 +219,99 @@
       return jsonResponse({ error: 'Track not found' }, 404);
     }
 
+    // 1e. Real-Time Audio Stream Resolver for Any Track (/api/catalog/resolve-audio)
+    if (pathname === '/api/catalog/resolve-audio') {
+      const qTitle = urlObj.searchParams.get('title') || '';
+      const qArtist = urlObj.searchParams.get('artist') || '';
+      const cleanTitle = qTitle.replace(/\(.*?\)/g, '').replace(/\[.*?\]/g, '').trim().toLowerCase();
+      const cleanArtist = qArtist.replace(/\u00a0/g, ' ').split(/[,&]/)[0].trim().toLowerCase();
+      const vMap = window.furinaAudio?.videoMap || {};
+
+      // 1. Instant check in videoMap
+      let videoId = vMap[cleanTitle] || 
+                    vMap[`${cleanTitle} - ${cleanArtist}`] || 
+                    vMap[qTitle.toLowerCase().trim()] || 
+                    vMap[`${qTitle.toLowerCase().trim()} - ${qArtist.toLowerCase().trim()}`];
+      
+      if (!videoId) {
+        for (const [k, v] of Object.entries(vMap)) {
+          if (k === cleanTitle || k.startsWith(cleanTitle) || cleanTitle.includes(k) || k.includes(cleanTitle)) {
+            videoId = v;
+            break;
+          }
+        }
+      }
+
+      if (videoId) {
+        return jsonResponse({
+          videoId,
+          youtubeId: videoId,
+          streamType: 'youtube',
+          fullLength: true,
+          provider: 'youtube',
+          title: qTitle,
+          artist: qArtist
+        });
+      }
+
+      // 2. Query Audius for 100% full-length lossless stream
+      try {
+        const audRes = await nativeFetch(`https://discoveryprovider.audius.co/v1/tracks/search?query=${encodeURIComponent(`${cleanTitle} ${cleanArtist}`)}&app_name=FURINA_MUSIC`);
+        if (audRes.ok) {
+          const audData = await audRes.json();
+          const match = audData.data?.[0];
+          if (match && match.id) {
+            return jsonResponse({
+              streamUrl: `https://discoveryprovider.audius.co/v1/tracks/${match.id}/stream?app_name=FURINA_MUSIC`,
+              stream_url: `https://discoveryprovider.audius.co/v1/tracks/${match.id}/stream?app_name=FURINA_MUSIC`,
+              streamType: 'audius',
+              fullLength: true,
+              provider: 'audius',
+              title: match.title,
+              artist: match.user?.name || qArtist,
+              durationMs: (match.duration || 180) * 1000
+            });
+          }
+        }
+      } catch (_) {}
+
+      // 3. Fallback: Query Piped API for direct YouTube videoId
+      const pipedInstances = [
+        'https://pipedapi.kavin.rocks',
+        'https://api.piped.private.coffee'
+      ];
+      for (const inst of pipedInstances) {
+        try {
+          const pipedRes = await nativeFetch(`${inst}/search?q=${encodeURIComponent(`${cleanTitle} ${cleanArtist}`)}&filter=all`, {
+            signal: AbortSignal.timeout(3000)
+          });
+          if (pipedRes.ok) {
+            const pipedData = await pipedRes.json();
+            const firstItem = (pipedData.items || []).find(it => it.url && it.url.includes('watch?v='));
+            if (firstItem) {
+              const matchedVid = firstItem.url.replace(/.*watch\?v=/, '').split('&')[0];
+              if (matchedVid && matchedVid.length === 11) {
+                if (window.furinaAudio?.videoMap) {
+                  window.furinaAudio.videoMap[cleanTitle] = matchedVid;
+                }
+                return jsonResponse({
+                  videoId: matchedVid,
+                  youtubeId: matchedVid,
+                  streamType: 'youtube',
+                  fullLength: true,
+                  provider: 'youtube',
+                  title: qTitle,
+                  artist: qArtist
+                });
+              }
+            }
+          }
+        } catch (_) {}
+      }
+
+      return jsonResponse({ error: 'No audio stream available' }, 404);
+    }
+
     // 2. Playlists List
     if (pathname === '/api/playlists') {
       let custom = [];
@@ -309,8 +402,8 @@
           album: t.album || 'Spotify Repertoire',
           durationMs: t.duration_ms || t.durationMs || 210000,
           duration_ms: t.duration_ms || t.durationMs || 210000,
-          coverUrl: t.cover_url || t.coverUrl || './icons/app-icon.jpg',
-          cover_url: t.cover_url || t.coverUrl || './icons/app-icon.jpg',
+          coverUrl: (t.cover_url && !t.cover_url.includes('app-icon.jpg')) ? t.cover_url : ((t.coverUrl && !t.coverUrl.includes('app-icon.jpg')) ? t.coverUrl : './images/furina_salon_music.jpg'),
+          cover_url: (t.cover_url && !t.cover_url.includes('app-icon.jpg')) ? t.cover_url : ((t.coverUrl && !t.coverUrl.includes('app-icon.jpg')) ? t.coverUrl : './images/furina_salon_music.jpg'),
           streamUrl: t.stream_url || t.streamUrl,
           stream_url: t.stream_url || t.streamUrl,
           youtubeId: t.youtubeId || (window.furinaAudio?.videoMap?.[t.id] || window.furinaAudio?.videoMap?.[t.title?.toLowerCase()]),
@@ -720,25 +813,35 @@
         const itunesRes = await nativeFetch(`https://itunes.apple.com/search?term=${encodeURIComponent(query)}&entity=song&limit=30`);
         if (itunesRes.ok) {
           const itunesData = await itunesRes.json();
-          itunesMatches = (itunesData.results || []).map(r => ({
-            id: `sp_trk_${r.trackId}`,
-            track_id: `sp_trk_${r.trackId}`,
-            title: r.trackName,
-            artist: r.artistName,
-            album: r.collectionName || 'Spotify Repertoire',
-            durationMs: r.trackTimeMillis,
-            duration_ms: r.trackTimeMillis,
-            coverUrl: r.artworkUrl100?.replace('100x100bb', '600x600bb') || r.artworkUrl100,
-            cover_url: r.artworkUrl100?.replace('100x100bb', '600x600bb') || r.artworkUrl100,
-            streamUrl: r.previewUrl,
-            stream_url: r.previewUrl,
-            provider: 'spotify',
-            audioQuality: {
-              codec: 'Opus Lossless',
-              bitrate: '320 kbps',
-              sampleRate: '44.1 kHz'
-            }
-          }));
+          itunesMatches = (itunesData.results || []).map(r => {
+            const rawTitle = r.trackName || '';
+            const rawArtist = r.artistName || '';
+            const cleanTitle = rawTitle.replace(/\(.*?\)/g, '').replace(/\[.*?\]/g, '').trim().toLowerCase();
+            const cleanArtist = rawArtist.split(/[,&]/)[0].trim().toLowerCase();
+            const vMap = window.furinaAudio?.videoMap || {};
+            const foundVid = vMap[`sp_trk_${r.trackId}`] || vMap[`${cleanTitle} - ${cleanArtist}`] || vMap[cleanTitle] || vMap[rawTitle.toLowerCase().trim()] || null;
+            return {
+              id: `sp_trk_${r.trackId}`,
+              track_id: `sp_trk_${r.trackId}`,
+              title: rawTitle,
+              artist: rawArtist,
+              album: r.collectionName || 'Spotify Repertoire',
+              durationMs: r.trackTimeMillis,
+              duration_ms: r.trackTimeMillis,
+              coverUrl: r.artworkUrl100?.replace('100x100bb', '600x600bb') || r.artworkUrl100,
+              cover_url: r.artworkUrl100?.replace('100x100bb', '600x600bb') || r.artworkUrl100,
+              streamUrl: r.previewUrl,
+              stream_url: r.previewUrl,
+              youtubeId: foundVid,
+              videoId: foundVid,
+              provider: 'spotify',
+              audioQuality: {
+                codec: foundVid ? 'YouTube Full Lossless' : 'Opus Master',
+                bitrate: '320 kbps',
+                sampleRate: '44.1 kHz'
+              }
+            };
+          });
         }
       } catch (err) {
         console.warn('[ClientAPI] Live Spotify search error:', err);

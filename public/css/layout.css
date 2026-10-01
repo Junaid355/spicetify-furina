@@ -405,7 +405,7 @@ body {
   height: 100%;
   padding: 4px 0;
   position: relative;
-  transition: all var(--transition-fast);
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.15s ease;
 }
 
 .mobile-nav-item svg {
@@ -413,7 +413,11 @@ body {
   height: 20px;
   stroke: currentColor;
   stroke-width: 2;
-  transition: transform var(--transition-fast);
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.mobile-nav-item:active {
+  transform: scale(0.92);
 }
 
 .mobile-nav-item.active {
@@ -421,7 +425,8 @@ body {
 }
 
 .mobile-nav-item.active svg {
-  transform: translateY(-2px) scale(1.08);
+  transform: translateY(-2px) scale(1.15);
+  filter: drop-shadow(0 0 6px var(--accent-cyan));
 }
 
 .mobile-nav-item.active::after {
