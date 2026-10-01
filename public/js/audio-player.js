@@ -54,7 +54,7 @@ class FurinaAudioEngine {
   // Pre-load YouTube Video ID Cache
   async loadVideoMap() {
     try {
-      const res = await fetch('./data/video-map.json');
+      const res = await fetch('./data/video-map.json?v=7.4');
       if (res.ok) {
         this.videoMap = await res.json();
         console.log(`[AudioEngine] Pre-loaded ${Object.keys(this.videoMap).length} full-song video mappings.`);
@@ -63,7 +63,7 @@ class FurinaAudioEngine {
     } catch (_) {}
 
     try {
-      const res2 = await fetch('/data/video-map.json');
+      const res2 = await fetch('/data/video-map.json?v=7.4');
       if (res2.ok) {
         this.videoMap = await res2.json();
         console.log(`[AudioEngine] Pre-loaded ${Object.keys(this.videoMap).length} full-song video mappings.`);
@@ -455,6 +455,14 @@ class FurinaAudioEngine {
 
     if (cleanTitle.includes('thousand years')) {
       return this.videoMap['a thousand years'] || '5ptdEemGjrQ';
+    }
+
+    if (cleanTitle === 'lust' || cleanTitle.includes('lust')) {
+      const lowArtist = (track.artist || '').toLowerCase();
+      if (lowArtist.includes('marino') || lowArtist.includes('alexandria')) return 'sr_qh33LsKQ';
+      if (lowArtist.includes('kendrick')) return '2g811Eo7K8U';
+      if (lowArtist.includes('lil skies')) return '7N3py3yZ-bQ';
+      return this.videoMap['lust'] || 'sr_qh33LsKQ';
     }
 
     return null;
