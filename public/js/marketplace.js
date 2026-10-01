@@ -28,8 +28,12 @@ class FurinaMarketplace {
     const container = document.getElementById('marketplace-grid');
     if (!container || !this.feed) return;
 
+    const themes = this.feed.themes || [];
+    const extensions = this.feed.extensions || [];
+    const apps = this.feed.apps || [];
+
     if (this.currentCategory === 'themes') {
-      container.innerHTML = this.feed.themes.map(t => `
+      container.innerHTML = themes.map(t => `
         <div class="card-item" style="border-top: 3px solid ${t.accentColor};">
           <div style="height: 90px; border-radius: 8px; background: ${t.previewColor}; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; box-shadow: inset 0 0 20px rgba(0,0,0,0.5);">
             <div style="width: 32px; height: 32px; border-radius: 50%; background: ${t.accentColor}; box-shadow: 0 0 16px ${t.accentColor};"></div>
@@ -47,7 +51,7 @@ class FurinaMarketplace {
         </div>
       `).join('');
     } else if (this.currentCategory === 'extensions') {
-      container.innerHTML = this.feed.extensions.map(e => `
+      container.innerHTML = extensions.map(e => `
         <div class="card-item">
           <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px;">
             <div class="card-title">${e.name}</div>
@@ -63,7 +67,7 @@ class FurinaMarketplace {
         </div>
       `).join('');
     } else if (this.currentCategory === 'apps') {
-      container.innerHTML = this.feed.apps.map(a => `
+      container.innerHTML = apps.map(a => `
         <div class="card-item">
           <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px;">
             <div class="card-title">${a.name}</div>
