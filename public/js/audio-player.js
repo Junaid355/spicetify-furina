@@ -481,6 +481,13 @@ class FurinaAudioEngine {
       return this.videoMap['lust'] || 'sr_qh33LsKQ';
     }
 
+    if (cleanTitle === 'greed' || cleanTitle.includes('greed')) {
+      const lowArtist = (track.artist || '').toLowerCase();
+      if (lowArtist.includes('marino')) return 'Af9nqVCKb-o';
+      if (lowArtist.includes('daughter')) return 'i9pX4r4x1Yk';
+      return this.videoMap['greed - marino'] || 'Af9nqVCKb-o';
+    }
+
     return null;
   }
 
@@ -581,10 +588,19 @@ class FurinaAudioEngine {
     let videoId = track.youtubeId || track.videoId || this.resolveTrackVideoId(track);
     if (!videoId) {
       const cleanTitle = (track.title || '').replace(/\(.*?\)/g, '').replace(/\[.*?\]/g, '').trim().toLowerCase();
-      for (const [k, v] of Object.entries(this.videoMap)) {
-        if (k === cleanTitle || k.startsWith(cleanTitle) || cleanTitle.includes(k) || k.includes(cleanTitle)) {
-          videoId = v;
-          break;
+      const cleanArtist = (track.artist || '').replace(/\(.*?\)/g, '').replace(/\[.*?\]/g, '').trim().toLowerCase();
+      if (this.videoMap[`${cleanTitle} - ${cleanArtist}`]) {
+        videoId = this.videoMap[`${cleanTitle} - ${cleanArtist}`];
+      } else if (this.videoMap[`${cleanArtist} - ${cleanTitle}`]) {
+        videoId = this.videoMap[`${cleanArtist} - ${cleanTitle}`];
+      } else if (this.videoMap[cleanTitle]) {
+        videoId = this.videoMap[cleanTitle];
+      } else {
+        for (const [k, v] of Object.entries(this.videoMap)) {
+          if (k === cleanTitle || k === `${cleanTitle} - ${cleanArtist}`) {
+            videoId = v;
+            break;
+          }
         }
       }
     }

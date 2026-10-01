@@ -14,18 +14,21 @@
 
   async function loadStaticCatalog() {
     if (staticCatalog) return staticCatalog;
-    try {
-      // Determine base path for catalog.json
-      const basePath = window.location.pathname.includes('/spicetify-furina/') ? '/spicetify-furina/' : '/';
-      const catalogUrl = `${basePath}data/catalog.json`.replace('//', '/');
-      const res = await nativeFetch(catalogUrl);
-      if (res.ok) {
-        staticCatalog = await res.json();
-      }
-    } catch (e) {
-      console.warn('[ClientAPI] Failed to preload data/catalog.json:', e);
+    const candidates = [
+      './data/catalog.json',
+      'data/catalog.json',
+      window.location.pathname.includes('/spicetify-furina/') ? '/spicetify-furina/data/catalog.json' : '/data/catalog.json'
+    ];
+    for (const url of candidates) {
+      try {
+        const res = await nativeFetch(url);
+        if (res.ok) {
+          staticCatalog = await res.json();
+          if (staticCatalog) return staticCatalog;
+        }
+      } catch (_) {}
     }
-    return staticCatalog;
+    return staticCatalog || { tracks: [], playlists: [], charts: [] };
   }
 
   // Preload catalog safely
