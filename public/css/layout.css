@@ -82,11 +82,14 @@ body {
 .app-container {
   display: flex;
   flex: 1;
-  height: calc(100vh - var(--player-height));
-  height: calc(100dvh - var(--player-height));
+  height: calc(100vh - var(--player-height)) !important;
+  height: calc(100dvh - var(--player-height)) !important;
+  max-height: calc(100vh - var(--player-height)) !important;
+  max-height: calc(100dvh - var(--player-height)) !important;
   position: relative;
   z-index: 1;
   overflow: hidden;
+  box-sizing: border-box;
 }
 
 /* Desktop Sidebar */
