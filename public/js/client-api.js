@@ -606,15 +606,25 @@
           );
 
           if (matchedTracks.length > 0) {
+            const seenKeys = new Set();
+            const uniqueMatched = [];
+            for (const pt of matchedTracks) {
+              const k = `${(pt.title || '').trim().toLowerCase()}:::${(pt.artist || '').trim().toLowerCase()}`;
+              if (!seenKeys.has(k)) {
+                seenKeys.add(k);
+                uniqueMatched.push(pt);
+              }
+            }
+
             newPl = {
               id: found.id,
               name: found.name,
               description: found.description || 'Imported Spotify Playlist',
               cover_url: found.cover_url || './images/default_artwork.jpg',
-              track_count: matchedTracks.length,
+              track_count: uniqueMatched.length,
               provider: 'spotify',
               provider_playlist_id: found.provider_playlist_id || playlistId,
-              tracks: matchedTracks.map(t => ({
+              tracks: uniqueMatched.map(t => ({
                 id: t.track_id || t.id,
                 track_id: t.track_id || t.id,
                 title: t.title,
