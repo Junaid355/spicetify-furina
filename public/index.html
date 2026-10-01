@@ -191,6 +191,9 @@
             <span>🐞</span>
             <span class="btn-text-responsive">Logs</span>
             <span class="logger-badge-pill clean" id="bug-logger-badge-count">0</span>
+          <button class="btn-subtle spring-click" id="btn-open-download-modal" onclick="openDownloadModal()" title="Download Furina Music for Windows, Android, and iPhone" style="font-size: 0.76rem; padding: 4px 10px; display: inline-flex; align-items: center; gap: 4px; background: rgba(56, 189, 248, 0.12); border: 1px solid var(--accent-cyan); color: #fff;">
+            <span>📱</span>
+            <span class="btn-text-responsive">Get Apps (EXE/APK/iOS)</span>
           </button>
           <button class="btn-icon-subtle spring-click" onclick="switchTab('marketplace')" title="Marketplace & Themes">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
@@ -783,6 +786,74 @@
     </div>
   </div>
 
+  <!-- Multi-Platform App Download Modal (Windows EXE, Android APK, iOS) -->
+  <div class="modal-backdrop" id="modal-download-app">
+    <div class="modal-box" style="max-width: 620px;">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <img src="images/furina_dance.gif" style="width: 28px; height: 28px; border-radius: 50%;" />
+          <h3 class="modal-title">Get Furina Music Apps</h3>
+        </div>
+        <button class="btn-icon-subtle" onclick="closeModal('modal-download-app')">✕</button>
+      </div>
+      <div class="download-tabs-nav" style="display: flex; gap: 8px; margin: 16px 0; border-bottom: 1px solid var(--border-glass-subtle); padding-bottom: 8px;">
+        <button class="download-tab-btn active" onclick="switchDownloadTab('win')" id="tab-btn-win" style="padding: 6px 14px; border-radius: 8px; background: rgba(56, 189, 248, 0.15); border: 1px solid var(--accent-cyan); color: #fff; cursor: pointer;">🪟 Windows (.exe)</button>
+        <button class="download-tab-btn" onclick="switchDownloadTab('android')" id="tab-btn-android" style="padding: 6px 14px; border-radius: 8px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-glass-subtle); color: var(--text-dim); cursor: pointer;">🤖 Android (.apk)</button>
+        <button class="download-tab-btn" onclick="switchDownloadTab('ios')" id="tab-btn-ios" style="padding: 6px 14px; border-radius: 8px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-glass-subtle); color: var(--text-dim); cursor: pointer;">🍏 iPhone / iPad (iOS)</button>
+      </div>
+
+      <!-- Windows Tab -->
+      <div class="download-tab-pane active" id="pane-win">
+        <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-glass-subtle); border-radius: 12px; padding: 16px; margin-bottom: 12px;">
+          <h4 style="color: var(--accent-cyan); margin-bottom: 6px;">✦ Windows Standalone Desktop Edition</h4>
+          <p style="font-size: 0.85rem; color: var(--text-dim); margin-bottom: 12px;">Includes automatic updates, frameless glass theater, global keyboard media keys, and Discord Rich Presence.</p>
+          <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <a href="https://github.com/Junaid355/spicetify-furina/releases" target="_blank" class="btn-primary" style="display: inline-flex; align-items: center; gap: 6px; text-decoration: none;">
+              <span>⬇</span> Download Installer (.exe)
+            </a>
+            <a href="https://github.com/Junaid355/spicetify-furina/releases" target="_blank" class="btn-secondary" style="display: inline-flex; align-items: center; gap: 6px; text-decoration: none;">
+              <span>⚡</span> Portable Version (.exe)
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Android Tab -->
+      <div class="download-tab-pane" id="pane-android" style="display: none;">
+        <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-glass-subtle); border-radius: 12px; padding: 16px; margin-bottom: 12px;">
+          <h4 style="color: #4ade80; margin-bottom: 6px;">✦ Android Native Package (.apk)</h4>
+          <p style="font-size: 0.85rem; color: var(--text-dim); margin-bottom: 12px;">Direct APK download for Android phones and tablets, or install directly as a progressive web app.</p>
+          <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <a href="https://github.com/Junaid355/spicetify-furina/releases" target="_blank" class="btn-primary" style="background: #16a34a; border-color: #4ade80; display: inline-flex; align-items: center; gap: 6px; text-decoration: none;">
+              <span>⬇</span> Download Furina-Music.apk
+            </a>
+            <button class="btn-secondary" onclick="triggerPWAInstall()" id="btn-pwa-install" style="display: inline-flex; align-items: center; gap: 6px;">
+              <span>📲</span> 1-Click PWA Install
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- iOS Tab -->
+      <div class="download-tab-pane" id="pane-ios" style="display: none;">
+        <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-glass-subtle); border-radius: 12px; padding: 16px;">
+          <h4 style="color: #c084fc; margin-bottom: 8px;">✦ Install on iPhone & iPad (Safari)</h4>
+          <ol style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6; padding-left: 20px;">
+            <li>Open this website in <strong>Safari</strong> on your iPhone or iPad.</li>
+            <li>Tap the <strong>Share</strong> button at the bottom of the screen (the square icon with an upward arrow ⎋).</li>
+            <li>Scroll down and tap <strong>"Add to Home Screen"</strong> (icon ⊞).</li>
+            <li>Tap <strong>"Add"</strong> in the top-right corner.</li>
+          </ol>
+          <div style="margin-top: 10px; font-size: 0.78rem; color: var(--accent-cyan);">✦ Launches fullscreen with native audio controls, Dynamic Island integration, and zero browser bars!</div>
+        </div>
+      </div>
+
+      <div class="modal-footer" style="margin-top: 16px; display: flex; justify-content: flex-end;">
+        <button class="btn-secondary" onclick="closeModal('modal-download-app')">Close</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Scripts -->
   <script>
     // Automatic Cache-Buster & Service Worker Purge
@@ -912,6 +983,7 @@
   <script src="js/spotify-client.js?v=7.0"></script>
   <script src="js/marketplace.js?v=7.0"></script>
   <script src="js/motion-3d.js?v=7.0"></script>
+  <script src="js/three-scene.js?v=7.0"></script>
   <script src="js/app.js?v=7.0"></script>
 </body>
 </html>

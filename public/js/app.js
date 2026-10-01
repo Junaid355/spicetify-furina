@@ -2196,6 +2196,60 @@ function sanitizeStoredPlaylists() {
   } catch (_) {}
 }
 
+// Multi-Platform App Distribution Handlers (Windows EXE, Android APK, iOS)
+function openDownloadModal() {
+  openModal('modal-download-app');
+}
+window.openDownloadModal = openDownloadModal;
+
+function switchDownloadTab(tabId) {
+  const tabs = ['win', 'android', 'ios'];
+  tabs.forEach(t => {
+    const pane = document.getElementById(`pane-${t}`);
+    const btn = document.getElementById(`tab-btn-${t}`);
+    if (t === tabId) {
+      if (pane) pane.style.display = 'block';
+      if (btn) {
+        btn.classList.add('active');
+        btn.style.background = 'rgba(56, 189, 248, 0.15)';
+        btn.style.borderColor = 'var(--accent-cyan)';
+        btn.style.color = '#fff';
+      }
+    } else {
+      if (pane) pane.style.display = 'none';
+      if (btn) {
+        btn.classList.remove('active');
+        btn.style.background = 'rgba(255, 255, 255, 0.05)';
+        btn.style.borderColor = 'var(--border-glass-subtle)';
+        btn.style.color = 'var(--text-dim)';
+      }
+    }
+  });
+}
+window.switchDownloadTab = switchDownloadTab;
+
+// Capture beforeinstallprompt for 1-Click PWA / Android installation
+window.deferredInstallPrompt = null;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  window.deferredInstallPrompt = e;
+  const pwaBtn = document.getElementById('btn-pwa-install');
+  if (pwaBtn) pwaBtn.style.display = 'inline-flex';
+});
+
+function triggerPWAInstall() {
+  if (window.deferredInstallPrompt) {
+    window.deferredInstallPrompt.prompt();
+    window.deferredInstallPrompt.userChoice.then((res) => {
+      console.log('[PWA] User install choice:', res.outcome);
+      window.deferredInstallPrompt = null;
+    });
+  } else {
+    showToast('✦ Open browser menu (⋮) and tap "Install app" or "Add to Home screen"', 'info');
+  }
+}
+window.triggerPWAInstall = triggerPWAInstall;
+
 // App Initialization
 document.addEventListener('DOMContentLoaded', () => {
   sanitizeStoredPlaylists();

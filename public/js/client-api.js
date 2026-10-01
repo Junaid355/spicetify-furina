@@ -830,13 +830,14 @@
               duration_ms: r.trackTimeMillis,
               coverUrl: r.artworkUrl100?.replace('100x100bb', '600x600bb') || r.artworkUrl100,
               cover_url: r.artworkUrl100?.replace('100x100bb', '600x600bb') || r.artworkUrl100,
-              streamUrl: r.previewUrl,
-              stream_url: r.previewUrl,
+              streamUrl: null,
+              stream_url: null,
+              previewUrl: r.previewUrl,
               youtubeId: foundVid,
               videoId: foundVid,
               provider: 'spotify',
               audioQuality: {
-                codec: foundVid ? 'YouTube Full Lossless' : 'Opus Master',
+                codec: 'YouTube Lossless Master',
                 bitrate: '320 kbps',
                 sampleRate: '44.1 kHz'
               }

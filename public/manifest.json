@@ -1,35 +1,51 @@
 {
-  "name": "Furina Music",
-  "short_name": "Furina",
-  "description": "High-fidelity Fontaine music experience connecting Spotify with Furina's authorized lossless catalog.",
-  "start_url": "/",
+  "id": "com.furinamusic.app",
+  "name": "Furina Music ✦ Lossless Streamer & 3D Stage",
+  "short_name": "Furina Music",
+  "description": "High-fidelity Fontaine music experience with 100% full song playback, 3D WebGL stage, and ad-free listening.",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
   "background_color": "#060d1b",
   "theme_color": "#060d1b",
   "orientation": "any",
+  "categories": ["music", "audio", "entertainment"],
+  "lang": "en",
   "icons": [
     {
-      "src": "/icons/app-icon.jpg",
+      "src": "icons/app-icon.jpg",
       "sizes": "192x192",
       "type": "image/jpeg",
       "purpose": "any maskable"
     },
     {
-      "src": "/icons/app-icon.jpg",
+      "src": "icons/app-icon.jpg",
       "sizes": "512x512",
       "type": "image/jpeg",
       "purpose": "any maskable"
+    },
+    {
+      "src": "icons/app-icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
     }
   ],
   "shortcuts": [
     {
       "name": "Fontaine Opera",
-      "url": "/?view=home",
+      "url": "./?view=home",
       "description": "Listen to Fontaine grand suites"
     },
     {
+      "name": "Live Search",
+      "url": "./?view=search",
+      "description": "Search 100% full songs"
+    },
+    {
       "name": "Your Library",
-      "url": "/?view=library",
+      "url": "./?view=library",
       "description": "View saved tracks and playlists"
     }
   ]
