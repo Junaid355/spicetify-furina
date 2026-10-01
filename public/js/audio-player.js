@@ -416,8 +416,18 @@ class FurinaAudioEngine {
     if (cleanTitle.includes('lover girl')) {
       return this.videoMap['lover girl'] || 'q3BEA3ew77Y';
     }
-    if (cleanTitle === 'her' || cleanTitle.startsWith('her ')) {
-      return this.videoMap['her'] || 'Ivrrt6oYxxc';
+    if (cleanTitle === 'her' || cleanTitle.startsWith('her ') || cleanTitle.includes('her')) {
+      const lowTitle = (track.title || '').toLowerCase();
+      if (lowTitle.includes('annika') && lowTitle.includes('kaden')) return 'A_rDJ-ckxqA';
+      if (lowTitle.includes('annika')) return 'ZxE0QzE2K9o';
+      if (lowTitle.includes('zvc')) return 'y2ecafXmnIY';
+      if (lowTitle.includes('john michael howell') || lowTitle.includes('howell')) return 'rLELllb8fBA';
+      if (lowTitle.includes('forrest') || lowTitle.includes('christmas')) return '9wdtjreefrw';
+      if (lowTitle === 'her' || cleanTitle === 'her') return 'f5-IY_Ja1RM';
+    }
+
+    if (cleanTitle.includes('thousand years')) {
+      return this.videoMap['a thousand years'] || '5ptdEemGjrQ';
     }
 
     return null;
@@ -429,7 +439,11 @@ class FurinaAudioEngine {
     this.initAudioContext();
 
     // Standardize track object keys
-    track.coverUrl = track.cover_url || track.coverUrl || './icons/app-icon.jpg';
+    const fallbackArt = (typeof window.getFallbackArtwork === 'function') ? window.getFallbackArtwork() : './images/furina_salon_music.jpg';
+    if (!track.cover_url || track.cover_url === './icons/app-icon.jpg' || track.cover_url.includes('app-icon.jpg')) {
+      track.cover_url = fallbackArt;
+    }
+    track.coverUrl = track.cover_url || track.coverUrl || fallbackArt;
     track.cover_url = track.coverUrl;
     track.durationMs = track.duration_ms || track.durationMs || 180000;
     track.duration_ms = track.durationMs;

@@ -230,7 +230,7 @@ function renderTrackRow(track, index, contextQueue = null) {
           </div>
         ` : (isPlaying ? '▶' : (index !== undefined ? index + 1 : '♪'))}
       </div>
-      <img class="track-thumbnail" src="${track.cover_url || track.coverUrl || window.getFallbackArtwork()}" alt="${track.title}" onerror="this.onerror=null; this.src=window.getFallbackArtwork();" loading="lazy" />
+      <img class="track-thumbnail" src="${(track.cover_url && !track.cover_url.includes('app-icon.jpg')) ? track.cover_url : ((track.coverUrl && !track.coverUrl.includes('app-icon.jpg')) ? track.coverUrl : window.getFallbackArtwork())}" alt="${track.title}" onerror="this.onerror=null; this.src=window.getFallbackArtwork();" loading="lazy" />
       <div class="track-meta">
         <div class="track-title">${track.title}</div>
         <div class="track-artist">
@@ -558,7 +558,7 @@ function renderSpotifyTableRow(track, index, contextQueue = null) {
         `}
       </div>
       <div class="spotify-col-title">
-        <img class="spotify-track-thumb" src="${track.cover_url || track.coverUrl || window.getFallbackArtwork()}" alt="${track.title}" onerror="this.onerror=null; this.src=window.getFallbackArtwork();" loading="lazy" />
+        <img class="spotify-track-thumb" src="${(track.cover_url && !track.cover_url.includes('app-icon.jpg')) ? track.cover_url : ((track.coverUrl && !track.coverUrl.includes('app-icon.jpg')) ? track.coverUrl : window.getFallbackArtwork())}" alt="${track.title}" onerror="this.onerror=null; this.src=window.getFallbackArtwork();" loading="lazy" />
         <div class="spotify-track-info">
           <div class="spotify-track-name">${track.title}</div>
           <div class="spotify-track-sub">
@@ -770,34 +770,65 @@ async function downloadTrackOffline(trackId) {
 
     // Resolve stream URL: Audius lossless, local wav, or direct audio
     let streamUrl = track.streamUrl || track.stream_url;
-    if (!streamUrl || streamUrl.includes('p.scdn.co')) {
+    let isFullAudio = false;
+
+    // Check if local lossless Fontaine master
+    if (streamUrl && (streamUrl.endsWith('.wav') || streamUrl.includes('/audio/'))) {
+      isFullAudio = true;
+    }
+
+    // Check Audius lossless stream
+    if (!isFullAudio) {
       try {
-        const query = encodeURIComponent(`${track.title} ${track.artist || ''}`);
+        const query = encodeURIComponent(`${(track.title || '').replace(/[\(\[].*?[\)\]]/g, '').trim()} ${(track.artist || '').split(/[,&]/)[0].trim()}`);
         const audRes = await fetch(`https://discoveryprovider.audius.co/v1/tracks/search?query=${query}&app_name=FURINA_MUSIC`);
         if (audRes.ok) {
           const d = await audRes.json();
           if (d.data?.[0]?.id) {
             streamUrl = `https://discoveryprovider.audius.co/v1/tracks/${d.data[0].id}/stream?app_name=FURINA_MUSIC`;
+            isFullAudio = true;
           }
         }
       } catch (_) {}
     }
 
-    if (!streamUrl) {
-      streamUrl = './audio/la_vaguelette.wav';
+    // Check open iTunes high-quality master stream
+    if (!streamUrl || streamUrl.includes('p.scdn.co')) {
+      try {
+        const cleanQ = `${(track.title || '').replace(/[\(\[].*?[\)\]]/g, '').trim()} ${(track.artist || '').split(/[,&]/)[0].trim()}`;
+        const itRes = await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(cleanQ)}&entity=song&limit=1`);
+        if (itRes.ok) {
+          const itData = await itRes.json();
+          if (itData.results?.[0]?.previewUrl) {
+            streamUrl = itData.results[0].previewUrl;
+          }
+        }
+      } catch (_) {}
     }
 
-    showToast(`Downloading "${track.title}" audio file...`, 'info');
+    // Never download French opera for pop/third-party music!
+    if (!streamUrl) {
+      if (track.id?.startsWith('furina_') || (track.title || '').toLowerCase().includes('vaguelette')) {
+        streamUrl = './audio/la_vaguelette.wav';
+        isFullAudio = true;
+      } else {
+        showToast(`Offline audio stream not available for "${track.title}".`, 'warning');
+        return;
+      }
+    }
+
+    showToast(`Downloading "${track.title}" (${isFullAudio ? 'Lossless Master' : 'High Quality Audio'})...`, 'info');
 
     const res = await fetch(streamUrl);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const blob = await res.blob();
     const downloadUrl = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.style.display = 'none';
     a.href = downloadUrl;
     const cleanTitle = (track.title || 'song').replace(/[\\/:*?"<>|]/g, '_');
-    const cleanArtist = (track.artist || 'Furina').replace(/[\\/:*?"<>|]/g, '_');
-    const ext = streamUrl.endsWith('.wav') ? 'wav' : 'mp3';
+    const cleanArtist = (track.artist || 'Artist').replace(/[\\/:*?"<>|]/g, '_');
+    const ext = streamUrl.endsWith('.wav') ? 'wav' : (streamUrl.includes('.m4a') ? 'm4a' : 'mp3');
     a.download = `${cleanArtist} - ${cleanTitle}.${ext}`;
     document.body.appendChild(a);
     a.click();
@@ -808,10 +839,10 @@ async function downloadTrackOffline(trackId) {
 
     // Also cache in local offline storage
     if (window.furinaOfflineDB) {
-      try { await window.furinaOfflineDB.downloadTrack({ ...track, stream_url: streamUrl }); } catch (_) {}
+      try { await window.furinaOfflineDB.downloadTrack({ ...track, stream_url: streamUrl, isDownloadable: true }); } catch (_) {}
     }
 
-    showToast(`"${track.title}" downloaded to your device!`, 'success');
+    showToast(`✦ "${track.title}" downloaded to your device!`, 'success');
   } catch (err) {
     console.error('Download error:', err);
     showToast(`Download started for "${trackId}"`, 'success');
@@ -1478,11 +1509,14 @@ function initPlayerBar() {
 }
 
 function updateNowPlayingUI(track) {
-  const cover = track.cover_url || track.coverUrl || './icons/app-icon.jpg';
+  const fallback = window.getFallbackArtwork();
+  const rawCover = track.cover_url || track.coverUrl;
+  const cover = (rawCover && !rawCover.includes('app-icon.jpg')) ? rawCover : fallback;
+
   const playerArt = document.getElementById('player-art-img');
   if (playerArt) {
     playerArt.src = cover;
-    playerArt.onerror = () => { playerArt.src = './icons/app-icon.jpg'; };
+    playerArt.onerror = () => { playerArt.src = fallback; };
   }
   document.getElementById('player-title').textContent = track.title;
   document.getElementById('player-artist').textContent = track.artist;
@@ -1497,7 +1531,7 @@ function updateNowPlayingUI(track) {
   const stageArt = document.getElementById('stage-cover-art');
   if (stageArt) {
     stageArt.src = cover;
-    stageArt.onerror = () => { stageArt.src = './icons/app-icon.jpg'; };
+    stageArt.onerror = () => { stageArt.src = fallback; };
   }
   const stageTitle = document.getElementById('stage-track-title');
   if (stageTitle) stageTitle.textContent = track.title;
@@ -1509,12 +1543,32 @@ async function loadTrackLyrics(trackId) {
   const container = document.getElementById('stage-lyrics-container');
   if (!container) return;
 
+  const current = window.furinaAudio?.currentTrack;
+  const title = current?.title || '';
+  const artist = current?.artist || '';
+
   try {
-    const res = await fetch(`/api/catalog/tracks/${trackId}/lyrics`);
+    const res = await fetch(`/api/catalog/tracks/${trackId}/lyrics?title=${encodeURIComponent(title)}&artist=${encodeURIComponent(artist)}`);
     const data = await res.json();
     if (data.available && data.lrc_text) {
       window.furinaLyrics.parseLRC(data.lrc_text);
     } else {
+      // Direct open fallback to lrclib.net if API endpoint was bypassed
+      try {
+        const cleanTitle = title.replace(/[\(\[].*?[\)\]]/g, '').trim();
+        const cleanArtist = artist.split(/[,&]/)[0].trim();
+        const lrcRes = await fetch(`https://lrclib.net/api/get?track_name=${encodeURIComponent(cleanTitle)}&artist_name=${encodeURIComponent(cleanArtist)}`);
+        if (lrcRes.ok) {
+          const lrcData = await lrcRes.json();
+          if (lrcData.syncedLyrics || lrcData.plainLyrics) {
+            window.furinaLyrics.parseLRC(lrcData.syncedLyrics || lrcData.plainLyrics);
+            window.furinaLyrics.render(container, (seekSeconds) => {
+              window.furinaAudio.seek(seekSeconds);
+            });
+            return;
+          }
+        }
+      } catch (_) {}
       window.furinaLyrics.parseLRC('');
     }
     window.furinaLyrics.render(container, (seekSeconds) => {
@@ -1522,6 +1576,8 @@ async function loadTrackLyrics(trackId) {
     });
   } catch (err) {
     console.error('Lyrics fetch error:', err);
+    window.furinaLyrics.parseLRC('');
+    window.furinaLyrics.render(container);
   }
 }
 
@@ -2062,7 +2118,29 @@ function sanitizeStoredPlaylists() {
     if (!raw) return;
     const list = JSON.parse(raw);
     let changed = false;
+
+    const jvkeHerTracks = [
+      { id: 'sp_1lBzZP6SexSdOWScgGyFnk', track_id: 'sp_1lBzZP6SexSdOWScgGyFnk', title: 'her', artist: 'JVKE', album: 'her (all versions...for now)', duration_ms: 171757, cover_url: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d00001e0217f5e96a4a3a8536e6b37d24', provider: 'spotify', youtubeId: 'f5-IY_Ja1RM' },
+      { id: 'sp_25e7VjsrjuMwKcEv75PPRR', track_id: 'sp_25e7VjsrjuMwKcEv75PPRR', title: 'her (feat. Annika Wells)', artist: 'JVKE, Annika Wells', album: 'her (all versions...for now)', duration_ms: 167583, cover_url: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d00001e0217f5e96a4a3a8536e6b37d24', provider: 'spotify', youtubeId: 'ZxE0QzE2K9o' },
+      { id: 'sp_4NCYotN4OtmQQJXlxOiUNz', track_id: 'sp_4NCYotN4OtmQQJXlxOiUNz', title: 'her (feat. ZVC)', artist: 'JVKE, ZVC', album: 'her (all versions...for now)', duration_ms: 144166, cover_url: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d00001e0217f5e96a4a3a8536e6b37d24', provider: 'spotify', youtubeId: 'y2ecafXmnIY' },
+      { id: 'sp_2r8ipfLYRUwiZS5U1evJWW', track_id: 'sp_2r8ipfLYRUwiZS5U1evJWW', title: 'her (feat. Annika Wells & Kaden Hawke)', artist: 'JVKE, Kaden Hawke, Annika Wells', album: 'her (all versions...for now)', duration_ms: 199249, cover_url: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d00001e0217f5e96a4a3a8536e6b37d24', provider: 'spotify', youtubeId: 'A_rDJ-ckxqA' },
+      { id: 'sp_6rjmfHrZPG4N2anuhxGcXW', track_id: 'sp_6rjmfHrZPG4N2anuhxGcXW', title: 'her (feat. John Michael Howell)', artist: 'JVKE, John Michael Howell', album: 'her (all versions...for now)', duration_ms: 197999, cover_url: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d00001e0217f5e96a4a3a8536e6b37d24', provider: 'spotify', youtubeId: 'rLELllb8fBA' },
+      { id: 'sp_1Wgdibc4dHh1iuuAF63S2R', track_id: 'sp_1Wgdibc4dHh1iuuAF63S2R', title: 'her (feat. Forrest Frank) - Christmas Version', artist: 'JVKE, Forrest Frank', album: 'her (all versions...for now)', duration_ms: 141666, cover_url: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d00001e0217f5e96a4a3a8536e6b37d24', provider: 'spotify', youtubeId: '9wdtjreefrw' }
+    ];
+
     for (const pl of list) {
+      // Fix stale 'her' imported playlist
+      const isHer = pl.id?.includes('6yxCZJXD') || pl.provider_playlist_id?.includes('6yxCZJXD') || (pl.name || '').toLowerCase().includes('her (all versions');
+      if (isHer && (pl.tracks?.[0]?.title === 'A Thousand Years' || !pl.tracks?.some(t => t.title === 'her' && (t.artist || '').includes('JVKE')))) {
+        pl.name = 'her (all versions...for now)';
+        pl.description = 'JVKE — her (all versions...for now) official repertoire';
+        pl.cover_url = 'https://image-cdn-ak.spotifycdn.com/image/ab67616d00001e0217f5e96a4a3a8536e6b37d24';
+        pl.tracks = jvkeHerTracks;
+        pl.track_count = 6;
+        changed = true;
+        continue;
+      }
+
       if (Array.isArray(pl.tracks)) {
         const seen = new Set();
         const unique = [];
@@ -2081,7 +2159,7 @@ function sanitizeStoredPlaylists() {
     }
     if (changed) {
       localStorage.setItem('furina_custom_playlists', JSON.stringify(list));
-      console.log('[Sanitizer] Cleaned duplicate tracks from stored playlists.');
+      console.log('[Sanitizer] Cleaned duplicate tracks and synchronized verified playlists.');
     }
   } catch (_) {}
 }

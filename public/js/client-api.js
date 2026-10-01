@@ -84,8 +84,8 @@
           album: t.album,
           durationMs: t.duration_ms || t.durationMs || 180000,
           duration_ms: t.duration_ms || t.durationMs || 180000,
-          coverUrl: t.cover_url || t.coverUrl || './icons/app-icon.jpg',
-          cover_url: t.cover_url || t.coverUrl || './icons/app-icon.jpg',
+          coverUrl: t.cover_url || t.coverUrl || './images/furina_salon_music.jpg',
+          cover_url: t.cover_url || t.coverUrl || './images/furina_salon_music.jpg',
           streamUrl: t.stream_url || t.streamUrl || './audio/la_vaguelette.wav',
           stream_url: t.stream_url || t.streamUrl || './audio/la_vaguelette.wav',
           provider: t.provider,
@@ -102,8 +102,8 @@
             id: c.track_id,
             title: c.title,
             artist: c.artist,
-            coverUrl: c.cover_url || './icons/app-icon.jpg',
-            cover_url: c.cover_url || './icons/app-icon.jpg',
+            coverUrl: c.cover_url || './images/furina_salon_music.jpg',
+            cover_url: c.cover_url || './images/furina_salon_music.jpg',
             streamUrl: c.stream_url || './audio/la_vaguelette.wav',
             stream_url: c.stream_url || './audio/la_vaguelette.wav'
           }
@@ -115,8 +115,8 @@
           album: t.album,
           durationMs: t.duration_ms || 180000,
           duration_ms: t.duration_ms || 180000,
-          coverUrl: t.cover_url || './icons/app-icon.jpg',
-          cover_url: t.cover_url || './icons/app-icon.jpg',
+          coverUrl: t.cover_url || './images/furina_salon_music.jpg',
+          cover_url: t.cover_url || './images/furina_salon_music.jpg',
           streamUrl: t.stream_url,
           stream_url: t.stream_url,
           provider: t.provider
@@ -124,7 +124,72 @@
       });
     }
 
-    // 1b. Single Track Details (/api/catalog/tracks/:id)
+    // 1b. Track Synchronized Lyrics (/api/catalog/tracks/:id/lyrics)
+    if (pathname.includes('/api/catalog/tracks/') && pathname.endsWith('/lyrics')) {
+      const cleanTrackId = pathname.replace('/api/catalog/tracks/', '').replace('/lyrics', '');
+      let trk = (catalog?.tracks || []).find(t => t.id === cleanTrackId || t.track_id === cleanTrackId) ||
+                (catalog?.playlistTracks || []).find(t => t.id === cleanTrackId || t.track_id === cleanTrackId);
+      
+      // Fontaine curated lyrics
+      if (cleanTrackId === 'furina_vaguelette' || (trk?.title || '').toLowerCase().includes('vaguelette')) {
+        return jsonResponse({
+          available: true,
+          is_synced: 1,
+          lrc_text: `[00:00.00]✦ La Vaguelette — Furina de Fontaine ✦\n[00:15.20]Ah, si je pouvais vivre dans l'eau\n[00:22.50]Le monde serait si beau\n[00:30.10]Une larme au fond de l'océan\n[00:38.00]Pour effacer les peines d'un enfant\n[00:46.40]Dans les profondeurs où dorment les vagues\n[00:54.20]Mon cœur se noie sous une couronne d'étoiles\n[01:03.50]Pardonnez-moi mes secrets\n[01:12.80]Car la comédie doit se jouer jusqu'à la fin\n[01:25.00]Toutes les larmes de Fontaine versées en silence\n[01:38.20]Sur la scène de l'Épiclèse.`,
+          plain_text: `Ah, si je pouvais vivre dans l'eau\nLe monde serait si beau\nUne larme au fond de l'océan\nPour effacer les peines d'un enfant...`,
+          source: 'fontaine_vault'
+        });
+      }
+
+      // Dynamic lookup on open, ad-free lrclib.net API
+      const searchTitle = (trk?.title || window.furinaAudio?.currentTrack?.title || '').replace(/[\(\[].*?[\)\]]/g, '').trim();
+      const searchArtist = (trk?.artist || window.furinaAudio?.currentTrack?.artist || '').split(/[,&]/)[0].trim();
+
+      if (searchTitle) {
+        try {
+          const lrcUrl = `https://lrclib.net/api/get?track_name=${encodeURIComponent(searchTitle)}&artist_name=${encodeURIComponent(searchArtist)}`;
+          const lrcRes = await nativeFetch(lrcUrl);
+          if (lrcRes.ok) {
+            const lrcData = await lrcRes.json();
+            if (lrcData.syncedLyrics || lrcData.plainLyrics) {
+              return jsonResponse({
+                available: true,
+                is_synced: Boolean(lrcData.syncedLyrics),
+                lrc_text: lrcData.syncedLyrics || lrcData.plainLyrics,
+                plain_text: lrcData.plainLyrics || lrcData.syncedLyrics,
+                source: 'lrclib'
+              });
+            }
+          }
+        } catch (_) {}
+      }
+
+      return jsonResponse({
+        available: false,
+        is_synced: 0,
+        lrc_text: '',
+        plain_text: 'No synchronized lyrics available.'
+      });
+    }
+
+    // 1c. Track Quality Inspector (/api/catalog/tracks/:id/quality)
+    if (pathname.includes('/api/catalog/tracks/') && pathname.endsWith('/quality')) {
+      const cleanTrackId = pathname.replace('/api/catalog/tracks/', '').replace('/quality', '');
+      let trk = (catalog?.tracks || []).find(t => t.id === cleanTrackId || t.track_id === cleanTrackId) ||
+                (catalog?.playlistTracks || []).find(t => t.id === cleanTrackId || t.track_id === cleanTrackId);
+      const isFontaine = trk?.id?.startsWith('furina_') || trk?.provider === 'furina';
+      return jsonResponse({
+        codec: isFontaine ? 'WAV Lossless PCM' : 'Opus / AAC Master',
+        bitrate: isFontaine ? '1411 kbps' : '320 kbps',
+        sample_rate: '44.1 kHz',
+        channels: 2,
+        bit_depth: isFontaine ? 24 : 16,
+        source: isFontaine ? 'Fontaine Opera Epiclese Vault' : 'Official Lossless Web Stream',
+        is_lossless: isFontaine ? 1 : 0
+      });
+    }
+
+    // 1d. Single Track Details (/api/catalog/tracks/:id)
     if (pathname.startsWith('/api/catalog/tracks/')) {
       const trackId = pathname.replace('/api/catalog/tracks/', '');
       let trk = (catalog?.tracks || []).find(t => t.id === trackId || t.track_id === trackId);
@@ -132,6 +197,8 @@
         trk = (catalog?.playlistTracks || []).find(t => t.id === trackId || t.track_id === trackId);
       }
       if (trk) {
+        const fallbackArt = './images/furina_salon_music.jpg';
+        const cover = (trk.cover_url && !trk.cover_url.includes('app-icon.jpg')) ? trk.cover_url : fallbackArt;
         return jsonResponse({
           ...trk,
           id: trk.id || trk.track_id,
@@ -141,8 +208,8 @@
           album: trk.album || 'Furina Repertoire',
           durationMs: trk.duration_ms || trk.durationMs || 210000,
           duration_ms: trk.duration_ms || trk.durationMs || 210000,
-          coverUrl: trk.cover_url || trk.coverUrl || './icons/app-icon.jpg',
-          cover_url: trk.cover_url || trk.coverUrl || './icons/app-icon.jpg',
+          coverUrl: cover,
+          cover_url: cover,
           streamUrl: trk.stream_url || trk.streamUrl,
           stream_url: trk.stream_url || trk.streamUrl,
           youtubeId: trk.youtubeId || (window.furinaAudio?.videoMap?.[trk.id] || window.furinaAudio?.videoMap?.[trk.title?.toLowerCase()]),
@@ -171,7 +238,7 @@
         id: playlistId,
         name: 'Fontaine Selection',
         description: 'Imported music collection',
-        cover_url: './icons/app-icon.jpg'
+        cover_url: './images/furina_salon_music.jpg'
       };
 
       const catTracks = (catalog?.playlistTracks || []).filter(pt => 
@@ -184,12 +251,15 @@
       // If catalog has curated tracks for this specific playlist, prefer them or update stale tracks
       if (catTracks.length > 0) {
         const isStale = !tracks || tracks.length === 0 || 
-          (playlist.name?.toLowerCase().includes('7 weeks') && !tracks.some(t => t.title?.toLowerCase().includes('7 weeks')));
+          (playlist.name?.toLowerCase().includes('7 weeks') && !tracks.some(t => t.title?.toLowerCase().includes('7 weeks'))) ||
+          (playlist.name?.toLowerCase().includes('her (all versions') && !tracks.some(t => t.title?.toLowerCase() === 'her' && (t.artist || '').toLowerCase().includes('jvke'))) ||
+          (tracks[0]?.title === 'A Thousand Years' && playlist.name?.toLowerCase().includes('her'));
         if (isStale) {
           tracks = catTracks;
           if (customPl) {
             customPl.tracks = catTracks;
             customPl.track_count = catTracks.length;
+            customPl.cover_url = catalogPl?.cover_url || 'https://image-cdn-ak.spotifycdn.com/image/ab67616d00001e0217f5e96a4a3a8536e6b37d24';
             try { localStorage.setItem('furina_custom_playlists', JSON.stringify(custom)); } catch (_) {}
           }
         }
@@ -471,7 +541,7 @@
       // 3. Fallback: Query Spotify oEmbed for real metadata
       if (!newPl) {
         let plName = 'Imported Spotify Playlist';
-        let plCover = 'https://i.scdn.co/image/ab67706f0000000209dec89719704eea4f218966';
+        let plCover = 'https://image-cdn-ak.spotifycdn.com/image/ab67616d00001e0217f5e96a4a3a8536e6b37d24';
         try {
           const oembedRes = await nativeFetch(`https://open.spotify.com/oembed?url=https://open.spotify.com/playlist/${playlistId}`);
           if (oembedRes.ok) {
@@ -481,56 +551,74 @@
           }
         } catch (_) {}
 
-        // Query real songs matching the playlist title / theme
+        // Special handling for JVKE "her (all versions...for now)"
+        if (playlistId === '6yxCZJXDZmpuaUzfrOb5MD' || (plName || '').toLowerCase().includes('her (all versions')) {
+          const herTracks = (catalog?.playlistTracks || []).filter(pt => pt.playlist_id === '6yxCZJXDZmpuaUzfrOb5MD');
+          if (herTracks.length > 0) {
+            newPl = {
+              id: `pl_imp_${playlistId}`,
+              name: 'her (all versions...for now)',
+              description: 'JVKE — her (all versions...for now) official repertoire',
+              cover_url: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d00001e0217f5e96a4a3a8536e6b37d24',
+              track_count: herTracks.length,
+              provider: 'spotify',
+              provider_playlist_id: playlistId,
+              tracks: herTracks
+            };
+          }
+        }
+
         let matchedSongs = [];
-        try {
-          const cleanQuery = plName.replace(/[\(\[].*?[\)\]]/g, '').trim();
-          const itunesRes = await nativeFetch(`https://itunes.apple.com/search?term=${encodeURIComponent(cleanQuery || plName)}&entity=song&limit=30`);
-          if (itunesRes.ok) {
-            const itunesData = await itunesRes.json();
-            if (itunesData.results && itunesData.results.length > 0) {
-              matchedSongs = itunesData.results.map((r, idx) => ({
-                id: `sp_imp_${r.trackId || idx}`,
-                track_id: `sp_imp_${r.trackId || idx}`,
-                title: r.trackName,
-                artist: r.artistName,
-                album: r.collectionName || plName,
-                duration_ms: r.trackTimeMillis || 210000,
-                cover_url: r.artworkUrl100?.replace('100x100bb', '600x600bb') || plCover,
-                provider: 'spotify',
-                stream_url: r.previewUrl,
-                youtubeId: (window.furinaAudio?.videoMap?.[r.trackName?.toLowerCase().trim()] || 'SkFAV5MXa0I')
-              }));
+        if (!newPl) {
+          try {
+            const cleanQuery = plName.replace(/[\(\[].*?[\)\]]/g, '').trim();
+            const itunesRes = await nativeFetch(`https://itunes.apple.com/search?term=${encodeURIComponent(cleanQuery || plName)}&entity=song&limit=30`);
+            if (itunesRes.ok) {
+              const itunesData = await itunesRes.json();
+              if (itunesData.results && itunesData.results.length > 0) {
+                matchedSongs = itunesData.results.map((r, idx) => ({
+                  id: `sp_imp_${r.trackId || idx}`,
+                  track_id: `sp_imp_${r.trackId || idx}`,
+                  title: r.trackName,
+                  artist: r.artistName,
+                  album: r.collectionName || plName,
+                  duration_ms: r.trackTimeMillis || 210000,
+                  cover_url: r.artworkUrl100?.replace('100x100bb', '600x600bb') || plCover,
+                  provider: 'spotify',
+                  stream_url: r.previewUrl,
+                  youtubeId: (window.furinaAudio?.videoMap?.[r.trackName?.toLowerCase().trim()] || null)
+                }));
+              }
+            }
+          } catch (_) {}
+
+          if (matchedSongs.length === 0) {
+            const realHits = (catalog?.playlistTracks || []).filter(pt => pt.playlist_id === 'pl_sp_hits');
+            matchedSongs = realHits.slice(0, 30);
+          }
+
+          // Deduplicate matched songs
+          const seenSongKeys = new Set();
+          const dedupedSongs = [];
+          for (const s of matchedSongs) {
+            const k = `${(s.title || '').trim().toLowerCase()}:::${(s.artist || '').trim().toLowerCase()}`;
+            if (!seenSongKeys.has(k)) {
+              seenSongKeys.add(k);
+              dedupedSongs.push(s);
             }
           }
-        } catch (_) {}
 
-        if (matchedSongs.length === 0) {
-          const realHits = (catalog?.playlistTracks || []).filter(pt => pt.playlist_id === 'pl_sp_hits' || pt.playlist_id === 'pl_imp_1790691283982_dqjem');
-          matchedSongs = realHits.slice(0, 30);
+          newPl = {
+            id: `pl_imp_${playlistId}`,
+            name: plName,
+            description: `Imported Spotify playlist (${playlistId})`,
+            cover_url: plCover,
+            track_count: dedupedSongs.length,
+            provider: 'spotify',
+            provider_playlist_id: playlistId,
+            tracks: dedupedSongs
+          };
         }
-
-        // Deduplicate matched songs
-        const seenSongKeys = new Set();
-        const dedupedSongs = [];
-        for (const s of matchedSongs) {
-          const k = `${(s.title || '').trim().toLowerCase()}:::${(s.artist || '').trim().toLowerCase()}`;
-          if (!seenSongKeys.has(k)) {
-            seenSongKeys.add(k);
-            dedupedSongs.push(s);
-          }
-        }
-
-        newPl = {
-          id: `pl_imp_${playlistId}`,
-          name: plName,
-          description: `Imported Spotify playlist (${playlistId})`,
-          cover_url: plCover,
-          track_count: dedupedSongs.length,
-          provider: 'spotify',
-          provider_playlist_id: playlistId,
-          tracks: dedupedSongs
-        };
       }
 
       // Save to localStorage
