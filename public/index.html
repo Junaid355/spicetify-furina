@@ -16,12 +16,12 @@
   <link rel="icon" type="image/jpeg" href="icons/app-icon.jpg" />
   <link rel="manifest" href="manifest.json" />
 
-  <!-- Stylesheets (v6.3 Cache-Busting) -->
-  <link rel="stylesheet" href="css/design-tokens.css?v=6.3" />
-  <link rel="stylesheet" href="css/layout.css?v=6.3" />
-  <link rel="stylesheet" href="css/animations.css?v=6.3" />
-  <link rel="stylesheet" href="css/components.css?v=6.3" />
-  <link rel="stylesheet" href="css/player.css?v=6.3" />
+  <!-- Stylesheets (v6.7 Cache-Busting) -->
+  <link rel="stylesheet" href="css/design-tokens.css?v=6.7" />
+  <link rel="stylesheet" href="css/layout.css?v=6.7" />
+  <link rel="stylesheet" href="css/animations.css?v=6.7" />
+  <link rel="stylesheet" href="css/components.css?v=6.7" />
+  <link rel="stylesheet" href="css/player.css?v=6.7" />
 </head>
 <body>
   <!-- Dynamic Album-Art Reactive Background Mesh & Canvas -->
@@ -645,6 +645,22 @@
 
       <!-- Action Tabs / Sections -->
       <div style="display: flex; flex-direction: column; gap: 14px;">
+        <!-- Account Switcher & Personalized Profile -->
+        <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-glass-subtle); border-radius: var(--radius-md); padding: 14px;">
+          <div style="font-size: 0.82rem; font-weight: 700; color: #fff; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
+            <span>👤</span> Personalized Profile (Friends & Family)
+          </div>
+          <p style="font-size: 0.76rem; color: var(--text-dim); margin-bottom: 10px;">
+            Enter your name or Spotify username below to link your personal profile and display your personal music library.
+          </p>
+          <div style="display: flex; gap: 8px;">
+            <input type="text" class="input-field" id="sp-input-username" placeholder="Your Name or Spotify Handle (e.g. Junaid)" style="flex: 1;" />
+            <button class="btn-primary" onclick="handleSaveSpotifyUsername()" style="background: #1ed760; color: #000; font-weight: 700; font-size: 0.82rem; white-space: nowrap;">
+              Link Profile
+            </button>
+          </div>
+        </div>
+
         <div style="display: flex; gap: 8px;">
           <button class="btn-primary" id="sp-modal-login-btn" onclick="handleSpotifyOAuthLogin()" style="flex: 1; justify-content: center; background: #1ed760; color: #000; font-weight: 800; padding: 12px; font-size: 0.92rem; box-shadow: 0 4px 18px rgba(30, 215, 96, 0.4);">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
@@ -839,14 +855,14 @@
     </div>
   </div>
 
-  <!-- Core Application Scripts (v6.5 Ad-Free Protected Release) -->
-  <script src="js/client-api.js?v=6.5"></script>
-  <script src="js/dynamic-bg.js?v=6.5"></script>
-  <script src="js/audio-player.js?v=6.5"></script>
-  <script src="js/offline-storage.js?v=6.5"></script>
-  <script src="js/lyrics-engine.js?v=6.5"></script>
-  <script src="js/spotify-client.js?v=6.5"></script>
-  <script src="js/marketplace.js?v=6.5"></script>
-  <script src="js/app.js?v=6.5"></script>
+  <!-- Core Application Scripts (v6.7 Multi-Source Ad-Free Engine) -->
+  <script src="js/client-api.js?v=6.7"></script>
+  <script src="js/dynamic-bg.js?v=6.7"></script>
+  <script src="js/audio-player.js?v=6.7"></script>
+  <script src="js/offline-storage.js?v=6.7"></script>
+  <script src="js/lyrics-engine.js?v=6.7"></script>
+  <script src="js/spotify-client.js?v=6.7"></script>
+  <script src="js/marketplace.js?v=6.7"></script>
+  <script src="js/app.js?v=6.7"></script>
 </body>
 </html>

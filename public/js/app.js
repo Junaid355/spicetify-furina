@@ -387,11 +387,9 @@ function renderSearchResults() {
   if (tracks.length === 0) {
     resultsContainer.innerHTML = `
       <div style="display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap;">
-        <button class="btn-subtle search-filter-pill ${appState.searchFilter === 'all' ? 'active' : ''}" data-filter="all" onclick="setSearchFilter('all')">All (${allCount})</button>
-        <button class="btn-subtle search-filter-pill ${appState.searchFilter === 'spotify' ? 'active' : ''}" data-filter="spotify" onclick="setSearchFilter('spotify')">Spotify (${spCount})</button>
-        <button class="btn-subtle search-filter-pill ${appState.searchFilter === 'deezer' ? 'active' : ''}" data-filter="deezer" onclick="setSearchFilter('deezer')">Deezer (${dzCount})</button>
-        <button class="btn-subtle search-filter-pill ${appState.searchFilter === 'apple' ? 'active' : ''}" data-filter="apple" onclick="setSearchFilter('apple')">Apple Music (${apCount})</button>
-        <button class="btn-subtle search-filter-pill ${appState.searchFilter === 'furina' ? 'active' : ''}" data-filter="furina" onclick="setSearchFilter('furina')">Fontaine (${fuCount})</button>
+        <button class="btn-subtle search-filter-pill ${appState.searchFilter === 'all' ? 'active' : ''}" data-filter="all" onclick="setSearchFilter('all')">All Tracks (${allCount})</button>
+        <button class="btn-subtle search-filter-pill ${appState.searchFilter === 'spotify' ? 'active' : ''}" data-filter="spotify" onclick="setSearchFilter('spotify')">Spotify Tracks (${spCount})</button>
+        <button class="btn-subtle search-filter-pill ${appState.searchFilter === 'furina' ? 'active' : ''}" data-filter="furina" onclick="setSearchFilter('furina')">Fontaine Masters (${fuCount})</button>
       </div>
       <div style="text-align: center; color: var(--text-dim); margin-top: 40px;">
         No tracks found for filter: ${appState.searchFilter.toUpperCase()}.
@@ -402,11 +400,9 @@ function renderSearchResults() {
 
   resultsContainer.innerHTML = `
     <div style="display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap;">
-      <button class="btn-subtle search-filter-pill ${appState.searchFilter === 'all' ? 'active' : ''}" data-filter="all" onclick="setSearchFilter('all')">All Providers (${allCount})</button>
-      <button class="btn-subtle search-filter-pill ${appState.searchFilter === 'spotify' ? 'active' : ''}" data-filter="spotify" onclick="setSearchFilter('spotify')">Spotify (${spCount})</button>
-      <button class="btn-subtle search-filter-pill ${appState.searchFilter === 'deezer' ? 'active' : ''}" data-filter="deezer" onclick="setSearchFilter('deezer')">Deezer (${dzCount})</button>
-      <button class="btn-subtle search-filter-pill ${appState.searchFilter === 'apple' ? 'active' : ''}" data-filter="apple" onclick="setSearchFilter('apple')">Apple Music (${apCount})</button>
-      <button class="btn-subtle search-filter-pill ${appState.searchFilter === 'furina' ? 'active' : ''}" data-filter="furina" onclick="setSearchFilter('furina')">Fontaine (${fuCount})</button>
+      <button class="btn-subtle search-filter-pill ${appState.searchFilter === 'all' ? 'active' : ''}" data-filter="all" onclick="setSearchFilter('all')">All Tracks (${allCount})</button>
+      <button class="btn-subtle search-filter-pill ${appState.searchFilter === 'spotify' ? 'active' : ''}" data-filter="spotify" onclick="setSearchFilter('spotify')">Spotify Tracks (${spCount})</button>
+      <button class="btn-subtle search-filter-pill ${appState.searchFilter === 'furina' ? 'active' : ''}" data-filter="furina" onclick="setSearchFilter('furina')">Fontaine Masters (${fuCount})</button>
     </div>
     <div class="track-list">
       ${tracks.map((t, idx) => renderTrackRow(t, idx, tracks)).join('')}
@@ -594,7 +590,16 @@ function renderPlaylistTracksTable(tracks) {
   const tracksContainer = document.getElementById('pl-detail-tracks');
   if (!tracksContainer) return;
   if (tracks && tracks.length > 0) {
-    tracksContainer.innerHTML = tracks.map((t, idx) => renderSpotifyTableRow(t, idx, tracks)).join('');
+    const seen = new Set();
+    const unique = [];
+    for (const t of tracks) {
+      const k = `${(t.title || '').trim().toLowerCase()}:::${(t.artist || '').trim().toLowerCase()}`;
+      if (!seen.has(k)) {
+        seen.add(k);
+        unique.push(t);
+      }
+    }
+    tracksContainer.innerHTML = unique.map((t, idx) => renderSpotifyTableRow(t, idx, unique)).join('');
   } else {
     tracksContainer.innerHTML = `
       <div style="text-align: center; color: var(--text-dim); padding: 48px 0; font-size: 0.95rem;">
@@ -630,10 +635,19 @@ async function loadPlaylistDetail(playlistId) {
     const plDesc = pl.description || pl.playlist?.description || 'Fontaine Repertoire';
     const plCover = pl.cover_url || pl.coverUrl || pl.playlist?.cover_url || pl.playlist?.coverUrl || './icons/app-icon.jpg';
     const plProvider = pl.provider || pl.playlist?.provider || 'furina';
-    const plTracks = pl.tracks || pl.playlist?.tracks || [];
+    const rawTracks = pl.tracks || pl.playlist?.tracks || [];
+    const seenTrackKeys = new Set();
+    const plTracks = [];
+    for (const t of rawTracks) {
+      const k = `${(t.title || '').trim().toLowerCase()}:::${(t.artist || '').trim().toLowerCase()}`;
+      if (!seenTrackKeys.has(k)) {
+        seenTrackKeys.add(k);
+        plTracks.push(t);
+      }
+    }
     const isImported = pl.is_imported || pl.playlist?.is_imported || plProvider === 'spotify';
 
-    appState.currentPlaylistData = pl;
+    appState.currentPlaylistData = { ...pl, tracks: plTracks, track_count: plTracks.length };
     appState.currentPlaylistTracks = plTracks;
 
     const coverEl = document.getElementById('pl-detail-cover');
@@ -688,7 +702,7 @@ async function loadPlaylistDetail(playlistId) {
       downloadEntirePlaylist(pl);
     };
 
-    renderPlaylistTracksTable(pl.tracks || []);
+    renderPlaylistTracksTable(plTracks);
   } catch (err) {
     console.error('Playlist detail load failed:', err);
   }
@@ -1831,11 +1845,29 @@ function handleSpotifyOAuthLogin() {
 }
 window.handleSpotifyOAuthLogin = handleSpotifyOAuthLogin;
 
-async function handleSpotifyInstantDemoSync() {
+function handleSaveSpotifyUsername() {
+  const input = document.getElementById('sp-input-username');
+  const name = input ? input.value.trim() : '';
+  if (!name) {
+    showToast('Please enter your name or Spotify username.', 'warning');
+    return;
+  }
+  localStorage.setItem('furina_spotify_custom_user', name);
+  handleSpotifyInstantDemoSync(name);
+}
+window.handleSaveSpotifyUsername = handleSaveSpotifyUsername;
+
+async function handleSpotifyInstantDemoSync(customName = null) {
+  const userName = customName || 
+                   document.getElementById('sp-input-username')?.value.trim() || 
+                   localStorage.getItem('furina_spotify_custom_user') || 
+                   'Junaid';
+  localStorage.setItem('furina_spotify_custom_user', userName);
+
   const demoProfile = {
-    id: 'spotify_furina_user',
-    display_name: 'Furina Listener (Spotify Linked)',
-    email: 'listener@spotify.com',
+    id: `sp_${userName.toLowerCase().replace(/[^a-z0-9]/g, '_')}`,
+    display_name: `${userName} (Spotify)`,
+    email: `${userName.toLowerCase().replace(/[^a-z0-9]/g, '')}@spotify.com`,
     product: 'premium',
     images: [{ url: './images/furina_pure_hydro.jpg' }],
     followers: { total: 4200 }
@@ -1851,27 +1883,38 @@ async function handleSpotifyInstantDemoSync() {
     window.spotifyClient.userProfile = demoProfile;
   }
 
-  // Load curated Spotify playlists from catalog and persist to custom playlists
+  // Load curated Spotify playlists from catalog and safely merge into custom playlists
   try {
     const catRes = await fetch('./data/catalog.json');
     if (catRes.ok) {
       const cat = await catRes.json();
       const realHits = (cat.playlistTracks || []).filter(pt => pt.playlist_id === 'pl_sp_hits');
       const spPlaylists = (cat.playlists || []).filter(p => p.provider === 'spotify');
-      const customPls = spPlaylists.map(p => {
+      let saved = [];
+      try { saved = JSON.parse(localStorage.getItem('furina_custom_playlists') || '[]'); } catch (_) {}
+      
+      const newCustom = [...saved];
+      for (const p of spPlaylists) {
+        const existingIdx = newCustom.findIndex(ep => ep.id === p.id || ep.provider_playlist_id === p.provider_playlist_id);
         const trks = (cat.playlistTracks || []).filter(pt => pt.playlist_id === p.id);
         const effectiveTracks = trks.length > 0 ? trks : realHits;
-        return {
+        const entry = {
           ...p,
+          owner: { display_name: userName },
           tracks: effectiveTracks,
           track_count: effectiveTracks.length
         };
-      });
-      localStorage.setItem('furina_custom_playlists', JSON.stringify(customPls));
+        if (existingIdx !== -1) {
+          newCustom[existingIdx] = { ...newCustom[existingIdx], ...entry };
+        } else {
+          newCustom.push(entry);
+        }
+      }
+      localStorage.setItem('furina_custom_playlists', JSON.stringify(newCustom));
     }
   } catch (_) {}
 
-  showToast('✦ Spotify Connected! Synced your library & playlists.', 'success');
+  showToast(`✦ Connected Spotify account for ${userName}! Synced your library.`, 'success');
   updateHeaderSpotifyBadge();
   openSpotifyConnectModal();
   if (typeof loadLibrary === 'function') loadLibrary();
@@ -1993,20 +2036,59 @@ window.handleImportFromModal = handleImportFromModal;
 
 async function handleSpotifyDisconnect() {
   try {
-    const res = await fetch('/api/auth/spotify/disconnect', { method: 'POST' });
-    if (res.ok) {
-      showToast('Disconnected from Spotify.', 'info');
-      openSpotifyConnectModal();
-      updateHeaderSpotifyBadge();
+    localStorage.removeItem('furina_spotify_access_token');
+    localStorage.removeItem('furina_spotify_profile');
+    localStorage.removeItem('spotify_access_token');
+    localStorage.removeItem('furina_spotify_custom_user');
+    if (window.spotifyClient) {
+      window.spotifyClient.accessToken = null;
+      window.spotifyClient.userProfile = null;
     }
+    await fetch('/api/auth/spotify/disconnect', { method: 'POST' }).catch(() => {});
+    showToast('✦ Disconnected from Spotify. You can now connect another account.', 'info');
+    updateHeaderSpotifyBadge();
+    openSpotifyConnectModal();
+    if (typeof loadLibrary === 'function') loadLibrary();
+    if (typeof loadSpotifyHub === 'function') loadSpotifyHub();
   } catch (err) {
     showToast('Disconnect error: ' + err.message, 'warning');
   }
 }
 window.handleSpotifyDisconnect = handleSpotifyDisconnect;
 
+function sanitizeStoredPlaylists() {
+  try {
+    const raw = localStorage.getItem('furina_custom_playlists');
+    if (!raw) return;
+    const list = JSON.parse(raw);
+    let changed = false;
+    for (const pl of list) {
+      if (Array.isArray(pl.tracks)) {
+        const seen = new Set();
+        const unique = [];
+        for (const t of pl.tracks) {
+          const k = `${(t.title || '').trim().toLowerCase()}:::${(t.artist || '').trim().toLowerCase()}`;
+          if (!seen.has(k)) {
+            seen.add(k);
+            unique.push(t);
+          } else {
+            changed = true;
+          }
+        }
+        pl.tracks = unique;
+        pl.track_count = unique.length;
+      }
+    }
+    if (changed) {
+      localStorage.setItem('furina_custom_playlists', JSON.stringify(list));
+      console.log('[Sanitizer] Cleaned duplicate tracks from stored playlists.');
+    }
+  } catch (_) {}
+}
+
 // App Initialization
 document.addEventListener('DOMContentLoaded', () => {
+  sanitizeStoredPlaylists();
   const savedTheme = localStorage.getItem('furina_theme') || 'furina-fontaine';
   applyTheme(savedTheme);
 

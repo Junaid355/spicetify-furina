@@ -395,17 +395,29 @@ class FurinaAudioEngine {
     if (this.videoMap[title.toLowerCase().trim()]) return this.videoMap[title.toLowerCase().trim()];
 
     // Fuzzy matching for requested titles
+    if (cleanTitle.includes('funk do bounce') || cleanTitle.includes('bounce')) {
+      return this.videoMap['funk do bounce (slowed)'] || '8uKG7A6U7PY';
+    }
+    if (cleanTitle.includes('brazilian phonk') || cleanTitle.includes('phonk')) {
+      return this.videoMap['brazilian phonk night racing pulse'] || 'TtN5-mZPUts';
+    }
+    if (cleanTitle.includes('montagem')) {
+      return this.videoMap['montagem'] || 'ak0twEnVG2M';
+    }
+    if (cleanTitle.includes('7 weeks')) {
+      return this.videoMap['7 weeks & 3 days (slowed)'] || '1e8XUqH-7rU';
+    }
     if (cleanTitle.includes('baby girl') || cleanTitle.includes('baby boy')) {
       return this.videoMap['oh my little baby boy'] || 'SkFAV5MXa0I';
     }
     if (cleanTitle.includes('golden hour')) {
-      return this.videoMap['golden hour'] || 'PEM0Vs8jf1w';
+      return this.videoMap['golden hour'] || 'UsR08cY8k0A';
     }
     if (cleanTitle.includes('lover girl')) {
       return this.videoMap['lover girl'] || 'q3BEA3ew77Y';
     }
     if (cleanTitle === 'her' || cleanTitle.startsWith('her ')) {
-      return this.videoMap['her'] || 'f5-IY_Ja1RM';
+      return this.videoMap['her'] || 'Ivrrt6oYxxc';
     }
 
     return null;
@@ -499,29 +511,12 @@ class FurinaAudioEngine {
       }
     }
 
-    // Route C: Direct non-preview audio stream (if explicitly provided)
-    if (stream && !stream.includes('p.scdn.co') && !stream.includes('la_vaguelette') && !stream.includes('itunes.apple.com')) {
-      console.log(`[AudioEngine] Streaming direct audio stream: ${track.title}`);
-      this.activeBackend = 'html5';
-      this.stopYtProgressTimer();
-      if (this.ytPlayer && typeof this.ytPlayer.pauseVideo === 'function') {
-        try { this.ytPlayer.pauseVideo(); } catch (_) {}
-      }
-      this.audioElement.src = stream;
-      this.audioElement.load();
-      await this.audioElement.play().catch(() => {});
-      this.isPlaying = true;
-      this.emit('statechange', { isPlaying: true });
-      this.emit('trackchange', track);
-      return;
-    }
-
-    // Route D: Full-Length Song Streamer (Instant from videoMap & track.youtubeId)
+    // Route C: Full-Length Song Streamer (Instant from videoMap, resolveTrackVideoId & track.youtubeId)
     let videoId = track.youtubeId || track.videoId || this.resolveTrackVideoId(track);
     if (!videoId) {
       const cleanTitle = (track.title || '').replace(/\(.*?\)/g, '').replace(/\[.*?\]/g, '').trim().toLowerCase();
       for (const [k, v] of Object.entries(this.videoMap)) {
-        if (k === cleanTitle || k.startsWith(cleanTitle) || cleanTitle.includes(k)) {
+        if (k === cleanTitle || k.startsWith(cleanTitle) || cleanTitle.includes(k) || k.includes(cleanTitle)) {
           videoId = v;
           break;
         }
@@ -537,6 +532,8 @@ class FurinaAudioEngine {
             videoId = data.videoId;
             this.videoMap[track.id] = videoId;
             this.videoMap[track.title.toLowerCase().trim()] = videoId;
+          } else if (data.streamUrl && !stream) {
+            stream = data.streamUrl;
           }
         }
       } catch (_) {}
@@ -556,15 +553,66 @@ class FurinaAudioEngine {
       }
     }
 
-    // Route F: Fallback to Fontaine Master
-    this.activeBackend = 'html5';
-    this.stopYtProgressTimer();
-    this.audioElement.src = './audio/la_vaguelette.wav';
-    this.audioElement.load();
-    await this.audioElement.play().catch(() => {});
-    this.isPlaying = true;
-    this.emit('statechange', { isPlaying: true });
-    this.emit('trackchange', track);
+    // Route D: Authentic Direct Song Audio Stream (Apple Music / Audius / Deezer / High Quality Preview)
+    if (stream && !stream.includes('la_vaguelette')) {
+      console.log(`[AudioEngine] Playing authentic song stream: ${track.title} => ${stream}`);
+      this.activeBackend = 'html5';
+      this.stopYtProgressTimer();
+      if (this.ytPlayer && typeof this.ytPlayer.pauseVideo === 'function') {
+        try { this.ytPlayer.pauseVideo(); } catch (_) {}
+      }
+      this.audioElement.src = stream;
+      this.audioElement.load();
+      await this.audioElement.play().catch(() => {});
+      this.isPlaying = true;
+      this.emit('statechange', { isPlaying: true });
+      this.emit('trackchange', track);
+      return;
+    }
+
+    // Route E: Dynamic search resolution from open iTunes API
+    try {
+      const cleanQ = `${(track.title || '').replace(/\(.*?\)/g, '').trim()} ${(track.artist || '').split(/[,&]/)[0].trim()}`;
+      const itRes = await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(cleanQ)}&entity=song&limit=1`);
+      if (itRes.ok) {
+        const itData = await itRes.json();
+        const found = itData.results?.[0];
+        if (found?.previewUrl) {
+          console.log(`[AudioEngine] Dynamically playing resolved iTunes stream for: ${track.title}`);
+          this.activeBackend = 'html5';
+          this.stopYtProgressTimer();
+          if (this.ytPlayer && typeof this.ytPlayer.pauseVideo === 'function') {
+            try { this.ytPlayer.pauseVideo(); } catch (_) {}
+          }
+          this.audioElement.src = found.previewUrl;
+          this.audioElement.load();
+          await this.audioElement.play().catch(() => {});
+          this.isPlaying = true;
+          this.emit('statechange', { isPlaying: true });
+          this.emit('trackchange', track);
+          return;
+        }
+      }
+    } catch (_) {}
+
+    // Route F: ONLY if explicitly a Furina Fontaine repertoire track
+    if (track.id?.startsWith('furina_') || (track.title || '').toLowerCase().includes('vaguelette')) {
+      this.activeBackend = 'html5';
+      this.stopYtProgressTimer();
+      this.audioElement.src = './audio/la_vaguelette.wav';
+      this.audioElement.load();
+      await this.audioElement.play().catch(() => {});
+      this.isPlaying = true;
+      this.emit('statechange', { isPlaying: true });
+      this.emit('trackchange', track);
+      return;
+    }
+
+    // Never play random French opera for third-party pop/phonk music!
+    console.warn(`[AudioEngine] No stream available for: ${track.title}`);
+    if (typeof showToast === 'function') {
+      showToast(`Finding audio source for "${track.title}"...`, 'info');
+    }
   }
 
   executeYouTubePlay(videoId, track) {

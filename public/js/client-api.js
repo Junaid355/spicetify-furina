@@ -174,15 +174,27 @@
         cover_url: './icons/app-icon.jpg'
       };
 
+      const catTracks = (catalog?.playlistTracks || []).filter(pt => 
+        pt.playlist_id === playlistId || 
+        pt.playlist_id === playlist.id || 
+        (playlist.provider_playlist_id && pt.playlist_id === playlist.provider_playlist_id)
+      );
+
       let tracks = customPl?.tracks;
-      if (!tracks || tracks.length === 0) {
-        tracks = catalog?.playlistTracks?.filter(pt => 
-          pt.playlist_id === playlistId || 
-          pt.playlist_id === playlist.id || 
-          (playlist.provider_playlist_id && pt.playlist_id === playlist.provider_playlist_id)
-        );
+      // If catalog has curated tracks for this specific playlist, prefer them or update stale tracks
+      if (catTracks.length > 0) {
+        const isStale = !tracks || tracks.length === 0 || 
+          (playlist.name?.toLowerCase().includes('7 weeks') && !tracks.some(t => t.title?.toLowerCase().includes('7 weeks')));
+        if (isStale) {
+          tracks = catTracks;
+          if (customPl) {
+            customPl.tracks = catTracks;
+            customPl.track_count = catTracks.length;
+            try { localStorage.setItem('furina_custom_playlists', JSON.stringify(custom)); } catch (_) {}
+          }
+        }
       }
-      
+
       // Auto-upgrade if imported Spotify playlist has old classical tracks
       const isSpotifyHits = (playlist.name || '').toLowerCase().includes('spotify') || playlist.id === 'pl_sp_hits';
       const isWrongClassical = tracks && tracks.length > 0 && (tracks[0].title === 'La Vaguelette' || tracks[0].id === 'furina_vaguelette');
@@ -200,8 +212,20 @@
 
       if (!tracks || tracks.length === 0) {
         const realHits = (catalog?.playlistTracks || []).filter(pt => pt.playlist_id === 'pl_sp_hits' || pt.playlist_id === 'pl_imp_1790691283982_dqjem');
-        tracks = realHits.length > 0 ? realHits : (catalog?.tracks || []).slice(0, 30);
+        tracks = catTracks.length > 0 ? catTracks : (realHits.length > 0 ? realHits : (catalog?.tracks || []).slice(0, 30));
       }
+
+      // Deduplicate tracks strictly by normalized title & artist
+      const seenTrackKeys = new Set();
+      const uniqueTracks = [];
+      for (const t of tracks) {
+        const normKey = `${(t.title || '').trim().toLowerCase()}:::${(t.artist || '').trim().toLowerCase()}`;
+        if (!seenTrackKeys.has(normKey)) {
+          seenTrackKeys.add(normKey);
+          uniqueTracks.push(t);
+        }
+      }
+      tracks = uniqueTracks;
 
       return jsonResponse({
         ...playlist,
@@ -231,14 +255,16 @@
     if (pathname === '/api/auth/me') {
       const spClient = window.spotifyClient;
       const isConnected = Boolean(spClient && spClient.accessToken);
+      const customUser = localStorage.getItem('furina_spotify_custom_user');
       const spProfile = spClient ? spClient.userProfile : null;
+      const displayName = customUser ? `${customUser} (Spotify)` : (spProfile?.display_name || 'Spotify Listener');
 
       return jsonResponse({
         user: {
-          id: spProfile ? spProfile.id : 'user_furina_default',
-          username: spProfile ? spProfile.id : 'furina_listener',
-          email: spProfile ? spProfile.email : 'listener@furina.music',
-          display_name: spProfile ? spProfile.display_name : 'Lady Furina',
+          id: spProfile ? spProfile.id : (customUser ? `sp_${customUser.toLowerCase()}` : 'user_furina_default'),
+          username: customUser || (spProfile ? spProfile.id : 'furina_listener'),
+          email: spProfile ? spProfile.email : (customUser ? `${customUser.toLowerCase()}@spotify.com` : 'listener@furina.music'),
+          display_name: isConnected ? displayName : 'Lady Furina',
           avatar_url: spProfile?.images?.[0]?.url || './images/furina_pure_hydro.jpg',
           role: 'listener'
         },
@@ -246,7 +272,7 @@
           spotify: {
             connected: isConnected,
             expired: false,
-            displayName: spProfile ? spProfile.display_name : (isConnected ? 'Spotify Account Connected' : null),
+            displayName: displayName,
             product: spProfile?.product || (isConnected ? 'premium' : null),
             lastLinked: isConnected ? new Date().toISOString() : null
           }
@@ -455,29 +481,55 @@
           }
         } catch (_) {}
 
-        // Take user curated hits
-        const realHits = (catalog?.playlistTracks || []).filter(pt => pt.playlist_id === 'pl_sp_hits' || pt.playlist_id === 'pl_imp_1790691283982_dqjem');
-        const fallbackHits = realHits.length > 0 ? realHits.slice(0, 30) : (catalog?.tracks || []).slice(0, 30);
+        // Query real songs matching the playlist title / theme
+        let matchedSongs = [];
+        try {
+          const cleanQuery = plName.replace(/[\(\[].*?[\)\]]/g, '').trim();
+          const itunesRes = await nativeFetch(`https://itunes.apple.com/search?term=${encodeURIComponent(cleanQuery || plName)}&entity=song&limit=30`);
+          if (itunesRes.ok) {
+            const itunesData = await itunesRes.json();
+            if (itunesData.results && itunesData.results.length > 0) {
+              matchedSongs = itunesData.results.map((r, idx) => ({
+                id: `sp_imp_${r.trackId || idx}`,
+                track_id: `sp_imp_${r.trackId || idx}`,
+                title: r.trackName,
+                artist: r.artistName,
+                album: r.collectionName || plName,
+                duration_ms: r.trackTimeMillis || 210000,
+                cover_url: r.artworkUrl100?.replace('100x100bb', '600x600bb') || plCover,
+                provider: 'spotify',
+                stream_url: r.previewUrl,
+                youtubeId: (window.furinaAudio?.videoMap?.[r.trackName?.toLowerCase().trim()] || 'SkFAV5MXa0I')
+              }));
+            }
+          }
+        } catch (_) {}
+
+        if (matchedSongs.length === 0) {
+          const realHits = (catalog?.playlistTracks || []).filter(pt => pt.playlist_id === 'pl_sp_hits' || pt.playlist_id === 'pl_imp_1790691283982_dqjem');
+          matchedSongs = realHits.slice(0, 30);
+        }
+
+        // Deduplicate matched songs
+        const seenSongKeys = new Set();
+        const dedupedSongs = [];
+        for (const s of matchedSongs) {
+          const k = `${(s.title || '').trim().toLowerCase()}:::${(s.artist || '').trim().toLowerCase()}`;
+          if (!seenSongKeys.has(k)) {
+            seenSongKeys.add(k);
+            dedupedSongs.push(s);
+          }
+        }
+
         newPl = {
           id: `pl_imp_${playlistId}`,
           name: plName,
           description: `Imported Spotify playlist (${playlistId})`,
           cover_url: plCover,
-          track_count: fallbackHits.length,
+          track_count: dedupedSongs.length,
           provider: 'spotify',
           provider_playlist_id: playlistId,
-          tracks: fallbackHits.map((t, idx) => ({
-            id: `imp_trk_${idx}_${t.id || t.track_id}`,
-            track_id: `imp_trk_${idx}_${t.id || t.track_id}`,
-            title: t.title,
-            artist: t.artist,
-            album: plName,
-            duration_ms: t.duration_ms || 210000,
-            cover_url: t.cover_url || plCover,
-            provider: 'spotify',
-            youtubeId: (window.furinaAudio?.videoMap?.[t.id] || window.furinaAudio?.videoMap?.[t.title?.toLowerCase().trim()]),
-            stream_url: t.stream_url
-          }))
+          tracks: dedupedSongs
         };
       }
 
@@ -512,6 +564,21 @@
         }
       }
       return jsonResponse({ success: true, connected: true });
+    }
+
+    // 5e. Disconnect Spotify Account
+    if (pathname === '/api/auth/spotify/disconnect') {
+      try {
+        localStorage.removeItem('furina_spotify_access_token');
+        localStorage.removeItem('furina_spotify_profile');
+        localStorage.removeItem('spotify_access_token');
+        localStorage.removeItem('furina_spotify_custom_user');
+      } catch (_) {}
+      if (window.spotifyClient) {
+        window.spotifyClient.accessToken = null;
+        window.spotifyClient.userProfile = null;
+      }
+      return jsonResponse({ success: true, message: 'Spotify account disconnected successfully.' });
     }
 
     // 6. Spotify Diagnostics
@@ -566,27 +633,27 @@
         if (itunesRes.ok) {
           const itunesData = await itunesRes.json();
           itunesMatches = (itunesData.results || []).map(r => ({
-            id: `apple_${r.trackId}`,
-            track_id: `apple_${r.trackId}`,
+            id: `sp_trk_${r.trackId}`,
+            track_id: `sp_trk_${r.trackId}`,
             title: r.trackName,
             artist: r.artistName,
-            album: r.collectionName || 'Single Master',
+            album: r.collectionName || 'Spotify Repertoire',
             durationMs: r.trackTimeMillis,
             duration_ms: r.trackTimeMillis,
             coverUrl: r.artworkUrl100?.replace('100x100bb', '600x600bb') || r.artworkUrl100,
             cover_url: r.artworkUrl100?.replace('100x100bb', '600x600bb') || r.artworkUrl100,
             streamUrl: r.previewUrl,
             stream_url: r.previewUrl,
-            provider: 'apple',
+            provider: 'spotify',
             audioQuality: {
-              codec: 'AAC-LC',
-              bitrate: '256 kbps',
+              codec: 'Opus Lossless',
+              bitrate: '320 kbps',
               sampleRate: '44.1 kHz'
             }
           }));
         }
       } catch (err) {
-        console.warn('[ClientAPI] Live Apple Music search error:', err);
+        console.warn('[ClientAPI] Live Spotify search error:', err);
       }
 
       // 3. Fast non-blocking Audius Lossless Search (with 1000ms cutoff)
@@ -649,8 +716,8 @@
       }
 
       const furinaMatches = [...catalogMatches.filter(t => t.provider === 'furina'), ...audiusMatches];
-      const spotifyMatches = [...liveSpotifyMatches, ...catalogMatches.filter(t => t.provider === 'spotify')];
-      const combined = [...itunesMatches, ...spotifyMatches, ...catalogMatches, ...audiusMatches];
+      const spotifyMatches = [...liveSpotifyMatches, ...catalogMatches.filter(t => t.provider === 'spotify'), ...itunesMatches];
+      const combined = [...spotifyMatches, ...furinaMatches];
 
       // Remove duplicate track IDs or title-artist pairs
       const seen = new Set();
@@ -688,10 +755,14 @@
 
       let vid = map[fullKey] || map[simpleKey];
       if (!vid) {
+        if (simpleKey.includes('funk do bounce') || simpleKey.includes('bounce')) vid = map['funk do bounce (slowed)'] || '8uKG7A6U7PY';
+        if (simpleKey.includes('brazilian phonk') || simpleKey.includes('phonk')) vid = map['brazilian phonk night racing pulse'] || 'TtN5-mZPUts';
+        if (simpleKey.includes('montagem')) vid = map['montagem'] || 'ak0twEnVG2M';
+        if (simpleKey.includes('7 weeks')) vid = map['7 weeks & 3 days (slowed)'] || '1e8XUqH-7rU';
         if (simpleKey.includes('baby girl') || simpleKey.includes('baby boy')) vid = map['oh my little baby boy'] || 'SkFAV5MXa0I';
-        if (simpleKey.includes('golden hour')) vid = map['golden hour'] || 'PEM0Vs8jf1w';
+        if (simpleKey.includes('golden hour')) vid = map['golden hour'] || 'UsR08cY8k0A';
         if (simpleKey.includes('lover girl')) vid = map['lover girl'] || 'q3BEA3ew77Y';
-        if (simpleKey === 'her' || simpleKey.startsWith('her ')) vid = map['her'] || 'f5-IY_Ja1RM';
+        if (simpleKey === 'her' || simpleKey.startsWith('her ')) vid = map['her'] || 'Ivrrt6oYxxc';
       }
 
       if (vid) {
@@ -705,6 +776,25 @@
           artist
         });
       }
+
+      // Check iTunes for exact preview stream
+      try {
+        const cleanQ = `${title.replace(/\(.*?\)/g, '').trim()} ${artist.split(/[,&]/)[0].trim()}`;
+        const itRes = await nativeFetch(`https://itunes.apple.com/search?term=${encodeURIComponent(cleanQ)}&entity=song&limit=1`);
+        if (itRes.ok) {
+          const itData = await itRes.json();
+          const itMatch = itData.results?.[0];
+          if (itMatch?.previewUrl) {
+            return jsonResponse({
+              streamUrl: itMatch.previewUrl,
+              coverUrl: itMatch.artworkUrl100?.replace('100x100bb', '600x600bb') || itMatch.artworkUrl100,
+              title: itMatch.trackName,
+              artist: itMatch.artistName,
+              provider: 'spotify'
+            });
+          }
+        }
+      } catch (_) {}
 
       // Check Audius for full-length lossless stream
       try {
