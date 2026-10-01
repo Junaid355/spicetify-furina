@@ -1060,6 +1060,286 @@
       return jsonResponse(saved);
     }
 
+    // 10. Marketplace Catalog & Ecosystem
+    if (pathname === '/api/marketplace') {
+      const activeTheme = localStorage.getItem('furina_theme') || 'furina-fontaine';
+      const extState = JSON.parse(localStorage.getItem('furina_ext_state') || '{}');
+      return jsonResponse({
+        themes: [
+          {
+            id: 'theme-furina-ocean',
+            code: 'furina-fontaine',
+            name: 'Furina Ocean (Fontaine Royal)',
+            category: 'themes',
+            author: 'Furina Archon Team',
+            version: '1.2.0',
+            description: 'Official midnight navy with radiant cyan hydro glows and golden accents.',
+            previewColor: '#060d1b',
+            accentColor: '#38bdf8',
+            installed: true,
+            active: activeTheme === 'furina-fontaine' || activeTheme === '',
+            hasUpdate: false
+          },
+          {
+            id: 'theme-midnight-fontaine',
+            code: 'epiclese-twilight',
+            name: 'Midnight Fontaine (Opera Epiclese)',
+            category: 'themes',
+            author: 'Fontaine Opera Stage',
+            version: '1.1.4',
+            description: 'Deep royal indigo with soft amethyst violet lighting inspired by evening opera trials.',
+            previewColor: '#0a0818',
+            accentColor: '#c084fc',
+            installed: true,
+            active: activeTheme === 'epiclese-twilight',
+            hasUpdate: false
+          },
+          {
+            id: 'theme-hydro-glass',
+            code: 'hydro-pure',
+            name: 'Hydro Glass (Azure Crystal)',
+            category: 'themes',
+            author: 'Salon Solitaire Studio',
+            version: '1.0.8',
+            description: 'High-transparency frosted glass with pure cyan water droplet refraction.',
+            previewColor: '#031424',
+            accentColor: '#22d3ee',
+            installed: true,
+            active: activeTheme === 'hydro-pure',
+            hasUpdate: false
+          },
+          {
+            id: 'theme-deep-sea',
+            code: 'deep-sea',
+            name: 'Deep Sea (Primordial Abyss)',
+            category: 'themes',
+            author: 'Neuvillette Archive',
+            version: '1.0.0',
+            description: 'Abyssal teal tones reflecting the serene mystery of the Primordial Sea.',
+            previewColor: '#02181b',
+            accentColor: '#14b8a6',
+            installed: true,
+            active: activeTheme === 'deep-sea',
+            hasUpdate: false
+          },
+          {
+            id: 'theme-sakura-fontaine',
+            code: 'sakura-fontaine',
+            name: 'Sakura Fontaine (Floral Bloom)',
+            category: 'themes',
+            author: 'Yae Publishing House & Fontaine',
+            version: '1.0.1',
+            description: 'Soft pastel cherry blossom pink with illuminated magenta stage lighting.',
+            previewColor: '#1e0b16',
+            accentColor: '#f472b6',
+            installed: true,
+            active: activeTheme === 'sakura-fontaine',
+            hasUpdate: false
+          },
+          {
+            id: 'theme-cyber-hydro',
+            code: 'cyber-hydro',
+            name: 'Cyber Hydro (Neon Pulse)',
+            category: 'themes',
+            author: 'Fontaine Research Institute',
+            version: '1.0.0',
+            description: 'Futuristic electric cyan and violet neon highlights with deep cyber aesthetic.',
+            previewColor: '#040b18',
+            accentColor: '#00e5ff',
+            installed: true,
+            active: activeTheme === 'cyber-hydro',
+            hasUpdate: false
+          },
+          {
+            id: 'theme-fontaine-night',
+            code: 'fontaine-night',
+            name: 'Fontaine Night (Golden Iris)',
+            category: 'themes',
+            author: 'Court of Fontaine',
+            version: '1.0.0',
+            description: 'Warm gold and dark mahogany undertones for rich orchestral evenings.',
+            previewColor: '#140c06',
+            accentColor: '#f59e0b',
+            installed: true,
+            active: activeTheme === 'fontaine-night',
+            hasUpdate: false
+          },
+          {
+            id: 'theme-minimal-furina',
+            code: 'minimal-furina',
+            name: 'Minimal Furina (Clean Studio)',
+            category: 'themes',
+            author: 'Minimalist Guild',
+            version: '1.0.5',
+            description: 'Distraction-free high-contrast monochrome with subtle cyan status dots.',
+            previewColor: '#000000',
+            accentColor: '#38bdf8',
+            installed: true,
+            active: activeTheme === 'minimal-furina',
+            hasUpdate: false
+          }
+        ],
+        extensions: [
+          {
+            id: 'ext-cozy-sound-effects',
+            name: 'Cozy Web Audio Sound Effects',
+            category: 'extensions',
+            author: 'Furina Audio Lab',
+            version: '1.0.0',
+            description: 'Synthesizes tactile mechanical clicks and soft crystalline hydro droplet chimes via native Web Audio.',
+            installed: true,
+            enabled: extState['ext-cozy-sound-effects'] !== false,
+            hasUpdate: false
+          },
+          {
+            id: 'ext-dynamic-ambient-lighting',
+            name: 'Dynamic Ambient Album Art Glow',
+            category: 'extensions',
+            author: 'Furina UI Lab',
+            version: '1.3.0',
+            description: 'Real-time dominant color extraction from active album art projecting ambient light meshes.',
+            installed: true,
+            enabled: extState['ext-dynamic-ambient-lighting'] !== false,
+            hasUpdate: false
+          },
+          {
+            id: 'ext-pro-hotkeys',
+            name: 'VIM & Pro Navigation Hotkeys',
+            category: 'extensions',
+            author: 'Fontaine Hackers',
+            version: '1.0.4',
+            description: 'Desktop shortcuts (Space, N, P, M, F, Q, Arrows) plus J/K list navigation and Ctrl+K search.',
+            installed: true,
+            enabled: extState['ext-pro-hotkeys'] !== false,
+            hasUpdate: false
+          },
+          {
+            id: 'ext-ad-free-shield',
+            name: 'Ad-Free Audio Stream Shield',
+            category: 'extensions',
+            author: 'All The Worlds A Stage',
+            version: '2.0.0',
+            description: 'Continuous sponsor interruption detection and silent suppression with 100% full song guarantees.',
+            installed: true,
+            enabled: true,
+            hasUpdate: false
+          },
+          {
+            id: 'ext-mini-player-widget',
+            name: 'Picture-in-Picture Mini Player',
+            category: 'extensions',
+            author: 'Mademoiselle Crabaletta',
+            version: '1.0.1',
+            description: 'Floating always-on-top mini player with album art and synchronized playback scrub.',
+            installed: true,
+            enabled: extState['ext-mini-player-widget'] === true,
+            hasUpdate: false
+          },
+          {
+            id: 'ext-threejs-hydro-canvas',
+            name: '3D WebGL2 Three.js Hydro Gems',
+            category: 'extensions',
+            author: 'Salon Solitaire Studio',
+            version: '1.1.0',
+            description: '5 interactive floating hydro crystal gems with depth perspective reacting to scroll.',
+            installed: true,
+            enabled: extState['ext-threejs-hydro-canvas'] !== false,
+            hasUpdate: false
+          }
+        ],
+        apps: [
+          {
+            id: 'app-lyrics-studio',
+            name: 'Lyrics Studio & Karaoke',
+            category: 'apps',
+            author: 'Furina Opera Team',
+            version: '2.0.0',
+            description: 'Full-screen theater synchronized lyric visualizer with millisecond click-to-seek and auto-scroll.',
+            installed: true,
+            enabled: true,
+            hasUpdate: false
+          },
+          {
+            id: 'app-equalizer-fx',
+            name: '10-Band Graphic Equalizer & FX',
+            category: 'apps',
+            author: 'Fontaine Audio Engineering',
+            version: '1.2.0',
+            description: 'Web Audio API parametric 10-band equalizer presets (Bass Boost, Opera Vocal, Classical, Acoustic).',
+            installed: true,
+            enabled: true,
+            hasUpdate: false
+          },
+          {
+            id: 'app-listening-stats',
+            name: 'Fontaine Listening Insights',
+            category: 'apps',
+            author: 'Opera Epiclese Archive',
+            version: '1.0.2',
+            description: 'Visual tracking of your playback minutes, favorite Fontaine genres, and top-streamed songs.',
+            installed: true,
+            enabled: true,
+            hasUpdate: false
+          },
+          {
+            id: 'app-spotify-hub',
+            name: 'Spotify Connect & Library Hub',
+            category: 'apps',
+            author: 'Spicetify Bridge Team',
+            version: '2.1.0',
+            description: 'Unified account status, official OAuth 2.0 PKCE flow, and instant 1-click demo sync.',
+            installed: true,
+            enabled: true,
+            hasUpdate: false
+          },
+          {
+            id: 'app-bug-logger',
+            name: 'Fontaine Diagnostics & Bug Logger',
+            category: 'apps',
+            author: 'Fontaine Engineering Guild',
+            version: '1.0.0',
+            description: 'Real-time log capture, stream analyzer, and automated self-diagnostics report generator.',
+            installed: true,
+            enabled: true,
+            hasUpdate: false
+          },
+          {
+            id: 'app-download-hub',
+            name: 'Desktop & Mobile App Binaries',
+            category: 'apps',
+            author: 'GitHub Releases Hub',
+            version: '7.5.0',
+            description: 'Direct downloads for Windows NSIS Setup (101 MB), Portable EXE (100 MB), and Android APK (3.5 MB).',
+            installed: true,
+            enabled: true,
+            hasUpdate: false
+          }
+        ]
+      });
+    }
+
+    if (pathname === '/api/marketplace/theme') {
+      let body = {};
+      try { body = typeof init?.body === 'string' ? JSON.parse(init.body) : (init?.body || {}); } catch (_) {}
+      if (body.themeCode) {
+        localStorage.setItem('furina_theme', body.themeCode);
+      }
+      return jsonResponse({ success: true });
+    }
+
+    if (pathname === '/api/marketplace/toggle-extension') {
+      let body = {};
+      try { body = typeof init?.body === 'string' ? JSON.parse(init.body) : (init?.body || {}); } catch (_) {}
+      const extState = JSON.parse(localStorage.getItem('furina_ext_state') || '{}');
+      extState[body.id] = !extState[body.id];
+      localStorage.setItem('furina_ext_state', JSON.stringify(extState));
+      return jsonResponse({ success: true, enabled: extState[body.id] });
+    }
+
+    if (pathname === '/api/marketplace/update-all') {
+      return jsonResponse({ success: true, updated: 6 });
+    }
+
     // Default 404 fallback
     return jsonResponse({ error: 'Endpoint not found in client fallback', path: pathname }, 404);
   };

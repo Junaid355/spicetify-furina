@@ -135,6 +135,10 @@ class FurinaMarketplace {
       window.switchTab('stats');
     } else if (appId === 'app-spotify-hub') {
       window.switchTab('spotify-hub');
+    } else if (appId === 'app-bug-logger') {
+      window.furinaBugLogger?.open();
+    } else if (appId === 'app-download-hub') {
+      window.openModal?.('modal-download-app');
     }
   }
 

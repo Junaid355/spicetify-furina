@@ -1333,7 +1333,37 @@ async function loadSettings() {
   if (quotaEl) {
     quotaEl.textContent = `${quota.usageMb} MB used of ${quota.quotaMb} MB available`;
   }
+
+  // Sync Cozy Sound Settings UI
+  const isCozy = localStorage.getItem('furina_cozy_sounds') !== 'false';
+  const cozyVol = parseFloat(localStorage.getItem('furina_cozy_volume') || '0.25');
+  const toggleEl = document.getElementById('setting-cozy-sound-toggle');
+  if (toggleEl) toggleEl.checked = isCozy;
+  const sliderEl = document.getElementById('setting-cozy-volume-slider');
+  if (sliderEl) sliderEl.value = cozyVol;
+  const labelEl = document.getElementById('setting-cozy-volume-label');
+  if (labelEl) labelEl.textContent = `${Math.round(cozyVol * 100)}%`;
 }
+
+function toggleCozySoundSetting(enabled) {
+  localStorage.setItem('furina_cozy_sounds', enabled ? 'true' : 'false');
+  if (window.furinaAudioEffects) {
+    window.furinaAudioEffects.isEnabled = enabled;
+  }
+  showToast(`Cozy sound effects: ${enabled ? 'Enabled' : 'Disabled'}`, 'success');
+}
+window.toggleCozySoundSetting = toggleCozySoundSetting;
+
+function changeCozyVolumeSetting(val) {
+  const v = parseFloat(val);
+  localStorage.setItem('furina_cozy_volume', v.toString());
+  if (window.furinaAudioEffects) {
+    window.furinaAudioEffects.volume = v;
+  }
+  const labelEl = document.getElementById('setting-cozy-volume-label');
+  if (labelEl) labelEl.textContent = `${Math.round(v * 100)}%`;
+}
+window.changeCozyVolumeSetting = changeCozyVolumeSetting;
 
 function applyTheme(themeName) {
   document.documentElement.setAttribute('data-theme', themeName);
