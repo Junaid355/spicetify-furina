@@ -50,13 +50,25 @@
       this.camera.position.set(0, 18, 45);
       this.camera.lookAt(0, 0, 0);
 
-      // 3. WebGL Renderer
-      this.renderer = new THREE.WebGLRenderer({
+      // 3. WebGL Renderer (WebGL2 / WebGL1 cross-platform context)
+      let glContext = null;
+      try {
+        glContext = this.canvas.getContext('webgl2') || this.canvas.getContext('webgl') || this.canvas.getContext('experimental-webgl');
+      } catch (e) {
+        console.warn('[ThreeScene] Error acquiring WebGL context:', e);
+      }
+
+      const rendererConfig = {
         canvas: this.canvas,
         alpha: true,
         antialias: true,
         powerPreference: 'high-performance'
-      });
+      };
+      if (glContext) {
+        rendererConfig.context = glContext;
+      }
+
+      this.renderer = new THREE.WebGLRenderer(rendererConfig);
       this.renderer.setSize(window.innerWidth, window.innerHeight);
       this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
