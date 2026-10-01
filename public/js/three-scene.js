@@ -10,7 +10,13 @@
   class FurinaThreeScene {
     constructor() {
       this.container = document.querySelector('.dynamic-mesh-layer') || document.body;
-      this.canvas = document.getElementById('ocean-ripple-canvas');
+      let el = document.getElementById('three-hydro-canvas');
+      if (!el) {
+        el = document.createElement('canvas');
+        el.id = 'three-hydro-canvas';
+        document.body.insertBefore(el, document.body.firstChild);
+      }
+      this.canvas = el;
       this.scene = null;
       this.camera = null;
       this.renderer = null;
