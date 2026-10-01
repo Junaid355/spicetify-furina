@@ -77,7 +77,7 @@ class FurinaAudioEngine {
     if (!container) {
       container = document.createElement('div');
       container.id = 'furina-yt-streamer';
-      container.style.cssText = 'position:fixed;bottom:-999px;right:-999px;width:10px;height:10px;opacity:0.001;pointer-events:none;z-index:-10;';
+      container.style.cssText = 'position:fixed;bottom:-500px;left:-500px;width:300px;height:200px;opacity:0.01;pointer-events:none;z-index:-10;';
       document.body.appendChild(container);
     }
 
@@ -85,13 +85,14 @@ class FurinaAudioEngine {
       if (this.ytPlayer || !window.YT || !window.YT.Player) return;
       try {
         this.ytPlayer = new window.YT.Player('furina-yt-streamer', {
-          host: 'https://www.youtube-nocookie.com',
-          height: '100%',
-          width: '100%',
+          host: 'https://www.youtube.com',
+          height: '200',
+          width: '300',
           playerVars: {
             autoplay: 1,
             controls: 0,
             disablekb: 1,
+            enablejsapi: 1,
             fs: 0,
             playsinline: 1,
             rel: 0,
@@ -487,6 +488,7 @@ class FurinaAudioEngine {
     }
 
     this.currentTrack = track;
+    this.isRetryingFallback = false;
     this.updateMediaSessionMetadata(track);
 
     if (window.dynamicBgEngine && track.coverUrl) {
@@ -877,7 +879,18 @@ class FurinaAudioEngine {
       return;
     }
 
-    // 3. Skip gracefully with toast notification
+    // 3. Retry unblocked stream via YouTube native search playlist
+    if (!this.isRetryingFallback) {
+      this.isRetryingFallback = true;
+      const cleanSearch = `${(track.title || '').replace(/[\(\[].*?[\)\]]/g, '').trim()} ${(track.artist || '').split(/[,&]/)[0].trim()}`;
+      console.log(`[FullStreamEngine] Retrying unblocked full stream via YouTube search: "${cleanSearch}"`);
+      if (this.isYtReady && this.ytPlayer && typeof this.ytPlayer.loadPlaylist === 'function') {
+        this.executeYouTubeSearchPlay(cleanSearch, track);
+        return;
+      }
+    }
+
+    // 4. Skip gracefully with toast notification
     if (window.showToast) {
       window.showToast(`Unable to stream full track for "${track.title}". Skipping to next track...`, 'info');
     }
