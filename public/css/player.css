@@ -510,3 +510,198 @@
   height: 100%;
 }
 
+/* ==========================================================================
+   MOBILE MINI-PLAYER & THEATER STAGE RESPONSIVE OVERHAUL (<768px & <640px)
+   ========================================================================== */
+
+/* Top Edge Mini Progress Line on Player Bar */
+.app-player-bar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.08);
+  pointer-events: none;
+  z-index: 10;
+}
+
+.player-mini-progress {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent-blue-deep), var(--accent-cyan), var(--accent-hydro));
+  box-shadow: 0 0 8px var(--accent-cyan);
+  z-index: 11;
+  pointer-events: none;
+  transition: width 0.15s linear;
+  width: 0%;
+}
+
+@media (max-width: 768px) {
+  :root {
+    --player-height: 58px;
+  }
+
+  .app-player-bar {
+    height: var(--player-height);
+    padding: 0 12px;
+    bottom: 54px; /* Sits above mobile navbar */
+    background: rgba(8, 16, 32, 0.94);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border-top: 1px solid var(--border-glass-subtle);
+  }
+
+  .player-now-playing {
+    width: auto;
+    flex: 1;
+    min-width: 0;
+    gap: 10px;
+  }
+
+  .player-artwork-frame {
+    width: 42px;
+    height: 42px;
+    margin-right: 0;
+  }
+
+  .player-artwork-img {
+    width: 42px;
+    height: 42px;
+    border-radius: 6px;
+  }
+
+  .player-vinyl-disc {
+    display: none !important; /* Hide popping vinyl on small mobile to avoid text squeeze */
+  }
+
+  .player-track-info {
+    max-width: 140px;
+    min-width: 0;
+  }
+
+  .player-track-title {
+    font-size: 0.82rem;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .player-track-sub {
+    font-size: 0.70rem;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .badge-provider {
+    font-size: 0.58rem;
+    padding: 1px 4px;
+  }
+
+  .player-controls-container {
+    flex: 0 0 auto;
+    max-width: none;
+  }
+
+  .player-scrubber-row {
+    display: none; /* Hide wide scrubber row on mobile mini-player bar */
+  }
+
+  .player-button-row {
+    gap: 4px;
+  }
+
+  #btn-player-shuffle,
+  #btn-player-repeat,
+  #btn-player-stop {
+    display: none; /* Secondary controls tucked into full Theater mode */
+  }
+
+  .btn-ctrl {
+    width: 32px;
+    height: 32px;
+    padding: 4px;
+  }
+
+  .btn-ctrl-play {
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(135deg, var(--accent-cyan), var(--accent-hydro));
+    color: #000;
+    box-shadow: 0 0 14px rgba(56, 189, 248, 0.45);
+  }
+
+  .player-tools {
+    width: auto;
+    gap: 6px;
+  }
+
+  .volume-container,
+  #player-quality-badge,
+  #player-ad-free-badge,
+  .player-tools button:not(:last-child) {
+    display: none !important; /* Keep only theater expand on compact bar */
+  }
+
+  /* Full Screen Theater Stage Mobile Adaptations */
+  .stage-content-body {
+    flex-direction: column;
+    padding: 12px;
+    gap: 16px;
+    align-items: center;
+    overflow-y: auto;
+  }
+
+  .stage-visual-column {
+    flex: 0 0 auto;
+    width: 100%;
+    max-width: 260px;
+    margin: 0 auto;
+  }
+
+  .stage-cover-frame {
+    width: 200px;
+    height: 200px;
+    margin: 0 auto 12px auto;
+  }
+
+  #stage-track-title {
+    font-size: 1.25rem !important;
+  }
+
+  #stage-track-artist {
+    font-size: 0.82rem !important;
+  }
+
+  .stage-lyrics-column {
+    flex: 1;
+    width: 100%;
+    max-height: 40vh;
+    padding: 10px;
+  }
+
+  .lyric-line {
+    font-size: 1rem !important;
+    padding: 6px 0 !important;
+  }
+
+  .lyric-line.active {
+    font-size: 1.15rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .player-track-info {
+    max-width: 100px;
+  }
+
+  #btn-player-prev {
+    display: none; /* On ultra narrow phones, show Play/Pause and Next */
+  }
+}
+
+

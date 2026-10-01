@@ -15,6 +15,20 @@ class DynamicBackgroundEngine {
 
     this.initCanvas();
     this.initListeners();
+    this.initSpotlightTracking();
+  }
+
+  initSpotlightTracking() {
+    document.addEventListener('pointermove', (e) => {
+      const target = e.target.closest('.spotlight-card, .card-item, .bento-card, .hero-banner');
+      if (target) {
+        const rect = target.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        target.style.setProperty('--mouse-x', `${x}px`);
+        target.style.setProperty('--mouse-y', `${y}px`);
+      }
+    }, { passive: true });
   }
 
   initCanvas() {

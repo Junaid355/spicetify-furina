@@ -117,22 +117,27 @@ async function loadHome() {
     appState.homeData = data;
 
     // Render Hero Banner
+    // Render Hero Banner with Aceternity Spotlight & Magic UI Border Beam
     const heroEl = document.getElementById('home-hero-banner');
     if (heroEl && data.hero) {
+      heroEl.className = 'hero-banner spotlight-card border-beam-card';
       heroEl.innerHTML = `
         <img class="hero-banner-img" src="${data.hero.image}" alt="Furina Banner" />
         <div class="hero-banner-overlay">
-          <div class="hero-badge">${data.hero.badge}</div>
-          <div class="hero-title">${data.hero.title}</div>
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+            <img src="images/furina_dance.gif" alt="Furina Dancing" class="furina-animated-float" style="width: 32px; height: 32px; border-radius: 50%; border: 1.5px solid var(--accent-cyan); box-shadow: 0 0 10px rgba(56,189,248,0.5);" onerror="this.src='images/furina_pure_hydro.jpg'" />
+            <div class="hero-badge">${data.hero.badge}</div>
+          </div>
+          <div class="hero-title text-shimmer-hydro">${data.hero.title}</div>
           <div class="hero-subtitle">${data.hero.subtitle}</div>
           <div class="hero-actions">
-            <button class="btn-primary" onclick="playCuratedTrack('${data.hero.actionTrackId}')">
+            <button class="btn-primary btn-shimmer spring-click" onclick="playCuratedTrack('${data.hero.actionTrackId}')">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-              Play Grand Opera
+              <span>Play Grand Opera</span>
             </button>
-            <button class="btn-secondary" onclick="switchTab('spotify-hub')">
+            <button class="btn-secondary spring-click" onclick="switchTab('spotify-hub')">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12c0 5.524 4.477 10 10 10 5.524 0 10-4.476 10-10 0-5.523-4.476-10-10-10zm4.586 14.424c-.18.295-.563.387-.857.207-2.35-1.434-5.308-1.758-8.793-.963-.335.077-.67-.133-.746-.469-.077-.334.132-.67.467-.747 3.808-.871 7.076-.496 9.721 1.121.295.18.388.563.208.851zm1.224-2.72c-.226.367-.71.482-1.077.256-2.69-1.653-6.79-2.133-9.97-1.167-.413.125-.852-.107-.977-.52-.125-.413.107-.852.52-.977 3.632-1.102 8.147-.568 11.248 1.331.367.226.482.71.256 1.077zm.106-2.828c-3.226-1.916-8.544-2.093-11.621-1.158-.496.15-1.022-.135-1.172-.63-.15-.497.135-1.022.63-1.173 3.535-1.073 9.404-.866 13.115 1.337.447.265.592.846.327 1.293-.266.448-.847.593-1.279.331z"/></svg>
-              Spotify Hub & Sync
+              <span>Spotify Hub & Sync</span>
             </button>
           </div>
         </div>
@@ -143,9 +148,9 @@ async function loadHome() {
     const plShelf = document.getElementById('featured-playlists-shelf');
     if (plShelf && data.playlists) {
       plShelf.innerHTML = data.playlists.map(pl => `
-        <div class="card-item" onclick="switchTab('playlist-detail', { playlistId: '${pl.id}' })">
+        <div class="card-item spotlight-card spring-click" onclick="switchTab('playlist-detail', { playlistId: '${pl.id}' })">
           <div class="card-cover-wrapper">
-            <img class="card-cover" src="${pl.cover_url || '/images/default_artwork.jpg'}" alt="${pl.name}" loading="lazy" />
+            <img class="card-cover" src="${pl.cover_url || './images/furina_salon_music.jpg'}" alt="${pl.name}" loading="lazy" />
             <div class="card-play-overlay">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
             </div>
@@ -160,9 +165,9 @@ async function loadHome() {
     const globalShelf = document.getElementById('home-global-trending-shelf');
     if (globalShelf && data.globalTrending && data.globalTrending.length > 0) {
       globalShelf.innerHTML = data.globalTrending.map((t, idx) => `
-        <div class="card-item" onclick="handleTrackClick('${t.id}', appState.homeData.globalTrending)">
+        <div class="card-item spotlight-card spring-click" onclick="handleTrackClick('${t.id}', appState.homeData.globalTrending)">
           <div class="card-cover-wrapper">
-            <img class="card-cover" src="${t.coverUrl || '/images/default_artwork.jpg'}" alt="${t.title}" loading="lazy" />
+            <img class="card-cover" src="${t.coverUrl || './images/furina_salon_music.jpg'}" alt="${t.title}" loading="lazy" />
             <div class="card-play-overlay">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
             </div>
@@ -391,8 +396,10 @@ function renderSearchResults() {
         <button class="btn-subtle search-filter-pill ${appState.searchFilter === 'spotify' ? 'active' : ''}" data-filter="spotify" onclick="setSearchFilter('spotify')">Spotify Tracks (${spCount})</button>
         <button class="btn-subtle search-filter-pill ${appState.searchFilter === 'furina' ? 'active' : ''}" data-filter="furina" onclick="setSearchFilter('furina')">Fontaine Masters (${fuCount})</button>
       </div>
-      <div style="text-align: center; color: var(--text-dim); margin-top: 40px;">
-        No tracks found for filter: ${appState.searchFilter.toUpperCase()}.
+      <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; margin-top: 40px; text-align: center; gap: 12px;">
+        <img src="images/furina_dance.gif" alt="Furina Searching" class="furina-animated-float" style="width: 80px; height: 80px; border-radius: 50%; border: 2px solid var(--accent-cyan); box-shadow: 0 0 20px rgba(56, 189, 248, 0.4);" onerror="this.src='images/furina_salon_music.jpg'" />
+        <div style="font-weight: 700; color: #fff; font-size: 1rem;">Lady Furina is searching the Grand Fontaine Repertoire...</div>
+        <div style="color: var(--text-dim); font-size: 0.82rem; max-width: 320px;">No tracks found for filter "${appState.searchFilter.toUpperCase()}". Try searching for songs, artists, or pop titles!</div>
       </div>
     `;
     return;
@@ -429,35 +436,38 @@ async function loadLibrary() {
     appState.likedTrackIds = new Set(likes.map(t => t.id));
 
     container.innerHTML = `
-      <!-- Liked Songs Special Shelf -->
-      <div class="card-item" style="background: linear-gradient(135deg, rgba(2, 132, 199, 0.4), rgba(56, 189, 248, 0.15)); margin-bottom: 18px;">
-        <div style="display: flex; align-items: center; justify-content: space-between;">
-          <div style="display: flex; align-items: center; gap: 16px;">
-            <div style="width: 56px; height: 56px; border-radius: 12px; background: linear-gradient(135deg, #0284c7, #38bdf8); display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-card);">
-              <svg width="26" height="26" viewBox="0 0 24 24" fill="#fff"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+      <!-- Aceternity Bento Grid for Library Highlights -->
+      <div class="bento-grid">
+        <div class="bento-card spotlight-card border-beam-card col-span-2">
+          <div class="bento-card-bg-glow"></div>
+          <div style="display: flex; align-items: center; justify-content: space-between; z-index: 2;">
+            <div style="display: flex; align-items: center; gap: 16px;">
+              <div style="width: 52px; height: 52px; border-radius: 12px; background: linear-gradient(135deg, #0284c7, #38bdf8); display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-card);">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="#fff"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              </div>
+              <div>
+                <div class="card-title text-shimmer-hydro" style="font-size: 1.15rem;">Liked Songs & Favorites</div>
+                <div class="card-subtitle">${likes.length} favorite tracks synced</div>
+              </div>
             </div>
-            <div>
-              <div class="card-title" style="font-size: 1.1rem;">Liked Songs</div>
-              <div class="card-subtitle">${likes.length} favorite tracks</div>
-            </div>
+            <button class="btn-primary btn-shimmer spring-click" onclick="playLikedSongs()">Play All</button>
           </div>
-          <button class="btn-primary" onclick="playLikedSongs()">Play Liked</button>
         </div>
-      </div>
 
-      <!-- Offline Downloads Shelf -->
-      <div class="card-item" style="background: linear-gradient(135deg, rgba(167, 139, 250, 0.25), rgba(13, 24, 46, 0.4)); margin-bottom: 24px;">
-        <div style="display: flex; align-items: center; justify-content: space-between;">
-          <div style="display: flex; align-items: center; gap: 16px;">
-            <div style="width: 56px; height: 56px; border-radius: 12px; background: linear-gradient(135deg, #7c3aed, #a78bfa); display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-card);">
-              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <div class="bento-card spotlight-card">
+          <div class="bento-card-bg-glow"></div>
+          <div style="display: flex; align-items: center; justify-content: space-between; z-index: 2;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <div style="width: 44px; height: 44px; border-radius: 10px; background: linear-gradient(135deg, #7c3aed, #a78bfa); display: flex; align-items: center; justify-content: center;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              </div>
+              <div>
+                <div class="card-title" style="font-size: 0.95rem;">Offline Vault</div>
+                <div class="card-subtitle">${downloads.tracks?.length || 0} tracks saved</div>
+              </div>
             </div>
-            <div>
-              <div class="card-title" style="font-size: 1.1rem;">Offline Downloads</div>
-              <div class="card-subtitle">${downloads.tracks?.length || 0} authorized tracks (${downloads.totalFormatted || '0 MB'})</div>
-            </div>
+            <span class="badge-provider furina">Vault</span>
           </div>
-          <span class="badge-provider furina">Furina Vault</span>
         </div>
       </div>
 
@@ -468,7 +478,7 @@ async function loadLibrary() {
           const sp = window.spotifyClient?.userPlaylists || [];
           return custom.length + sp.length + playlists.length;
         })()})</h3>
-        <button class="btn-subtle" onclick="openCreatePlaylistModal()">+ New Playlist</button>
+        <button class="btn-subtle spring-click" onclick="openCreatePlaylistModal()">+ New Playlist</button>
       </div>
       <div class="shelf-scroll">
         ${(() => {
@@ -477,15 +487,15 @@ async function loadLibrary() {
             id: p.id,
             name: p.name,
             description: p.description,
-            cover_url: p.cover_url || './images/default_artwork.jpg',
+            cover_url: p.cover_url || './images/furina_salon_music.jpg',
             track_count: p.track_count,
             provider: 'spotify'
           }));
           const allPlaylists = [...custom, ...sp, ...playlists];
           return allPlaylists.map(pl => `
-            <div class="card-item" onclick="switchTab('playlist-detail', { playlistId: '${pl.id}' })">
+            <div class="card-item spotlight-card spring-click" onclick="switchTab('playlist-detail', { playlistId: '${pl.id}' })">
               <div class="card-cover-wrapper">
-                <img class="card-cover" src="${pl.cover_url || '/images/default_artwork.jpg'}" alt="${pl.name}" loading="lazy" />
+                <img class="card-cover" src="${pl.cover_url || './images/furina_salon_music.jpg'}" alt="${pl.name}" loading="lazy" />
                 <div class="card-play-overlay">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
                 </div>
@@ -819,33 +829,46 @@ async function downloadTrackOffline(trackId) {
 
     showToast(`Downloading "${track.title}" (${isFullAudio ? 'Lossless Master' : 'High Quality Audio'})...`, 'info');
 
-    const res = await fetch(streamUrl);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const blob = await res.blob();
-    const downloadUrl = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.style.display = 'none';
-    a.href = downloadUrl;
-    const cleanTitle = (track.title || 'song').replace(/[\\/:*?"<>|]/g, '_');
-    const cleanArtist = (track.artist || 'Artist').replace(/[\\/:*?"<>|]/g, '_');
-    const ext = streamUrl.endsWith('.wav') ? 'wav' : (streamUrl.includes('.m4a') ? 'm4a' : 'mp3');
-    a.download = `${cleanArtist} - ${cleanTitle}.${ext}`;
-    document.body.appendChild(a);
-    a.click();
-    setTimeout(() => {
-      window.URL.revokeObjectURL(downloadUrl);
-      if (a.parentNode) a.parentNode.removeChild(a);
-    }, 2000);
+    try {
+      const res = await fetch(streamUrl);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const blob = await res.blob();
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.style.display = 'none';
+      a.href = downloadUrl;
+      const cleanTitle = (track.title || 'song').replace(/[\\/:*?"<>|]/g, '_');
+      const cleanArtist = (track.artist || 'Artist').replace(/[\\/:*?"<>|]/g, '_');
+      const ext = streamUrl.endsWith('.wav') ? 'wav' : (streamUrl.includes('.m4a') ? 'm4a' : 'mp3');
+      a.download = `${cleanArtist} - ${cleanTitle}.${ext}`;
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => {
+        window.URL.revokeObjectURL(downloadUrl);
+        if (a.parentNode) a.parentNode.removeChild(a);
+      }, 2000);
 
-    // Also cache in local offline storage
-    if (window.furinaOfflineDB) {
-      try { await window.furinaOfflineDB.downloadTrack({ ...track, stream_url: streamUrl, isDownloadable: true }); } catch (_) {}
+      // Also cache in local offline storage
+      if (window.furinaOfflineDB) {
+        try { await window.furinaOfflineDB.downloadTrack({ ...track, stream_url: streamUrl, isDownloadable: true }); } catch (_) {}
+      }
+
+      showToast(`✦ "${track.title}" downloaded to your device!`, 'success');
+    } catch (fetchErr) {
+      console.warn('[DownloadEngine] Direct blob fetch restricted, triggering direct link download:', fetchErr.message);
+      const a = document.createElement('a');
+      a.style.display = 'none';
+      a.href = streamUrl;
+      a.target = '_blank';
+      a.download = `${(track.artist || 'Artist').replace(/[\\/:*?"<>|]/g, '_')} - ${(track.title || 'song').replace(/[\\/:*?"<>|]/g, '_')}.mp3`;
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => { if (a.parentNode) a.parentNode.removeChild(a); }, 2000);
+      showToast(`✦ Downloading "${track.title}" via direct stream!`, 'success');
     }
-
-    showToast(`✦ "${track.title}" downloaded to your device!`, 'success');
   } catch (err) {
     console.error('Download error:', err);
-    showToast(`Download started for "${trackId}"`, 'success');
+    showToast(`Unable to download audio for "${trackId}"`, 'warning');
   }
 }
 window.downloadTrackOffline = downloadTrackOffline;
@@ -1456,6 +1479,8 @@ function initPlayerBar() {
       document.getElementById('player-time-current').textContent = formatTime(data.currentTime);
       document.getElementById('player-time-total').textContent = formatTime(data.duration);
       document.getElementById('player-scrubber-fill').style.width = `${data.progress}%`;
+      const miniFill = document.getElementById('player-mini-progress-fill');
+      if (miniFill) miniFill.style.width = `${data.progress}%`;
       window.furinaLyrics.update(data.currentTime);
     }
     if (event === 'statechange') {

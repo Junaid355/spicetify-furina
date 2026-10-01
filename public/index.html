@@ -21,12 +21,14 @@
   <link rel="icon" type="image/jpeg" href="icons/app-icon.jpg" />
   <link rel="manifest" href="manifest.json" />
 
-  <!-- Stylesheets (v6.8 Cache-Busting) -->
-  <link rel="stylesheet" href="css/design-tokens.css?v=6.8" />
-  <link rel="stylesheet" href="css/layout.css?v=6.8" />
-  <link rel="stylesheet" href="css/animations.css?v=6.8" />
-  <link rel="stylesheet" href="css/components.css?v=6.8" />
-  <link rel="stylesheet" href="css/player.css?v=6.8" />
+  <!-- Stylesheets (v6.9 Cache-Busting & Aceternity Motion Primitives) -->
+  <link rel="stylesheet" href="css/design-tokens.css?v=6.9" />
+  <link rel="stylesheet" href="css/layout.css?v=6.9" />
+  <link rel="stylesheet" href="css/animations.css?v=6.9" />
+  <link rel="stylesheet" href="css/components.css?v=6.9" />
+  <link rel="stylesheet" href="css/player.css?v=6.9" />
+  <!-- Core Diagnostic Logger (Loads Early to Intercept All Events) -->
+  <script src="js/bug-logger.js?v=6.9"></script>
 </head>
 <body>
   <!-- Dynamic Album-Art Reactive Background Mesh & Canvas -->
@@ -41,11 +43,11 @@
       <!-- Furina Music Brand Logo -->
       <div class="sidebar-logo" onclick="switchTab('home')" title="Furina Music">
         <div class="sidebar-avatar-glow">
-          <img src="images/furina_pure_hydro.jpg" class="sidebar-furina-avatar" alt="Furina" />
+          <img src="images/furina_dance.gif" class="sidebar-furina-avatar" alt="Furina" onerror="this.src='images/furina_pure_hydro.jpg'" />
           <div class="hydro-orbit-ring"></div>
         </div>
         <div class="sidebar-logo-text-group">
-          <div class="sidebar-logo-text">FURINA MUSIC</div>
+          <div class="sidebar-logo-text text-shimmer-hydro">FURINA MUSIC</div>
           <div class="sidebar-logo-badge">✦ All The World's A Stage</div>
         </div>
       </div>
@@ -107,8 +109,8 @@
       <!-- Cute Furina Companion / Mascot Card in Sidebar -->
       <div class="furina-companion-card" id="furina-mascot-card">
         <div class="companion-avatar-wrap">
-          <img id="companion-furina-img" src="images/furina_salon_music.jpg" class="companion-img" alt="Lady Furina" />
-          <div class="companion-note-bubble" id="companion-bubble">♪ Listening</div>
+          <img id="companion-furina-img" src="images/furina_dance.gif" class="companion-img furina-animated-float" alt="Lady Furina" onerror="this.src='images/furina_salon_music.jpg'" />
+          <div class="companion-note-bubble" id="companion-bubble">♪ Dancing</div>
         </div>
         <div class="companion-info">
           <span class="companion-title">Lady Furina</span>
@@ -184,7 +186,13 @@
           <button class="badge-pill" id="header-spotify-badge" onclick="openSpotifyConnectModal()" title="Connect & Sync Spotify Account" style="cursor: pointer; border: 1px solid rgba(30, 215, 96, 0.4); background: rgba(30, 215, 96, 0.12); color: #fff;">
             <span style="color: #1ed760;">●</span> Connect Spotify
           </button>
-          <button class="btn-icon-subtle" onclick="switchTab('marketplace')" title="Marketplace & Themes">
+          <!-- In-App Bug Logger & Diagnostics Pill -->
+          <button class="logger-header-btn spring-click" id="btn-bug-logger" onclick="window.furinaBugLogger.toggle()" title="Fontaine System & Bug Diagnostics">
+            <span>🐞</span>
+            <span class="btn-text-responsive">Logs</span>
+            <span class="logger-badge-pill clean" id="bug-logger-badge-count">0</span>
+          </button>
+          <button class="btn-icon-subtle spring-click" onclick="switchTab('marketplace')" title="Marketplace & Themes">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
           </button>
           <button class="btn-subtle" onclick="openShortcutsModal()" title="Keyboard Shortcuts" style="font-size: 0.78rem; padding: 4px 10px; display: inline-flex; align-items: center; gap: 4px;">
@@ -473,8 +481,8 @@
     </main>
   </div>
 
-  <!-- Mobile Bottom Navigation -->
-  <nav class="mobile-navbar">
+  <!-- Mobile Bottom Navigation (Spotify / Fontaine Mobile Style) -->
+  <nav class="mobile-navbar" id="app-mobile-nav">
     <div class="mobile-nav-item active" data-tab="home" onclick="switchTab('home')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
       <span>Home</span>
@@ -483,22 +491,25 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
       <span>Search</span>
     </div>
-    <div class="mobile-nav-item" data-tab="marketplace" onclick="switchTab('marketplace')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-      <span>Market</span>
+    <div class="mobile-nav-item" data-tab="library" onclick="switchTab('library')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      <span>Library</span>
     </div>
     <div class="mobile-nav-item" data-tab="spotify-hub" onclick="switchTab('spotify-hub')">
       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12c0 5.524 4.477 10 10 10 5.524 0 10-4.476 10-10 0-5.523-4.476-10-10-10zm4.586 14.424c-.18.295-.563.387-.857.207-2.35-1.434-5.308-1.758-8.793-.963-.335.077-.67-.133-.746-.469-.077-.334.132-.67.467-.747 3.808-.871 7.076-.496 9.721 1.121.295.18.388.563.208.851zm1.224-2.72c-.226.367-.71.482-1.077.256-2.69-1.653-6.79-2.133-9.97-1.167-.413.125-.852-.107-.977-.52-.125-.413.107-.852.52-.977 3.632-1.102 8.147-.568 11.248 1.331.367.226.482.71.256 1.077zm.106-2.828c-3.226-1.916-8.544-2.093-11.621-1.158-.496.15-1.022-.135-1.172-.63-.15-.497.135-1.022.63-1.173 3.535-1.073 9.404-.866 13.115 1.337.447.265.592.846.327 1.293-.266.448-.847.593-1.279.331z"/></svg>
       <span>Spotify</span>
     </div>
-    <div class="mobile-nav-item" data-tab="library" onclick="switchTab('library')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-      <span>Library</span>
+    <div class="mobile-nav-item" id="mobile-nav-logs" onclick="window.furinaBugLogger.toggle()" title="Diagnostics">
+      <span class="mobile-nav-badge" id="mobile-nav-bug-count">!</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a4 4 0 0 0-4 4v2H6a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h2v4a4 4 0 0 0 8 0v-4h2a2 2 0 0 0 2-2v-2a2 2 0 0 0-2-2h-2V6a4 4 0 0 0-4-4z"/><circle cx="12" cy="11" r="1"/></svg>
+      <span>Logs</span>
     </div>
   </nav>
 
-  <!-- Persistent Bottom Player Bar -->
+  <!-- Persistent Bottom Player Bar (Desktop Full & Mobile Sleek Mini-Player) -->
   <div class="app-player-bar">
+    <!-- Micro Progress Fill for Mobile -->
+    <div class="player-mini-progress" id="player-mini-progress-fill"></div>
     <div class="player-now-playing">
       <div class="player-artwork-frame" id="btn-toggle-stage" title="Click to open Fontaine Theater Stage">
         <img class="player-artwork-img" id="player-art-img" src="images/furina_opera_tears.jpg" onerror="this.src='icons/app-icon.jpg'" alt="Now Playing" />
@@ -860,14 +871,46 @@
     </div>
   </div>
 
-  <!-- Core Application Scripts (v6.8 Multi-Source Ad-Free Engine) -->
-  <script src="js/client-api.js?v=6.8"></script>
-  <script src="js/dynamic-bg.js?v=6.8"></script>
-  <script src="js/audio-player.js?v=6.8"></script>
-  <script src="js/offline-storage.js?v=6.8"></script>
-  <script src="js/lyrics-engine.js?v=6.8"></script>
-  <script src="js/spotify-client.js?v=6.8"></script>
-  <script src="js/marketplace.js?v=6.8"></script>
-  <script src="js/app.js?v=6.8"></script>
+  <!-- Aceternity Sheet: Bug Logger & Fontaine Diagnostics Drawer -->
+  <div class="logger-drawer-overlay" id="drawer-bug-logger-overlay" onclick="window.furinaBugLogger.close()"></div>
+  <aside class="logger-drawer" id="drawer-bug-logger" aria-label="Fontaine System & Diagnostics Logger">
+    <div class="logger-header">
+      <div class="logger-title-group">
+        <img src="images/furina_dance.gif" alt="Furina Diagnostics" onerror="this.src='images/furina_salon_music.jpg'" />
+        <div>
+          <div class="logger-title">✦ Fontaine Diagnostics & Bug Logger</div>
+          <div style="font-size: 0.68rem; color: var(--text-dim);">Real-time log capture, audio streams & network inspector</div>
+        </div>
+      </div>
+      <button class="btn-icon-subtle spring-click" onclick="window.furinaBugLogger.close()" title="Close Diagnostics">✕</button>
+    </div>
+    <div class="logger-actions-bar">
+      <input type="text" class="logger-search-input" placeholder="Search logs, tracks, or errors..." oninput="window.furinaBugLogger.setSearch(this.value)" />
+      <div class="logger-filter-pills">
+        <button class="logger-filter-pill active" data-filter="all" onclick="window.furinaBugLogger.setFilter('all')">All</button>
+        <button class="logger-filter-pill" data-filter="error" onclick="window.furinaBugLogger.setFilter('error')">🔴 Errors</button>
+        <button class="logger-filter-pill" data-filter="warn" onclick="window.furinaBugLogger.setFilter('warn')">🟡 Warnings</button>
+        <button class="logger-filter-pill" data-filter="audio" onclick="window.furinaBugLogger.setFilter('audio')">🎵 Audio</button>
+        <button class="logger-filter-pill" data-filter="net" onclick="window.furinaBugLogger.setFilter('net')">🌐 Net</button>
+      </div>
+      <div style="display: flex; gap: 6px; width: 100%; margin-top: 4px;">
+        <button class="logger-btn-action spring-click" onclick="window.furinaBugLogger.runSelfDiagnostics()" style="color: var(--accent-cyan); border-color: var(--accent-cyan); font-weight: 700;">⚡ Run Self-Test</button>
+        <button class="logger-btn-action spring-click" onclick="window.furinaBugLogger.copyLogsToClipboard()">📋 Copy Report</button>
+        <button class="logger-btn-action spring-click" onclick="window.furinaBugLogger.exportJSON()">💾 Export JSON</button>
+        <button class="logger-btn-action spring-click" onclick="window.furinaBugLogger.clear()" style="color: #f43f5e; margin-left: auto;">🗑 Clear</button>
+      </div>
+    </div>
+    <div class="logger-entries-wrap" id="logger-entries-container"></div>
+  </aside>
+
+  <!-- Core Application Scripts (v6.9 Multi-Source Ad-Free Motion Engine) -->
+  <script src="js/client-api.js?v=6.9"></script>
+  <script src="js/dynamic-bg.js?v=6.9"></script>
+  <script src="js/audio-player.js?v=6.9"></script>
+  <script src="js/offline-storage.js?v=6.9"></script>
+  <script src="js/lyrics-engine.js?v=6.9"></script>
+  <script src="js/spotify-client.js?v=6.9"></script>
+  <script src="js/marketplace.js?v=6.9"></script>
+  <script src="js/app.js?v=6.9"></script>
 </body>
 </html>

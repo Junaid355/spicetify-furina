@@ -166,6 +166,65 @@ class FurinaAudioEngine {
     }
   }
 
+  async handleYtPlaybackError(err) {
+    const errCode = err?.data !== undefined ? err.data : err;
+    console.warn(`[AudioEngine] YouTube stream restriction (code ${errCode}), switching to audio stream fallback for "${this.currentTrack?.title}"`);
+    this.stopYtProgressTimer();
+
+    if (this.currentTrack && !this.isRetryingFallback) {
+      this.isRetryingFallback = true;
+      try {
+        const cleanTitle = (this.currentTrack.title || '').replace(/\(.*?\)/g, '').replace(/\[.*?\]/g, '').trim();
+        const cleanArtist = (this.currentTrack.artist || '').split(/[,&]/)[0].trim();
+        const itRes = await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(`${cleanTitle} ${cleanArtist}`)}&entity=song&limit=1`);
+        if (itRes.ok) {
+          const itData = await itRes.json();
+          const match = itData.results?.[0];
+          if (match?.previewUrl) {
+            console.log(`[AudioEngine] Playing fallback iTunes stream for: ${this.currentTrack.title}`);
+            this.activeBackend = 'html5';
+            this.audioElement.src = match.previewUrl;
+            this.audioElement.load();
+            await this.audioElement.play().catch(() => {});
+            this.isPlaying = true;
+            this.emit('statechange', { isPlaying: true });
+            this.isRetryingFallback = false;
+            return;
+          }
+        }
+      } catch (_) {}
+
+      try {
+        const audRes = await fetch(`https://discoveryprovider.audius.co/v1/tracks/search?query=${encodeURIComponent(`${this.currentTrack.title} ${this.currentTrack.artist || ''}`)}&app_name=FURINA_MUSIC`);
+        if (audRes.ok) {
+          const audData = await audRes.json();
+          const match = audData.data?.[0];
+          if (match?.id) {
+            console.log(`[AudioEngine] Playing fallback Audius stream for: ${this.currentTrack.title}`);
+            this.activeBackend = 'html5';
+            this.audioElement.src = `https://discoveryprovider.audius.co/v1/tracks/${match.id}/stream?app_name=FURINA_MUSIC`;
+            this.audioElement.load();
+            await this.audioElement.play().catch(() => {});
+            this.isPlaying = true;
+            this.emit('statechange', { isPlaying: true });
+            this.isRetryingFallback = false;
+            return;
+          }
+        }
+      } catch (_) {}
+
+      if (this.currentTrack.id?.startsWith('furina_') || (this.currentTrack.title || '').toLowerCase().includes('vaguelette')) {
+        this.activeBackend = 'html5';
+        this.audioElement.src = './audio/la_vaguelette.wav';
+        this.audioElement.load();
+        await this.audioElement.play().catch(() => {});
+        this.isPlaying = true;
+        this.emit('statechange', { isPlaying: true });
+      }
+      this.isRetryingFallback = false;
+    }
+  }
+
   startYtProgressTimer() {
     this.stopYtProgressTimer();
     this.ytProgressTimer = setInterval(() => {

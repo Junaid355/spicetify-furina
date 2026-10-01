@@ -1023,3 +1023,290 @@
   flex-shrink: 0;
 }
 
+/* ==========================================================================
+   ACETERNITY BENTO GRID & MODERN MOTION COMPONENTS
+   ========================================================================== */
+
+.bento-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.bento-card {
+  position: relative;
+  background: var(--bg-glass-card);
+  border: 1px solid var(--border-glass-subtle);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.bento-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--accent-cyan);
+  box-shadow: 0 16px 36px -12px rgba(0, 0, 0, 0.7), 0 0 24px rgba(56, 189, 248, 0.2);
+}
+
+.bento-card.col-span-2 {
+  grid-column: span 2;
+}
+
+.bento-card-bg-glow {
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 150%;
+  height: 150%;
+  background: radial-gradient(circle, var(--dynamic-glow-color) 0%, transparent 60%);
+  pointer-events: none;
+  opacity: 0.35;
+  transition: opacity 0.4s ease;
+}
+
+.bento-card:hover .bento-card-bg-glow {
+  opacity: 0.65;
+}
+
+/* Companion Furina Animated Mascot */
+.companion-avatar-wrap {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+}
+
+.companion-img {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--accent-cyan);
+  box-shadow: 0 0 14px rgba(56, 189, 248, 0.45);
+}
+
+.companion-note-bubble {
+  position: absolute;
+  top: -8px;
+  right: -10px;
+  background: linear-gradient(135deg, var(--accent-cyan), var(--accent-hydro));
+  color: #000;
+  font-size: 0.58rem;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: var(--radius-full);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  animation: furinaFloat 2.4s ease-in-out infinite;
+  white-space: nowrap;
+}
+
+/* ==========================================================================
+   COMPREHENSIVE MOBILE RESPONSIVE OVERHAUL (<768px & <480px)
+   ========================================================================== */
+
+@media (max-width: 768px) {
+  /* Hero Banner Compact Mobile Layout */
+  .hero-banner {
+    height: 195px;
+    margin-bottom: 20px;
+    border-radius: var(--radius-md);
+  }
+
+  .hero-banner-overlay {
+    padding: 16px;
+  }
+
+  .hero-badge {
+    padding: 3px 8px;
+    font-size: 0.62rem;
+    margin-bottom: 6px;
+  }
+
+  .hero-title {
+    font-size: 1.35rem;
+    line-height: 1.25;
+    margin-bottom: 4px;
+  }
+
+  .hero-subtitle {
+    font-size: 0.78rem;
+    line-height: 1.35;
+    margin-bottom: 12px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .hero-actions {
+    gap: 8px;
+  }
+
+  .btn-primary {
+    padding: 8px 16px;
+    font-size: 0.8rem;
+  }
+
+  .btn-secondary {
+    padding: 8px 14px;
+    font-size: 0.8rem;
+  }
+
+  /* Section Headers */
+  .section-header {
+    margin: 20px 0 10px 0;
+  }
+
+  .section-title {
+    font-size: 1.05rem;
+  }
+
+  .section-link {
+    font-size: 0.74rem;
+  }
+
+  /* Shelf Scroll & Cards */
+  .shelf-scroll {
+    gap: 12px;
+    padding-bottom: 8px;
+  }
+
+  .card-item {
+    min-width: 135px;
+    max-width: 145px;
+    padding: 10px;
+    border-radius: 10px;
+  }
+
+  .card-artwork {
+    width: 100%;
+    height: 115px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+  }
+
+  .card-title {
+    font-size: 0.82rem;
+    margin-bottom: 2px;
+  }
+
+  .card-subtitle {
+    font-size: 0.70rem;
+  }
+
+  /* Track Row Compact Mobile */
+  .track-row {
+    padding: 6px 8px;
+    gap: 10px;
+    border-radius: 8px;
+  }
+
+  .track-artwork-thumb {
+    width: 38px;
+    height: 38px;
+    border-radius: 6px;
+  }
+
+  .track-col-info {
+    min-width: 0;
+    gap: 2px;
+  }
+
+  .track-row-title {
+    font-size: 0.84rem;
+  }
+
+  .track-row-artist {
+    font-size: 0.72rem;
+  }
+
+  .track-col-album,
+  .track-col-added {
+    display: none !important; /* Hide wide table columns on mobile */
+  }
+
+  .track-col-actions {
+    gap: 4px;
+  }
+
+  .btn-icon-subtle {
+    width: 28px;
+    height: 28px;
+    padding: 4px;
+  }
+
+  /* Bento Grid Mobile */
+  .bento-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .bento-card.col-span-2 {
+    grid-column: span 1;
+  }
+
+  /* Modals Mobile Inset */
+  .modal-backdrop {
+    padding: 12px;
+    align-items: flex-end;
+  }
+
+  .modal-box {
+    width: 100% !important;
+    max-width: 100% !important;
+    border-radius: 20px 20px 12px 12px;
+    padding: 18px 16px;
+    max-height: 88vh;
+    overflow-y: auto;
+  }
+
+  .modal-title {
+    font-size: 1.05rem;
+  }
+
+  /* Queue Drawer Full Mobile Sheet */
+  #queue-drawer {
+    width: 100% !important;
+    max-width: 100vw !important;
+    border-left: none;
+    border-top: 1px solid var(--border-glass);
+    top: 50px !important;
+  }
+
+  /* Theme selector pill compact in header */
+  #theme-active-name {
+    display: none;
+  }
+
+  .theme-pill-dropdown-btn {
+    padding: 6px 8px;
+    gap: 4px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-banner {
+    height: 180px;
+  }
+
+  .hero-title {
+    font-size: 1.15rem;
+  }
+
+  .card-item {
+    min-width: 120px;
+    max-width: 130px;
+    padding: 8px;
+  }
+
+  .card-artwork {
+    height: 105px;
+  }
+}
+
+
