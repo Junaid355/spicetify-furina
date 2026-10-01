@@ -1,46 +1,57 @@
-# 🌊 Furina Music (Spicetify Edition)
+# 🌊 Furina Music (Spicetify v7.5.0 Edition)
 
-A music platform and Spicetify-inspired client tailored with Fontaine aesthetics, real Spotify playlist importing, official OAuth 2.0 integration, and a Web Audio DSP equalizer.
+[![Release](https://img.shields.io/github/v/release/Junaid355/spicetify-furina?style=for-the-badge&color=38bdf8)](https://github.com/Junaid355/spicetify-furina/releases/tag/v7.5.0)
+[![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20Android%20%7C%20Web-38bdf8?style=for-the-badge)](https://junaid355.github.io/)
+[![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)](LICENSE)
+[![Live Web](https://img.shields.io/badge/Live%20App-junaid355.github.io-00e5ff?style=for-the-badge&logo=github)](https://junaid355.github.io/)
 
----
-
-## ✨ Features
-
-- **Spicetify Desktop Aesthetics**:
-  - Authentic 5-column Spotify table view (`#`, `Title / Artist`, `Album`, `Date Added`, `⏱`).
-  - Adaptive responsive sidebar that gracefully collapses into an icon rail on compact viewports.
-  - Dynamic hero banner gradient that samples dominant colors directly from album artwork.
-  - Floating 56px circular play button, quick search filter, and animated dancing equalizer audio indicators.
-
-- **Dual-Engine Spotify Integration**:
-  - **Public Playlist Scraping**: Paste any public Spotify playlist URL (e.g. `https://open.spotify.com/playlist/37i9dQZF1DXcBWIGoYBM5M`) to import all real song titles, artists, album art, and 30-second audio previews immediately—no developer credentials required!
-  - **Official Spotify OAuth 2.0**: Connect with Spotify via authorization code flow or paste custom `Client ID` / `Client Secret` / direct Access Token via the interactive **Connect to Spotify** modal.
-  - Live latency testing and account status badge.
-
-- **Multi-Source Federated Music APIs**:
-  - **Spotify Web API & Embed Scraper**: Full account synchronization for all user playlists, liked songs (`/me/tracks`), and top tracks, plus public playlist URL extraction.
-  - **Deezer Music API**: Real-time Global Top Charts and catalog search with 320kbps MP3 streams directly from Deezer CDN.
-  - **Apple Music / iTunes API**: High-resolution 1000x1000 artwork, complete metadata, and 256kbps AAC audio streams.
-  - **Universal Stream Resolver**: Dynamic multi-source fallback ensures every single track resolves to an active playable audio stream.
-
-- **Spicetify-Inspired Marketplace & Modding**:
-  - **8 Fontaine Themes**: Furina Ocean, Midnight Fontaine, Hydro Glass, Deep Sea, Moonlit Ocean, Fontaine Night, Aurora Water, and Minimal Furina.
-  - **Extensions**: Pro Navigation Hotkeys, Dynamic Ambient Lighting, Mini Floating Player, and Auto-Sync Daemon.
-  - **Custom Apps**: In-app Marketplace, Synchronized Lyrics Studio, Listening Analytics, and 10-Band Graphic Equalizer.
-
-- **Audiophile DSP Engine**:
-  - Web Audio API 10-band equalizer (32Hz to 16kHz) with gain sliders and presets (Bass Boost, Vocal, Electronic, Classical).
-  - Spatial Reverb & Convolution simulation.
-  - Lossless WAV audio fallback and synchronized millisecond-precision LRC lyrics.
-
-- **Multi-Platform Ready**:
-  - Progressive Web App (PWA) with Service Worker and offline caching.
-  - Desktop integration via Electron (`desktop/electron-main.js`).
-  - Mobile foundation via Capacitor (`mobile/capacitor.config.json`).
+A lossless music streaming platform and Spicetify-inspired client tailored with Fontaine aesthetics, real Spotify playlist importing, official OAuth 2.0 integration, 3D WebGL2 visuals, Aceternity & Magic UI motion primitives, cozy Web Audio haptics, and complete desktop/mobile binaries.
 
 ---
 
-## 🚀 Quick Start
+## 📥 Direct Downloads & Releases (v7.5.0)
+
+| Platform | Download Link | File Type | Size | Notes |
+| :--- | :--- | :--- | :--- | :--- |
+| **Windows Installer** | [Furina-Music-Setup-1.0.0.exe](https://github.com/Junaid355/spicetify-furina/releases/download/v7.5.0/Furina-Music-Setup-1.0.0.exe) | NSIS Installer | 101 MB | Auto-updates enabled via GitHub Releases |
+| **Windows Portable** | [Furina-Music-1.0.0-portable.exe](https://github.com/Junaid355/spicetify-furina/releases/download/v7.5.0/Furina-Music-1.0.0-portable.exe) | Standalone Executable | 100 MB | Zero installation required; run anywhere |
+| **Android Phone / Tablet** | [Furina-Music.apk](https://github.com/Junaid355/spicetify-furina/releases/download/v7.5.0/Furina-Music.apk) | Android Package | 3.5 MB | Offline caching, background playback |
+| **Web / PWA (iPhone / Mac)** | [https://junaid355.github.io/](https://junaid355.github.io/) | Progressive Web App | Instant | Add to Home Screen via Safari / Chrome |
+| **Release Manifest** | [latest.yml](https://github.com/Junaid355/spicetify-furina/releases/download/v7.5.0/latest.yml) | Update Manifest | 400 B | Electron Auto-Updater feed |
+
+---
+
+## ✨ Features & Architecture
+
+### 1. 3D Motion System & Aceternity UI Primitives
+- **Spotlight Search & 3D Bento Grid**: Real-time spotlight beam tracking the cursor, one-click trending quick pills (*Lust, A Thousand Years, Tum Jo Aaye, La Vaguelette*), and a 6-genre 3D interactive bento grid.
+- **3D WebGL2 Three.js Hydro Aura**: 5 rotating floating hydro crystal gems with depth perspective reacting to viewport scroll and ambient room colors.
+- **3D Vinyl Turntable Stage Overlay**: Full-screen Epiclese Theater stage with a rotating vinyl record deck, precision tonearm, synced LRC lyrics display, and Web Audio API oscilloscope waveform.
+- **Card 3D Gyroscopic Tilt**: Interactive 3D perspective tilt on hover and mobile touch across all playlist cards and album art frames.
+
+### 2. Cozy Web Audio Haptic & Sound Effects
+- **Synthesized Hydro Chimes & Tactile Clicks**: Zero-latency native Web Audio API oscillators synthesize delicate crystalline droplet chimes and tactile switch clicks on button and card interactions (`audio-effects.js`).
+- **Zero Extra Bloat**: 100% procedurally synthesized in the browser without loading heavy external sound files.
+
+### 3. Fontaine Diagnostics & Bug Logger Drawer
+- **Real-Time Event Capture**: Intercepts console logs, audio state transitions, stream resolution latency, and network fetch errors into an Aceternity glassmorphic slide-out drawer (`bug-logger.js`).
+- **One-Click Diagnostics**: Run automated self-tests, copy comprehensive debug reports to clipboard, or export full JSON traces for instant bug remediation.
+
+### 4. 100% Full-Length Songs & Zero-Ad Shield
+- **Guaranteed Full Song Playback**: Zero 30-second preview cutoffs. High-bitrate audio streams mapped for all catalog songs and imported tracks.
+- **Ad-Free Stream Shield**: Automatic detection and silent suppression of audio sponsor interruptions with zero user friction.
+
+### 5. Dual-Engine Spotify Integration
+- **Public Playlist Scraping & Deduplication**: Paste any Spotify playlist URL (e.g. `6bFFesLukTP2leRfDj1hTO` Hindi Lo-Fi / Tum Jo Aaye, Today's Top Hits) to import all real song titles, artists, and artwork with deduplication.
+- **Official Spotify OAuth 2.0**: Connect with Spotify via authorization code flow or direct Access Token to sync Liked Songs (`/me/tracks`) and user playlists.
+
+### 6. Audiophile DSP Engine
+- **10-Band Graphic Equalizer**: Web Audio API filters from 32Hz to 16kHz with custom gain sliders and presets (Bass Boost, Vocal Clarity, Electronic, Classical Epiclese).
+- **Spatial Convolution Reverb**: Simulated acoustic spaces for Fontaine Opera Hall and intimate studio monitoring.
+
+---
+
+## 🚀 Quick Start (Development & Local Build)
 
 ### 1. Requirements
 - Node.js 18 or higher
@@ -53,30 +64,19 @@ cd spicetify-furina
 npm install
 ```
 
-### 3. Start the Server
+### 3. Start Development Server
 ```bash
 npm start
 ```
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
----
-
-## 🔑 Spotify Integration Setup
-
-Furina Music works right out of the box for public Spotify playlists. To enable full account synchronization:
-
-1. Click the **Spotify Status Badge** in the top navigation header or open Settings -> **Connect to Spotify**.
-2. **Option A (Instant Direct Token)**: Paste a temporary OAuth token from the [Spotify Web Console](https://developer.spotify.com/console/get-current-user/).
-3. **Option B (Custom App Credentials)**:
-   - Create an app at the [Spotify Developer Dashboard](https://developer.spotify.com/dashboard).
-   - Set Redirect URI to `http://localhost:3000/api/auth/spotify/callback`.
-   - Save your `Client ID` and `Client Secret` in the Connect Modal or in a `.env` file:
-     ```env
-     SPOTIFY_CLIENT_ID=your_client_id_here
-     SPOTIFY_CLIENT_SECRET=your_client_secret_here
-     SPOTIFY_REDIRECT_URI=http://localhost:3000/api/auth/spotify/callback
-     ```
-   - Click **Connect with Spotify** to authenticate.
+### 4. Build Windows Desktop App
+```bash
+npm run build:electron
+# Output generated in dist/:
+# - Furina-Music-Setup-1.0.0.exe
+# - Furina-Music-1.0.0-portable.exe
+```
 
 ---
 
@@ -84,27 +84,22 @@ Furina Music works right out of the box for public Spotify playlists. To enable 
 
 ```
 spicetify-furina/
-├── desktop/                  # Electron main process & preload scripts
-├── mobile/                   # Capacitor mobile config
-├── public/                   # Frontend SPA shell & assets
-│   ├── audio/                # Bundled lossless audio demo tracks
-│   ├── css/                  # Spicetify layout, animations & themes
-│   ├── icons/ & images/      # Fontaine Furina artwork & UI badges
-│   ├── js/                   # Audio player, DSP equalizer, lyrics, and Spotify client
+├── desktop/                  # Electron main process & auto-updater
+├── mobile/                   # Android Capacitor wrapper & assets
+├── public/                   # Frontend SPA client & static web app
+│   ├── css/                  # Spicetify layout, animations & Aceternity components
+│   ├── data/                 # Indexed track catalogs (catalog.json & video-map.json)
+│   ├── icons/ & images/      # Furina animated artwork, badges & mascots
+│   ├── js/                   # Audio player, audio effects, bug logger, & 3D Three.js scene
 │   ├── index.html            # Main SPA entrypoint
 │   ├── manifest.json         # PWA Web Manifest
 │   └── sw.js                 # Service worker
+├── scripts/                  # Release publishing & catalog indexing scripts
 ├── server/                   # Express backend & SQLite database
-│   ├── db/                   # SQLite schema & database migrations
-│   ├── providers/            # Spotify API provider & public scraper
-│   ├── routes/               # REST API endpoints
-│   ├── services/             # Sync, marketplace, & recommendation engines
-│   └── index.js              # Server entry point
-├── tests/                    # Integration and unit tests
-└── package.json              # Project dependencies & scripts
+└── sync_to_github_all.js     # Dual-repository deployment pipeline
 ```
 
 ---
 
 ## 📜 License
-MIT License. Built for Fontaine music enthusiasts and Spicetify community modders.
+MIT License. Tailored for Fontaine music enthusiasts and the Spicetify modding community.

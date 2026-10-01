@@ -336,6 +336,36 @@ window.playMood = playMood;
 
 // 3. Search Engine
 let searchDebounceTimeout = null;
+
+function clearSearchInput() {
+  const input = document.getElementById('search-input');
+  if (input) {
+    input.value = '';
+    const clearBtn = document.getElementById('search-clear-btn');
+    if (clearBtn) clearBtn.style.display = 'none';
+    const browseCats = document.getElementById('search-browse-categories');
+    if (browseCats) browseCats.style.display = 'block';
+    const results = document.getElementById('search-results');
+    if (results) results.innerHTML = '';
+    input.focus();
+  }
+}
+window.clearSearchInput = clearSearchInput;
+
+function executeQuickSearch(term) {
+  switchTab('search');
+  const input = document.getElementById('search-input');
+  if (input) {
+    input.value = term;
+    const clearBtn = document.getElementById('search-clear-btn');
+    if (clearBtn) clearBtn.style.display = 'block';
+    const browseCats = document.getElementById('search-browse-categories');
+    if (browseCats) browseCats.style.display = 'none';
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+  }
+}
+window.executeQuickSearch = executeQuickSearch;
+
 function initSearch() {
   const input = document.getElementById('search-input');
   if (!input) return;
@@ -343,14 +373,19 @@ function initSearch() {
   input.addEventListener('input', (e) => {
     clearTimeout(searchDebounceTimeout);
     const query = e.target.value.trim();
+    const clearBtn = document.getElementById('search-clear-btn');
+    const browseCats = document.getElementById('search-browse-categories');
+
     if (!query) {
-      document.getElementById('search-results').innerHTML = `
-        <div style="text-align: center; color: var(--text-dim); margin-top: 40px;">
-          Type to search songs, artists, albums across Furina and Spotify...
-        </div>
-      `;
+      if (clearBtn) clearBtn.style.display = 'none';
+      if (browseCats) browseCats.style.display = 'block';
+      const results = document.getElementById('search-results');
+      if (results) results.innerHTML = '';
       return;
     }
+
+    if (clearBtn) clearBtn.style.display = 'block';
+    if (browseCats) browseCats.style.display = 'none';
 
     searchDebounceTimeout = setTimeout(async () => {
       try {
@@ -377,6 +412,9 @@ window.setSearchFilter = setSearchFilter;
 function renderSearchResults() {
   const resultsContainer = document.getElementById('search-results');
   if (!resultsContainer || !appState.searchResults) return;
+
+  const browseCats = document.getElementById('search-browse-categories');
+  if (browseCats) browseCats.style.display = 'none';
 
   const sr = appState.searchResults;
   let tracks = sr.allTracks || sr.tracks || [];
@@ -1500,6 +1538,8 @@ function initPlayerBar() {
       if (data.isPlaying) {
         if (playBtn) playBtn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>`;
         if (vinylArt) vinylArt.classList.remove('artwork-vinyl-paused');
+        const stageArtContainer = document.querySelector('.stage-artwork-container');
+        if (stageArtContainer) stageArtContainer.classList.add('playing');
         if (artFrame) {
           artFrame.classList.add('playing');
           artFrame.classList.remove('paused');
@@ -1510,6 +1550,8 @@ function initPlayerBar() {
       } else {
         if (playBtn) playBtn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>`;
         if (vinylArt) vinylArt.classList.add('artwork-vinyl-paused');
+        const stageArtContainer = document.querySelector('.stage-artwork-container');
+        if (stageArtContainer) stageArtContainer.classList.remove('playing');
         if (artFrame) {
           artFrame.classList.add('paused');
         }

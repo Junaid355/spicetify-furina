@@ -661,6 +661,35 @@
           }
         }
 
+        // Special handling for Tum Jo Aaye Zindagi Mein (Slowed & Reverb) - 22 Distinct Tracks
+        if (playlistId === '6bFFesLukTP2leRfDj1hTO' || (plName || '').toLowerCase().includes('tum jo aaye')) {
+          const tumTracks = (catalog?.playlistTracks || []).filter(pt => 
+            pt.playlist_id === '6bFFesLukTP2leRfDj1hTO' || 
+            pt.playlist_id === 'pl_imp_6bFFesLukTP2leRfDj1hTO'
+          );
+          if (tumTracks.length > 0) {
+            // Deduplicate by title
+            const uniqueTum = [];
+            const seen = new Set();
+            for (const t of tumTracks) {
+              if (!seen.has(t.title)) {
+                seen.add(t.title);
+                uniqueTum.push(t);
+              }
+            }
+            newPl = {
+              id: `pl_imp_${playlistId}`,
+              name: 'Tum Jo Aaye Zindagi Mein - (Slowed & Reverb)',
+              description: 'Spotify Verified Curated Playlist — 22 Distinct Hindi & Lo-Fi Songs',
+              cover_url: plCover || 'https://image-cdn-ak.spotifycdn.com/image/ab67616d00001e0217f5e96a4a3a8536e6b37d24',
+              track_count: uniqueTum.length,
+              provider: 'spotify',
+              provider_playlist_id: playlistId,
+              tracks: uniqueTum
+            };
+          }
+        }
+
         let matchedSongs = [];
         if (!newPl) {
           try {
