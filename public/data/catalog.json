@@ -3323,6 +3323,36 @@
       "youtubeId": "9wdtjreefrw",
       "is_downloadable": 1,
       "stream_url": "https://p.scdn.co/mp3-preview/her_forrest_stream"
+    },
+    {
+      "id": "sp_lust_lilskies",
+      "track_id": "sp_lust_lilskies",
+      "title": "Lust",
+      "artist": "Lil Skies",
+      "album": "Life of a Dark Rose",
+      "duration_ms": 156000,
+      "durationMs": 156000,
+      "cover_url": "https://images.genius.com/f04c62c3f87fa05e6308064d306b3eef.1000x1000x1.jpg",
+      "coverUrl": "https://images.genius.com/f04c62c3f87fa05e6308064d306b3eef.1000x1000x1.jpg",
+      "stream_url": "https://discoveryprovider.audius.co/v1/tracks/search?query=Lil%20Skies%20Lust&app_name=FURINA_MUSIC",
+      "streamUrl": "https://discoveryprovider.audius.co/v1/tracks/search?query=Lil%20Skies%20Lust&app_name=FURINA_MUSIC",
+      "youtubeId": "7N3py3yZ-bQ",
+      "provider": "spotify"
+    },
+    {
+      "id": "sp_lust_kendrick",
+      "track_id": "sp_lust_kendrick",
+      "title": "LUST.",
+      "artist": "Kendrick Lamar",
+      "album": "DAMN.",
+      "duration_ms": 307000,
+      "durationMs": 307000,
+      "cover_url": "https://upload.wikimedia.org/wikipedia/en/5/51/Kendrick_Lamar_-_Damn.png",
+      "coverUrl": "https://upload.wikimedia.org/wikipedia/en/5/51/Kendrick_Lamar_-_Damn.png",
+      "stream_url": "https://discoveryprovider.audius.co/v1/tracks/search?query=Kendrick%20Lamar%20LUST&app_name=FURINA_MUSIC",
+      "streamUrl": "https://discoveryprovider.audius.co/v1/tracks/search?query=Kendrick%20Lamar%20LUST&app_name=FURINA_MUSIC",
+      "youtubeId": "2g811Eo7K8U",
+      "provider": "spotify"
     }
   ],
   "playlists": [
