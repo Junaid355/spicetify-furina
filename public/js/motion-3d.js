@@ -57,39 +57,46 @@
       document.querySelectorAll(selectors).forEach(attachTilt);
     }
 
-    // 2. Magic UI macOS-Style Floating Dock Magnification
+    // 2. Magic UI macOS-Style Floating Dock Magnification (Desktop & Mobile Touch)
     initDockMagnification() {
-      const dock = document.querySelector('.floating-glass-dock');
-      if (!dock) return;
+      const docks = document.querySelectorAll('.floating-glass-dock, .mobile-navbar');
+      docks.forEach(dock => {
+        const items = Array.from(dock.querySelectorAll('.dock-item, .mobile-nav-item'));
+        const maxDistance = 110;
+        const baseScale = 1.0;
+        const maxScale = 1.28;
 
-      const items = Array.from(dock.querySelectorAll('.dock-item'));
-      const maxDistance = 120;
-      const baseScale = 1.0;
-      const maxScale = 1.32;
+        const handleMove = (clientX) => {
+          items.forEach((item) => {
+            const rect = item.getBoundingClientRect();
+            const itemCenter = rect.left + rect.width / 2;
+            const distance = Math.abs(clientX - itemCenter);
 
-      dock.addEventListener('mousemove', (e) => {
-        const mouseX = e.clientX;
-        items.forEach((item) => {
-          const rect = item.getBoundingClientRect();
-          const itemCenter = rect.left + rect.width / 2;
-          const distance = Math.abs(mouseX - itemCenter);
+            if (distance < maxDistance) {
+              const factor = 1 - distance / maxDistance;
+              const scale = baseScale + (maxScale - baseScale) * Math.sin((factor * Math.PI) / 2);
+              item.style.transform = `scale(${scale.toFixed(3)}) translateY(-${(factor * 5).toFixed(1)}px)`;
+            } else {
+              item.style.transform = `scale(${baseScale}) translateY(0)`;
+            }
+          });
+        };
 
-          if (distance < maxDistance) {
-            const factor = 1 - distance / maxDistance;
-            const scale = baseScale + (maxScale - baseScale) * Math.sin((factor * Math.PI) / 2);
-            item.style.transform = `scale(${scale.toFixed(3)}) translateY(-${(factor * 6).toFixed(1)}px)`;
-          } else {
+        dock.addEventListener('mousemove', (e) => handleMove(e.clientX));
+        dock.addEventListener('touchmove', (e) => {
+          if (e.touches && e.touches[0]) handleMove(e.touches[0].clientX);
+        }, { passive: true });
+
+        const resetItems = () => {
+          items.forEach((item) => {
             item.style.transform = `scale(${baseScale}) translateY(0)`;
-          }
-        });
-      });
+            item.style.transition = 'transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+            setTimeout(() => { item.style.transition = ''; }, 300);
+          });
+        };
 
-      dock.addEventListener('mouseleave', () => {
-        items.forEach((item) => {
-          item.style.transform = `scale(${baseScale}) translateY(0)`;
-          item.style.transition = 'transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
-          setTimeout(() => { item.style.transition = ''; }, 300);
-        });
+        dock.addEventListener('mouseleave', resetItems);
+        dock.addEventListener('touchend', resetItems);
       });
     }
 

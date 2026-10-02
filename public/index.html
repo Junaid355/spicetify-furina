@@ -38,117 +38,76 @@
   <canvas id="three-hydro-canvas"></canvas>
   <canvas id="ocean-ripple-canvas"></canvas>
 
-  <!-- Master Container -->
+  <!-- Master Container (100% Full Stage Width — Zero Left Sidebar) -->
   <div class="app-container">
-    
-    <!-- Desktop Left Sidebar -->
-    <aside class="app-sidebar">
-      <!-- Furina Music Brand Logo -->
-      <div class="sidebar-logo" onclick="switchTab('home')" title="Furina Music">
-        <div class="sidebar-avatar-glow">
-          <img src="images/furina_logo.jpg" class="sidebar-furina-avatar" alt="Furina" onerror="this.src='icons/app-icon.jpg'" />
-          <div class="hydro-orbit-ring"></div>
-        </div>
-        <div class="sidebar-logo-text-group">
-          <div class="sidebar-logo-text text-shimmer-hydro">FURINA MUSIC</div>
-          <div class="sidebar-logo-badge">✦ All The World's A Stage</div>
-        </div>
-      </div>
 
-      <!-- Smooth Scrollable Body -->
-      <div class="sidebar-scroll-wrapper">
-        <!-- Core Navigation -->
-        <div class="sidebar-section-title">Navigation</div>
-        <ul class="sidebar-menu">
-          <li class="nav-item active" data-tab="home" onclick="switchTab('home')" title="Home">
-            <svg viewBox="0 0 24 24" fill="none"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-            <span class="nav-item-text">Home</span>
-          </li>
-          <li class="nav-item" data-tab="search" onclick="switchTab('search')" title="Search">
-            <svg viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <span class="nav-item-text">Search</span>
-          </li>
-          <li class="nav-item" data-tab="library" onclick="switchTab('library')" title="Your Library">
-            <svg viewBox="0 0 24 24" fill="none"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-            <span class="nav-item-text">Your Library</span>
-          </li>
-        </ul>
-
-        <div class="sidebar-divider"></div>
-
-        <!-- Custom Apps (Spicetify Ecosystem) -->
-        <div class="sidebar-section-title">Custom Apps & Ecosystem</div>
-        <ul class="sidebar-menu">
-          <li class="nav-item" data-tab="marketplace" onclick="switchTab('marketplace')" title="Marketplace">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-            <span class="nav-item-text">Marketplace</span>
-          </li>
-          <li class="nav-item" data-tab="spotify-hub" onclick="switchTab('spotify-hub')" title="Spotify Hub">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12c0 5.524 4.477 10 10 10 5.524 0 10-4.476 10-10 0-5.523-4.476-10-10-10zm4.586 14.424c-.18.295-.563.387-.857.207-2.35-1.434-5.308-1.758-8.793-.963-.335.077-.67-.133-.746-.469-.077-.334.132-.67.467-.747 3.808-.871 7.076-.496 9.721 1.121.295.18.388.563.208.851zm1.224-2.72c-.226.367-.71.482-1.077.256-2.69-1.653-6.79-2.133-9.97-1.167-.413.125-.852-.107-.977-.52-.125-.413.107-.852.52-.977 3.632-1.102 8.147-.568 11.248 1.331.367.226.482.71.256 1.077zm.106-2.828c-3.226-1.916-8.544-2.093-11.621-1.158-.496.15-1.022-.135-1.172-.63-.15-.497.135-1.022.63-1.173 3.535-1.073 9.404-.866 13.115 1.337.447.265.592.846.327 1.293-.266.448-.847.593-1.279.331z"/></svg>
-            <span class="nav-item-text">Spotify Hub & Sync</span>
-          </li>
-          <li class="nav-item" data-tab="equalizer" onclick="switchTab('equalizer')" title="10-Band Equalizer">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
-            <span class="nav-item-text">10-Band Equalizer FX</span>
-          </li>
-          <li class="nav-item" data-tab="stats" onclick="switchTab('stats')" title="Listening Statistics">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-            <span class="nav-item-text">Listening Statistics</span>
-          </li>
-          <li class="nav-item" data-tab="settings" onclick="switchTab('settings')" title="Settings">
-            <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-            <span class="nav-item-text">Settings</span>
-          </li>
-        </ul>
-
-        <div class="sidebar-divider"></div>
-
-        <!-- Quick Playlists -->
-        <div class="sidebar-section-title">Fontaine Suites</div>
-        <div class="sidebar-playlists">
-          <div class="sidebar-pl-link" onclick="switchTab('playlist-detail', { playlistId: 'pl_opera_epiclese' })">🎭 Opera Epiclese Repertoire</div>
-          <div class="sidebar-pl-link" onclick="switchTab('playlist-detail', { playlistId: 'pl_salon_tea' })">☕ Salon Solitaire High Tea</div>
-          <div class="sidebar-pl-link" onclick="switchTab('playlist-detail', { playlistId: 'pl_fontaine_abyss' })">🌊 Submerged Memories</div>
-        </div>
-      </div>
-
-      <!-- Compact Fontaine Glass Dock at Bottom (Never Overflows) -->
-      <div class="sidebar-bottom-dock" id="furina-mascot-card">
-        <div class="dock-furina-avatar-wrap" onclick="if(window.furinaAudioEffects) window.furinaAudioEffects.playHydroChime(1.2)" title="Lady Furina Mascot">
-          <img id="companion-furina-img" src="images/furina_dance.gif" class="dock-furina-avatar furina-animated-float" alt="Furina" onerror="this.src='images/furina_pure_hydro.jpg'" />
-          <div class="companion-note-bubble" id="companion-bubble">♪ Dancing</div>
-        </div>
-        <div class="dock-info">
-          <div class="dock-title-row">
-            <span class="dock-title">Lady Furina</span>
-            <span class="dock-badge-pill">Archon</span>
-          </div>
-          <span class="dock-status-text" id="companion-status-text">"The stage awaits your song!"</span>
-        </div>
-        <div class="dock-actions">
-          <button class="dock-action-btn" onclick="switchTab('spotify-hub')" title="Open Spotify Hub">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="#1ed760"><path d="M12 2C6.477 2 2 6.477 2 12c0 5.524 4.477 10 10 10 5.524 0 10-4.476 10-10 0-5.523-4.476-10-10-10zm4.586 14.424c-.18.295-.563.387-.857.207-2.35-1.434-5.308-1.758-8.793-.963-.335.077-.67-.133-.746-.469-.077-.334.132-.67.467-.747 3.808-.871 7.076-.496 9.721 1.121.295.18.388.563.208.851zm1.224-2.72c-.226.367-.71.482-1.077.256-2.69-1.653-6.79-2.133-9.97-1.167-.413.125-.852-.107-.977-.52-.125-.413.107-.852.52-.977 3.632-1.102 8.147-.568 11.248 1.331.367.226.482.71.256 1.077zm.106-2.828c-3.226-1.916-8.544-2.093-11.621-1.158-.496.15-1.022-.135-1.172-.63-.15-.497.135-1.022.63-1.173 3.535-1.073 9.404-.866 13.115 1.337.447.265.592.846.327 1.293-.266.448-.847.593-1.279.331z"/></svg>
-          </button>
-        </div>
-      </div>
-    </aside>
-
-    <!-- Main Viewport -->
+    <!-- Main Viewport (Takes 100% Width) -->
     <main class="app-main">
       
-      <!-- Top Application Header -->
+      <!-- Top Application Header with Sleek Floating Glass Island Dock -->
       <header class="app-header">
-        <div class="header-left">
-          <div class="header-nav-buttons">
-            <button class="btn-header-nav" onclick="history.back()" title="Back">←</button>
-            <button class="btn-header-nav" onclick="history.forward()" title="Forward">→</button>
+        
+        <!-- Left: Furina Companion Mascot Brand Island -->
+        <div class="header-brand-island" id="furina-mascot-card" onclick="switchTab('home')" title="Furina Music — All The World's A Stage">
+          <div class="brand-avatar-wrapper" onclick="event.stopPropagation(); if(window.furinaAudioEffects) window.furinaAudioEffects.playHydroChime(1.2);" title="Lady Furina Mascot">
+            <img id="companion-furina-img" src="images/furina_dance.gif" class="brand-furina-avatar furina-animated-float" alt="Furina Mascot" onerror="this.src='icons/app-icon.jpg'" />
+            <div class="brand-hydro-orbit"></div>
+            <div class="companion-note-bubble" id="companion-bubble">♪ Dancing</div>
           </div>
-          <div class="header-search-quick" onclick="switchTab('search')" style="margin-left: 12px; display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.06); border: 1px solid var(--border-glass-subtle); padding: 6px 14px; border-radius: var(--radius-full); cursor: pointer; color: var(--text-dim); font-size: 0.8rem;">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <span>What do you want to play?</span>
+          <div class="brand-text-column">
+            <div class="brand-title-row">
+              <span class="brand-title text-shimmer-hydro">FURINA MUSIC</span>
+              <span class="brand-badge-pill">Archon</span>
+            </div>
+            <span class="companion-status-line" id="companion-status-text">"All the world's a stage!"</span>
           </div>
         </div>
-        <div class="header-right">
+
+        <!-- Center: Sleek macOS / Aceternity Floating Glass Island Dock with Spring Magnification -->
+        <nav class="floating-glass-dock" id="floating-island-dock" aria-label="Master Navigation Dock">
+          <button class="dock-item nav-item active spring-click" data-tab="home" onclick="switchTab('home')" title="Home (H)">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            <span class="dock-tooltip">Home</span>
+          </button>
+          <button class="dock-item nav-item spring-click" data-tab="search" onclick="switchTab('search')" title="Search Catalog (/)">
+            <svg viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <span class="dock-tooltip">Search</span>
+          </button>
+          <button class="dock-item nav-item spring-click" data-tab="library" onclick="switchTab('library')" title="Your Library (L)">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+            <span class="dock-tooltip">Your Library</span>
+          </button>
+          <div class="dock-separator"></div>
+          <button class="dock-item nav-item spring-click" data-tab="marketplace" onclick="switchTab('marketplace')" title="Marketplace & Themes">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+            <span class="dock-tooltip">Marketplace</span>
+          </button>
+          <button class="dock-item nav-item spring-click" data-tab="spotify-hub" onclick="switchTab('spotify-hub')" title="Spotify Hub & Sync">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12c0 5.524 4.477 10 10 10 5.524 0 10-4.476 10-10 0-5.523-4.476-10-10-10zm4.586 14.424c-.18.295-.563.387-.857.207-2.35-1.434-5.308-1.758-8.793-.963-.335.077-.67-.133-.746-.469-.077-.334.132-.67.467-.747 3.808-.871 7.076-.496 9.721 1.121.295.18.388.563.208.851zm1.224-2.72c-.226.367-.71.482-1.077.256-2.69-1.653-6.79-2.133-9.97-1.167-.413.125-.852-.107-.977-.52-.125-.413.107-.852.52-.977 3.632-1.102 8.147-.568 11.248 1.331.367.226.482.71.256 1.077zm.106-2.828c-3.226-1.916-8.544-2.093-11.621-1.158-.496.15-1.022-.135-1.172-.63-.15-.497.135-1.022.63-1.173 3.535-1.073 9.404-.866 13.115 1.337.447.265.592.846.327 1.293-.266.448-.847.593-1.279.331z"/></svg>
+            <span class="dock-tooltip">Spotify Hub</span>
+          </button>
+          <button class="dock-item nav-item spring-click" data-tab="equalizer" onclick="switchTab('equalizer')" title="10-Band Equalizer FX">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
+            <span class="dock-tooltip">10-Band Equalizer</span>
+          </button>
+          <button class="dock-item nav-item spring-click" data-tab="stats" onclick="switchTab('stats')" title="Listening Statistics">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+            <span class="dock-tooltip">Statistics</span>
+          </button>
+          <button class="dock-item nav-item spring-click" data-tab="settings" onclick="switchTab('settings')" title="Settings">
+            <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            <span class="dock-tooltip">Settings</span>
+          </button>
+        </nav>
+
+        <!-- Right: Action & Utility Controls Island -->
+        <div class="header-right-island">
+          <!-- 🎲 Prominent Random Track / Shuffle Repertoire Button -->
+          <button class="magic-shimmer-btn btn-random-repertoire spring-click" onclick="playRandomTrackFromCatalog()" title="🎲 Shuffle & Play Random Repertoire from Entire Catalog">
+            <span class="btn-dice-icon">🎲</span>
+            <span class="btn-text-responsive">Random Track</span>
+          </button>
+
           <!-- Multi-Theme Selector Pill Dropdown -->
           <div class="theme-selector-pill-group">
             <button class="theme-pill-dropdown-btn" id="theme-active-pill" onclick="toggleThemeDropdown(event)" title="Switch Fontaine Theme">
@@ -193,28 +152,26 @@
           <button class="badge-pill" id="header-spotify-badge" onclick="openSpotifyConnectModal()" title="Connect & Sync Spotify Account" style="cursor: pointer; border: 1px solid rgba(30, 215, 96, 0.4); background: rgba(30, 215, 96, 0.12); color: #fff;">
             <span style="color: #1ed760;">●</span> Connect Spotify
           </button>
+
           <!-- In-App Bug Logger & Diagnostics Pill -->
           <button class="logger-header-btn spring-click" id="btn-bug-logger" onclick="window.furinaBugLogger.toggle()" title="Fontaine System & Bug Diagnostics">
             <span>🐞</span>
             <span class="btn-text-responsive">Logs</span>
             <span class="logger-badge-pill clean" id="bug-logger-badge-count">0</span>
           </button>
-          <button class="btn-subtle spring-click" id="btn-open-download-modal" onclick="openDownloadModal()" title="Download Furina Music for Windows, Android, and iPhone" style="font-size: 0.76rem; padding: 4px 10px; display: inline-flex; align-items: center; gap: 4px; background: rgba(56, 189, 248, 0.12); border: 1px solid var(--accent-cyan); color: #fff;">
+
+          <!-- Download Apps (EXE/APK/iOS) -->
+          <button class="btn-subtle spring-click" id="btn-open-download-modal" onclick="openDownloadModal()" title="Download Furina Music for Windows, Android, and iPhone" style="font-size: 0.76rem; padding: 6px 12px; display: inline-flex; align-items: center; gap: 4px; background: rgba(56, 189, 248, 0.12); border: 1px solid var(--accent-cyan); color: #fff; border-radius: var(--radius-full);">
             <span>📱</span>
-            <span class="btn-text-responsive">Get Apps (EXE/APK/iOS)</span>
+            <span class="btn-text-responsive">Apps</span>
           </button>
-          <a href="https://github.com/Junaid355/spicetify-furina" target="_blank" rel="noopener noreferrer" class="btn-subtle spring-click" title="View Source on GitHub" style="font-size: 0.76rem; padding: 4px 10px; display: inline-flex; align-items: center; gap: 4px; text-decoration: none; color: #fff;">
+
+          <a href="https://github.com/Junaid355/spicetify-furina" target="_blank" rel="noopener noreferrer" class="btn-subtle spring-click" title="View Source on GitHub" style="font-size: 0.76rem; padding: 6px 12px; display: inline-flex; align-items: center; gap: 4px; text-decoration: none; color: #fff; border-radius: var(--radius-full);">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
             <span class="btn-text-responsive">GitHub</span>
           </a>
-          <button class="btn-icon-subtle spring-click" onclick="switchTab('marketplace')" title="Marketplace & Themes">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
-          </button>
-          <button class="btn-subtle" onclick="openShortcutsModal()" title="Keyboard Shortcuts" style="font-size: 0.78rem; padding: 4px 10px; display: inline-flex; align-items: center; gap: 4px;">
-            <span>⌨</span>
-            <span>Keys</span>
-          </button>
-          <div class="user-profile-badge" onclick="switchTab('settings')">
+
+          <div class="user-profile-badge" onclick="switchTab('settings')" title="User Profile">
             <img class="user-profile-avatar" src="images/furina_pure_hydro.jpg" onerror="this.src='icons/app-icon.jpg'" alt="Furina Avatar" />
             <span class="user-profile-name">Lady Furina</span>
           </div>
@@ -243,6 +200,10 @@
                   <button class="magic-shimmer-btn" onclick="playHeroTrack()" title="Play Fontaine Master Repertoire">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
                     <span>Play Opera Suite</span>
+                  </button>
+                  <button class="magic-shimmer-btn btn-random-repertoire spring-click" id="btn-hero-random" onclick="playRandomTrackFromCatalog()" title="Pick and play a random track from the entire catalog instantly">
+                    <span class="btn-dice-icon">🎲</span>
+                    <span>Play Random / Shuffle Repertoire</span>
                   </button>
                   <button class="btn-secondary" onclick="switchTab('search')" style="border-radius: var(--radius-full); padding: 12px 24px; font-weight: 700;">
                     <span>Explore Library</span>
@@ -754,6 +715,9 @@
         <button class="btn-ctrl" id="btn-player-shuffle" title="Shuffle">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
         </button>
+        <button class="btn-ctrl btn-ctrl-random spring-click" id="btn-player-random" onclick="playRandomTrackFromCatalog()" title="Play Random Song from Entire Catalog (🎲)">
+          <span class="btn-dice-icon" style="font-size: 1.12rem; line-height: 1;">🎲</span>
+        </button>
         <button class="btn-ctrl" id="btn-player-prev" title="Previous (P)">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><polygon points="19 20 9 12 19 4 19 20"/><line x1="5" y1="19" x2="5" y2="5" stroke="currentColor" stroke-width="3"/></svg>
         </button>
@@ -825,6 +789,12 @@
         <div style="text-align: center; margin-bottom: 12px;">
           <h2 id="stage-track-title" style="font-size: 1.5rem; font-weight: 800;">La Vaguelette</h2>
           <p id="stage-track-artist" style="color: var(--text-dim); font-size: 0.95rem;">Furina de Fontaine</p>
+        </div>
+        <div style="display: flex; gap: 8px; justify-content: center; margin-bottom: 12px;">
+          <button class="magic-shimmer-btn btn-random-repertoire spring-click" onclick="playRandomTrackFromCatalog()" style="padding: 6px 16px; font-size: 0.8rem;" title="Play Random Song (🎲)">
+            <span class="btn-dice-icon">🎲</span>
+            <span>Shuffle Repertoire</span>
+          </button>
         </div>
         <canvas class="stage-wave-canvas" id="stage-wave-visualizer" width="440" height="60"></canvas>
       </div>

@@ -12,8 +12,8 @@
     constructor() {
       this.ctx = null;
       this.soundMode = localStorage.getItem('furina_sound_profile') || 'haptic'; // 'haptic' | 'crystal' | 'droplet' | 'off'
-      this.isEnabled = localStorage.getItem('furina_cozy_sounds') === 'true';
-      this.volume = parseFloat(localStorage.getItem('furina_cozy_volume') || '0.03');
+      this.isEnabled = localStorage.getItem('furina_cozy_sounds') !== 'false'; // Default enabled for instant cozy feedback
+      this.volume = parseFloat(localStorage.getItem('furina_cozy_volume') || '0.04');
       this.lastPlayTime = 0;
 
       this.initEventListeners();
@@ -31,7 +31,8 @@
       }
     }
 
-    // 1. Velvet Haptic Tap (iOS / macOS Taptic Engine feel: gentle, low-frequency 55Hz damped impulse)
+    // 1. Cozy Whisper-Soft Acoustic Wooden / Glass Dampened Mechanical Thud
+    // Low-pass filtered impulse + fixed 72Hz body resonance with ZERO pitch slide.
     playVelvetHaptic() {
       if (!this.isEnabled || this.soundMode === 'off') return;
       try {
@@ -39,30 +40,60 @@
         if (!this.ctx) return;
 
         const now = this.ctx.currentTime;
-        if (now - this.lastPlayTime < 0.06) return;
+        if (now - this.lastPlayTime < 0.05) return;
         this.lastPlayTime = now;
 
+        // A. Fixed frequency body resonance — ZERO pitch slide
         const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
-        const filter = this.ctx.createBiquadFilter();
+        const oscGain = this.ctx.createGain();
+        const bodyFilter = this.ctx.createBiquadFilter();
 
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(58, now);
-        osc.frequency.exponentialRampToValueAtTime(32, now + 0.022);
+        osc.type = 'triangle'; // Organic, warm acoustic body tone
+        osc.frequency.setValueAtTime(72, now); // Fixed 72Hz — zero pitch slide!
 
-        filter.type = 'lowpass';
-        filter.frequency.setValueAtTime(140, now);
+        bodyFilter.type = 'lowpass';
+        bodyFilter.frequency.setValueAtTime(160, now);
+        bodyFilter.Q.setValueAtTime(1.8, now);
 
-        gain.gain.setValueAtTime(0.0001, now);
-        gain.gain.linearRampToValueAtTime(this.volume * 0.45, now + 0.002);
-        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.025);
+        oscGain.gain.setValueAtTime(0.0001, now);
+        oscGain.gain.linearRampToValueAtTime(this.volume * 0.45, now + 0.001);
+        oscGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.022);
 
-        osc.connect(filter);
-        filter.connect(gain);
-        gain.connect(this.ctx.destination);
+        osc.connect(bodyFilter);
+        bodyFilter.connect(oscGain);
+        oscGain.connect(this.ctx.destination);
 
         osc.start(now);
-        osc.stop(now + 0.028);
+        osc.stop(now + 0.024);
+
+        // B. Acoustic dampened wooden/glass impulse click transient (low-pass filtered micro-impulse)
+        const bufferSize = Math.floor(this.ctx.sampleRate * 0.012); // 12ms transient
+        const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+          const decay = Math.exp(-i / (this.ctx.sampleRate * 0.0025));
+          data[i] = (Math.random() * 2 - 1) * decay;
+        }
+
+        const noiseNode = this.ctx.createBufferSource();
+        noiseNode.buffer = buffer;
+
+        const noiseFilter = this.ctx.createBiquadFilter();
+        noiseFilter.type = 'lowpass';
+        noiseFilter.frequency.setValueAtTime(280, now); // Dampened wooden/glass acoustic filter
+        noiseFilter.Q.setValueAtTime(1.0, now);
+
+        const noiseGain = this.ctx.createGain();
+        noiseGain.gain.setValueAtTime(0.0001, now);
+        noiseGain.gain.linearRampToValueAtTime(this.volume * 0.35, now + 0.0008);
+        noiseGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.016);
+
+        noiseNode.connect(noiseFilter);
+        noiseFilter.connect(noiseGain);
+        noiseGain.connect(this.ctx.destination);
+
+        noiseNode.start(now);
+        noiseNode.stop(now + 0.018);
       } catch (_) {}
     }
 

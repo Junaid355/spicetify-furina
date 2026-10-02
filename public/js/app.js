@@ -144,10 +144,21 @@ async function loadHome() {
       `;
     }
 
-    // Curated Playlists Shelf
+    // Curated Playlists Shelf (Strictly Deduplicated)
     const plShelf = document.getElementById('featured-playlists-shelf');
     if (plShelf && data.playlists) {
-      plShelf.innerHTML = data.playlists.map(pl => `
+      const uniquePls = [];
+      const seen = new Set();
+      for (const pl of data.playlists) {
+        if (!pl) continue;
+        const nameKey = (pl.name || '').toLowerCase().trim();
+        const idKey = (pl.provider_playlist_id || pl.id || '').toLowerCase().trim();
+        if (seen.has(nameKey) || (idKey && seen.has(idKey))) continue;
+        if (nameKey) seen.add(nameKey);
+        if (idKey) seen.add(idKey);
+        uniquePls.push(pl);
+      }
+      plShelf.innerHTML = uniquePls.map(pl => `
         <div class="card-item spotlight-card spring-click" onclick="switchTab('playlist-detail', { playlistId: '${pl.id}' })">
           <div class="card-cover-wrapper">
             <img class="card-cover" src="${pl.cover_url || './images/furina_salon_music.jpg'}" alt="${pl.name}" loading="lazy" />
@@ -323,6 +334,75 @@ async function playCuratedTrack(trackId) {
   window.furinaAudio.playTrack(track);
 }
 window.playCuratedTrack = playCuratedTrack;
+
+// Random Music Engine (Plays random track from catalog with dynamic shuffle queue)
+async function playRandomTrackFromCatalog() {
+  if (window.furinaAudioEffects) {
+    window.furinaAudioEffects.playClick();
+  }
+  try {
+    let allTracks = [];
+    if (appState.homeData && Array.isArray(appState.homeData.tracks) && appState.homeData.tracks.length > 0) {
+      allTracks = [...appState.homeData.tracks];
+    }
+    if (allTracks.length === 0) {
+      try {
+        const res = await fetch('/api/catalog/search?q=');
+        if (res.ok) {
+          const data = await res.json();
+          allTracks = data.tracks || [];
+        }
+      } catch (_) {}
+    }
+    if (allTracks.length === 0) {
+      try {
+        const res = await fetch('data/catalog.json');
+        if (res.ok) {
+          const data = await res.json();
+          allTracks = data.tracks || [];
+        }
+      } catch (_) {}
+    }
+    if (allTracks.length === 0 && appState.homeData) {
+      allTracks = [
+        ...(appState.homeData.globalTrending || []),
+        ...(appState.homeData.trending || []),
+        ...(appState.homeData.spotlightTracks || [])
+      ];
+    }
+
+    const validTracks = allTracks.filter(t => t && (t.id || t.track_id) && t.title);
+    if (validTracks.length === 0) {
+      showToast('No tracks found to shuffle', 'info');
+      return;
+    }
+
+    const currentId = window.furinaAudio?.currentTrack?.id;
+    let pool = validTracks.filter(t => t.id !== currentId && t.track_id !== currentId);
+    if (pool.length === 0) pool = validTracks;
+
+    const randomTrack = pool[Math.floor(Math.random() * pool.length)];
+    const remaining = pool.filter(t => (t.id || t.track_id) !== (randomTrack.id || randomTrack.track_id));
+    for (let i = remaining.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [remaining[i], remaining[j]] = [remaining[j], remaining[i]];
+    }
+    const shuffledQueue = [randomTrack, ...remaining];
+
+    window.furinaAudio.playTrack(randomTrack, shuffledQueue);
+
+    // Visual feedback for dice animation
+    document.querySelectorAll('.btn-ctrl-random, #btn-hero-random, #btn-player-random, .dock-random-btn').forEach(btn => {
+      btn.classList.add('dice-spinning');
+      setTimeout(() => btn.classList.remove('dice-spinning'), 800);
+    });
+
+    showToast(`🎲 Playing Random: ${randomTrack.title} — ${randomTrack.artist || 'Fontaine Repertoire'}`);
+  } catch (err) {
+    console.error('[RandomMusicEngine] Failed to play random track:', err);
+  }
+}
+window.playRandomTrackFromCatalog = playRandomTrackFromCatalog;
 
 async function playMood(moodId) {
   const res = await fetch(`/api/catalog/moods/${moodId}`);

@@ -78,10 +78,13 @@ body {
   filter: blur(70px);
 }
 
-/* Master Grid Layout */
+/* Master Grid Layout — 100% Full Stage Width (Zero Left Sidebar) */
 .app-container {
   display: flex;
+  flex-direction: column;
   flex: 1;
+  width: 100%;
+  max-width: 100%;
   height: calc(100vh - var(--player-height)) !important;
   height: calc(100dvh - var(--player-height)) !important;
   max-height: calc(100vh - var(--player-height)) !important;
@@ -92,21 +95,16 @@ body {
   box-sizing: border-box;
 }
 
-/* Desktop Sidebar */
+/* Old Desktop Left Sidebar — Explicitly eliminated to give 100% stage width */
 .app-sidebar {
-  width: var(--sidebar-width);
-  background: var(--bg-surface);
-  backdrop-filter: blur(28px);
-  -webkit-backdrop-filter: blur(28px);
-  border-right: 1px solid var(--border-glass-subtle);
-  display: flex;
-  flex-direction: column;
-  padding: 18px 12px 14px 12px;
-  flex-shrink: 0;
-  height: 100%;
-  max-height: 100%;
-  overflow: hidden;
-  box-sizing: border-box;
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  overflow: hidden !important;
+  pointer-events: none !important;
 }
 
 .sidebar-logo {
@@ -402,59 +400,137 @@ body {
   transform: scale(1.06);
 }
 
-/* Main Content Area */
+/* Main Content Area (100% Full Screen Width) */
 .app-main {
   flex: 1;
+  width: 100%;
+  max-width: 100%;
   display: flex;
   flex-direction: column;
   overflow-y: auto;
+  overflow-x: hidden;
   position: relative;
 }
 
-/* Top App Header */
+/* Master Top Floating Glass Header */
 .app-header {
-  height: var(--header-height);
-  padding: 0 28px;
+  min-height: 70px;
+  height: auto;
+  padding: 10px 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 16px;
   position: sticky;
   top: 0;
-  z-index: 10;
-  background: rgba(6, 13, 27, 0.75);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid var(--border-glass-subtle);
+  z-index: 80;
+  background: rgba(3, 7, 18, 0.82);
+  backdrop-filter: blur(30px) saturate(190%);
+  -webkit-backdrop-filter: blur(30px) saturate(190%);
+  border-bottom: 1px solid rgba(56, 189, 248, 0.18);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
 }
 
-.header-left {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.header-nav-buttons {
-  display: flex;
-  gap: 8px;
-}
-
-.btn-header-nav {
-  width: 32px;
-  height: 32px;
-  border-radius: var(--radius-full);
-  background: rgba(255, 255, 255, 0.08);
-  border: none;
-  color: var(--text-sub);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-}
-
-.header-right {
+/* Left Brand Mascot Island */
+.header-brand-island {
   display: flex;
   align-items: center;
   gap: 12px;
+  cursor: pointer;
+  flex-shrink: 0;
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(56, 189, 248, 0.15);
+  transition: all 0.25s ease;
+}
+
+.header-brand-island:hover {
+  background: rgba(56, 189, 248, 0.08);
+  border-color: rgba(56, 189, 248, 0.4);
+  box-shadow: 0 0 20px rgba(56, 189, 248, 0.25);
+}
+
+.brand-avatar-wrapper {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+}
+
+.brand-furina-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--accent-cyan);
+  box-shadow: 0 0 14px rgba(56, 189, 248, 0.5);
+  transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.brand-avatar-wrapper:hover .brand-furina-avatar {
+  transform: scale(1.12) rotate(6deg);
+}
+
+.brand-hydro-orbit {
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  border: 1.5px dashed rgba(56, 189, 248, 0.5);
+  animation: hydroOrbitSpin 14s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes hydroOrbitSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.brand-text-column {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.brand-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.brand-title {
+  font-size: 1.02rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.brand-badge-pill {
+  font-size: 0.58rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.25), rgba(192, 132, 252, 0.25));
+  color: #38bdf8;
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  padding: 1px 7px;
+  border-radius: var(--radius-full);
+}
+
+.companion-status-line {
+  font-size: 0.7rem;
+  color: var(--accent-tear);
+  max-width: 220px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Right Utility Island */
+.header-right-island {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
 }
 
 .badge-pill {

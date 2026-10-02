@@ -59,6 +59,20 @@
     const urlObj = new URL(url, window.location.origin);
     const pathname = urlObj.pathname.replace(/.*\/api\//, '/api/');
 
+    function dedupePlaylists(list) {
+      if (!Array.isArray(list)) return [];
+      const seen = new Set();
+      return list.filter(p => {
+        if (!p) return false;
+        const nameKey = (p.name || '').toLowerCase().trim();
+        const idKey = (p.provider_playlist_id || p.id || '').toLowerCase().trim();
+        if (seen.has(nameKey) || (idKey && seen.has(idKey))) return false;
+        if (nameKey) seen.add(nameKey);
+        if (idKey) seen.add(idKey);
+        return true;
+      });
+    }
+
     function jsonResponse(data, status = 200) {
       return new Response(JSON.stringify(data), {
         status,
@@ -96,7 +110,7 @@
           bitrate: t.bitrate,
           sampleRate: t.sample_rate
         })),
-        playlists: playlists,
+        playlists: dedupePlaylists(playlists),
         charts: charts.map(c => ({
           rank: c.rank,
           previous_rank: c.previous_rank,
