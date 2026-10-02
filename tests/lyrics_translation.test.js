@@ -9,14 +9,18 @@ const lyricsJs = fs.readFileSync(path.join(__dirname, '../public/js/lyrics-engin
 const playerCss = fs.readFileSync(path.join(__dirname, '../public/css/player.css'), 'utf8');
 const videoMap = JSON.parse(fs.readFileSync(path.join(__dirname, '../public/data/video-map.json'), 'utf8'));
 
-// 1. Verify Translate button in DOM
+// 1. Verify Translate button and Version switch in DOM
 assert.ok(indexHtml.includes('id="btn-toggle-translation"'), 'Translation toggle button present in index.html');
+assert.ok(indexHtml.includes('id="btn-toggle-version"'), 'Version switch button present in index.html');
 assert.ok(indexHtml.includes('window.furinaLyrics.toggleTranslation()'), 'Translation toggle onclick handler wired');
-console.log('  [PASS] Translation toggle button rendered in Stage header');
+assert.ok(indexHtml.includes('window.furinaLyrics.switchSongVersion()'), 'Version switch onclick handler wired');
+console.log('  [PASS] Translation toggle and Version switch buttons rendered in Stage header');
 
-// 2. Verify Lyrics Engine translation methods
+// 2. Verify Lyrics Engine translation and version switch methods
 assert.ok(lyricsJs.includes('toggleTranslation'), 'toggleTranslation method defined in engine');
 assert.ok(lyricsJs.includes('fetchTranslations'), 'fetchTranslations method defined in engine');
+assert.ok(lyricsJs.includes('switchSongVersion'), 'switchSongVersion method defined in engine');
+assert.ok(lyricsJs.includes('getBundledLyrics'), 'getBundledLyrics method defined in engine');
 assert.ok(lyricsJs.includes('isTranslationEnabled'), 'isTranslationEnabled state tracked and persisted');
 assert.ok(lyricsJs.includes('lyric-translation'), 'Translation DOM elements created');
 console.log('  [PASS] FurinaLyricsEngine translation logic and live Google batch integration verified');
@@ -28,7 +32,7 @@ assert.ok(playerCss.includes('.lyric-translation'), 'Lyric translation styling d
 console.log('  [PASS] Cyan-glowing Fontaine bilingual lyric typography styled');
 
 // 4. Verify Love Story mapping
-assert.strictEqual(videoMap['love story'], 'DF3XjEhJ40Y', 'Indila Love Story points to DF3XjEhJ40Y');
-console.log('  [PASS] Indila Love Story audio video ID mapping verified');
+assert.strictEqual(videoMap['love story'], 'jfjEsGiFyuU', 'Indila Love Story points to 316s studio track jfjEsGiFyuU');
+console.log('  [PASS] Indila Love Story authentic studio audio video ID mapping verified');
 
-console.log('\n✨ ALL LYRICS TRANSLATION VERIFICATIONS PASSED 100%!');
+console.log('\n✨ ALL LYRICS TRANSLATION & VERSION SWITCH VERIFICATIONS PASSED 100%!');

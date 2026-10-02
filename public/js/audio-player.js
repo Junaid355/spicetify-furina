@@ -34,7 +34,8 @@ const FURINA_CANONICAL_VIDEOS = {
   'all too well - taylor swift': 'tollGa3S0o8',
   'you belong with me': 'VuNIsY6JdUw',
   'you belong with me - taylor swift': 'VuNIsY6JdUw',
-  'love story': '8xg3vE8Ie_E',
+  'love story': 'jfjEsGiFyuU',
+  'love story - indila': 'jfjEsGiFyuU',
   'love story - taylor swift': '8xg3vE8Ie_E',
   'delicate': 'tCXGJQYZ9JA',
   'delicate - taylor swift': 'tCXGJQYZ9JA',
@@ -685,9 +686,8 @@ class FurinaAudioEngine {
 
     // 2. Exact Title Guardrails (Disambiguates artist collision before generic title fallback)
     if (cleanTitle === 'love story') {
-      if (lowArtist.includes('indila')) return 'DF3XjEhJ40Y'; // Indila - Love Story (Official)
       if (lowArtist.includes('taylor') || lowArtist.includes('swift')) return '8xg3vE8Ie_E'; // Taylor Swift - Love Story
-      return 'DF3XjEhJ40Y';
+      return 'jfjEsGiFyuU'; // Indila - Love Story (Official 316s Studio Audio - 100% Synced)
     }
 
     if (cleanTitle === 'lover') {

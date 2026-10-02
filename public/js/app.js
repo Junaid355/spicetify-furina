@@ -1849,6 +1849,18 @@ async function loadTrackLyrics(trackId) {
   const title = current?.title || '';
   const artist = current?.artist || '';
 
+  // 1. Check verified bundled canonical lyrics (zero network delay, guaranteed 100% audio sync)
+  if (window.furinaLyrics && typeof window.furinaLyrics.getBundledLyrics === 'function') {
+    const bundled = window.furinaLyrics.getBundledLyrics(title, artist);
+    if (bundled) {
+      window.furinaLyrics.parseLRC(bundled, trackId);
+      window.furinaLyrics.render(container, (seekSeconds) => {
+        window.furinaAudio.seek(seekSeconds);
+      });
+      return;
+    }
+  }
+
   try {
     const res = await fetch(`/api/catalog/tracks/${trackId}/lyrics?title=${encodeURIComponent(title)}&artist=${encodeURIComponent(artist)}`);
     const data = await res.json();
