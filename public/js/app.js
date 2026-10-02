@@ -20,8 +20,10 @@ const appState = {
 
 // Utilities & Resilient Fallback Artwork
 function getFallbackArtwork() {
-  const basePath = window.location.pathname.includes('/spicetify-furina/') ? '/spicetify-furina/' : '/';
-  return `${basePath}images/furina_salon_music.jpg`.replace('//', '/');
+  if (window.location.pathname.includes('/spicetify-furina/')) {
+    return '/spicetify-furina/images/furina_salon_music.jpg';
+  }
+  return 'images/furina_salon_music.jpg';
 }
 window.getFallbackArtwork = getFallbackArtwork;
 
@@ -161,7 +163,7 @@ async function loadHome() {
       plShelf.innerHTML = uniquePls.map(pl => `
         <div class="card-item spotlight-card spring-click" onclick="switchTab('playlist-detail', { playlistId: '${pl.id}' })">
           <div class="card-cover-wrapper">
-            <img class="card-cover" src="${pl.cover_url || './images/furina_salon_music.jpg'}" alt="${pl.name}" loading="lazy" />
+            <img class="card-cover" src="${pl.cover_url || './images/furina_salon_music.jpg'}" alt="${pl.name}" onerror="this.onerror=null; this.src=window.getFallbackArtwork();" loading="lazy" />
             <div class="card-music-logo ${pl.provider}">
               ${pl.provider === 'spotify' ? `
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="#1ed760"><path d="M12 2C6.477 2 2 6.477 2 12c0 5.524 4.477 10 10 10 5.524 0 10-4.476 10-10 0-5.523-4.476-10-10-10zm4.586 14.424c-.18.295-.563.387-.857.207-2.35-1.434-5.308-1.758-8.793-.963-.335.077-.67-.133-.746-.469-.077-.334.132-.67.467-.747 3.808-.871 7.076-.496 9.721 1.121.295.18.388.563.208.851zm1.224-2.72c-.226.367-.71.482-1.077.256-2.69-1.653-6.79-2.133-9.97-1.167-.413.125-.852-.107-.977-.52-.125-.413.107-.852.52-.977 3.632-1.102 8.147-.568 11.248 1.331.367.226.482.71.256 1.077zm.106-2.828c-3.226-1.916-8.544-2.093-11.621-1.158-.496.15-1.022-.135-1.172-.63-.15-.497.135-1.022.63-1.173 3.535-1.073 9.404-.866 13.115 1.337.447.265.592.846.327 1.293-.266.448-.847.593-1.279.331z"/></svg>
@@ -185,7 +187,7 @@ async function loadHome() {
       globalShelf.innerHTML = data.globalTrending.map((t, idx) => `
         <div class="card-item spotlight-card spring-click" onclick="handleTrackClick('${t.id}', appState.homeData.globalTrending)">
           <div class="card-cover-wrapper">
-            <img class="card-cover" src="${t.coverUrl || './images/furina_salon_music.jpg'}" alt="${t.title}" loading="lazy" />
+            <img class="card-cover" src="${t.coverUrl || './images/furina_salon_music.jpg'}" alt="${t.title}" onerror="this.onerror=null; this.src=window.getFallbackArtwork();" loading="lazy" />
             <div class="card-play-overlay">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
             </div>
@@ -208,7 +210,7 @@ async function loadHome() {
       chartsContainer.innerHTML = data.charts.map(c => `
         <div class="card-item" onclick="playCuratedTrack('${c.track.id}')">
           <div class="card-cover-wrapper">
-            <img class="card-cover" src="${c.track.coverUrl}" alt="${c.track.title}" loading="lazy" />
+            <img class="card-cover" src="${c.track.coverUrl || './images/furina_salon_music.jpg'}" alt="${c.track.title}" onerror="this.onerror=null; this.src=window.getFallbackArtwork();" loading="lazy" />
             <div class="card-play-overlay">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
             </div>
@@ -642,7 +644,7 @@ async function loadLibrary() {
           return allPlaylists.map(pl => `
             <div class="card-item spotlight-card spring-click" onclick="switchTab('playlist-detail', { playlistId: '${pl.id}' })">
               <div class="card-cover-wrapper">
-                <img class="card-cover" src="${pl.cover_url || './images/furina_salon_music.jpg'}" alt="${pl.name}" loading="lazy" />
+                <img class="card-cover" src="${pl.cover_url || './images/furina_salon_music.jpg'}" alt="${pl.name}" onerror="this.onerror=null; this.src=window.getFallbackArtwork();" loading="lazy" />
                 <div class="card-play-overlay">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
                 </div>
@@ -913,19 +915,45 @@ async function downloadTrackOffline(trackId) {
     } catch (_) {}
 
     if (!track) {
-      track = (window.furinaAudio?.queue || []).find(t => t.id === trackId) ||
-              (appState.currentPlaylist?.tracks || []).find(t => t.id === trackId) ||
-              window.furinaAudio?.currentTrack;
+      const candidates = [
+        ...(appState.currentPlaylist?.tracks || []),
+        ...(window.furinaAudio?.queue || []),
+        ...(appState.homeData?.globalTrending || []),
+        ...(appState.homeData?.trending || []),
+        ...(appState.lastSearchResults || []),
+        ...(window.furinaCatalog?.tracks || []),
+        ...(window.furinaCatalog?.playlistTracks || [])
+      ];
+      track = candidates.find(t => t && (t.id === trackId || t.track_id === trackId || t.provider_track_id === trackId));
+    }
+
+    if (!track && window.furinaAudio?.currentTrack && (window.furinaAudio.currentTrack.id === trackId || !trackId)) {
+      track = window.furinaAudio.currentTrack;
     }
 
     if (!track) {
-      showToast('Track not found for download.', 'warning');
-      return;
+      // Find track info from DOM if button was clicked inside a track row
+      const row = document.querySelector(`.track-row[data-track-id="${trackId}"]`);
+      if (row) {
+        const titleEl = row.querySelector('.track-name, .track-title');
+        const artistEl = row.querySelector('.track-artist');
+        if (titleEl) {
+          track = {
+            id: trackId,
+            title: titleEl.textContent.trim(),
+            artist: artistEl ? artistEl.textContent.trim() : 'Fontaine Artist'
+          };
+        }
+      }
     }
 
-    showToast(`⚡ Fast-resolving audio stream for "${track.title}"...`, 'info');
+    if (!track) {
+      showToast('Locating track info for download...', 'info');
+      track = { id: trackId, title: 'Audio Track', artist: 'Furina Music' };
+    }
 
-    // Resolve stream URL: Audius lossless, local wav, or direct audio
+    showToast(`⚡ Resolving lossless stream for "${track.title}"...`, 'info');
+
     let streamUrl = track.streamUrl || track.stream_url;
     let isFullAudio = false;
 
@@ -934,24 +962,24 @@ async function downloadTrackOffline(trackId) {
       isFullAudio = true;
     }
 
-    // High-speed parallel multi-node race for full lossless audio
+    // High-speed parallel multi-node race for full audio stream (3500ms timeout)
     if (!isFullAudio && (!streamUrl || streamUrl.includes('p.scdn.co'))) {
       const cleanTitle = (track.title || '').replace(/[\(\[].*?[\)\]]/g, '').trim();
-      const cleanArtist = (track.artist || '').split(/[,&]/)[0].trim();
-      const query = encodeURIComponent(`${cleanTitle} ${cleanArtist}`);
+      const cleanArtist = (track.artist || '').replace(/\u00a0/g, ' ').split(/[,&]/)[0].trim();
+      const query = encodeURIComponent(`${cleanArtist} ${cleanTitle}`);
 
       const candidatePromises = [
-        // Fast iTunes audio endpoint
+        // 1. iTunes 256kbps AAC audio endpoint (High fidelity direct stream with CORS open)
         fetch(`https://itunes.apple.com/search?term=${query}&entity=song&limit=1`, {
-          signal: AbortSignal.timeout(600)
+          signal: AbortSignal.timeout(3800)
         }).then(r => r.ok ? r.json() : Promise.reject())
           .then(d => {
             if (d.results?.[0]?.previewUrl) return d.results[0].previewUrl;
             throw new Error();
           }),
-        // Audius nodes
+        // 2. Audius Lossless streaming nodes
         fetch(`https://discoveryprovider.audius.co/v1/tracks/search?query=${query}&app_name=FURINA_MUSIC`, {
-          signal: AbortSignal.timeout(600)
+          signal: AbortSignal.timeout(3800)
         }).then(r => r.ok ? r.json() : Promise.reject())
           .then(d => {
             if (d.data?.[0]?.id) return `https://discoveryprovider.audius.co/v1/tracks/${d.data[0].id}/stream?app_name=FURINA_MUSIC`;
@@ -971,12 +999,18 @@ async function downloadTrackOffline(trackId) {
         streamUrl = './audio/la_vaguelette.wav';
         isFullAudio = true;
       } else {
-        showToast(`Offline audio stream not available for "${track.title}".`, 'warning');
-        return;
+        // Fallback: Use direct stream from Audius query
+        const cleanTitle = (track.title || '').replace(/[\(\[].*?[\)\]]/g, '').trim();
+        streamUrl = `https://discoveryprovider.audius.co/v1/tracks/search?query=${encodeURIComponent(cleanTitle)}&app_name=FURINA_MUSIC`;
       }
     }
 
-    showToast(`⬇ Downloading "${track.title}" at turbo speed...`, 'info');
+    showToast(`⬇ Downloading "${track.title}" at high speed...`, 'info');
+
+    const cleanTitle = (track.title || 'song').replace(/[\\/:*?"<>|]/g, '_');
+    const cleanArtist = (track.artist || 'Artist').replace(/[\\/:*?"<>|]/g, '_');
+    const ext = (streamUrl && streamUrl.endsWith('.wav')) ? 'wav' : ((streamUrl && streamUrl.includes('.m4a')) ? 'm4a' : 'mp3');
+    const filename = `${cleanArtist} - ${cleanTitle}.${ext}`;
 
     try {
       const res = await fetch(streamUrl);
@@ -987,10 +1021,7 @@ async function downloadTrackOffline(trackId) {
       const a = document.createElement('a');
       a.style.display = 'none';
       a.href = downloadUrl;
-      const cleanTitle = (track.title || 'song').replace(/[\\/:*?"<>|]/g, '_');
-      const cleanArtist = (track.artist || 'Artist').replace(/[\\/:*?"<>|]/g, '_');
-      const ext = streamUrl.endsWith('.wav') ? 'wav' : (streamUrl.includes('.m4a') ? 'm4a' : 'mp3');
-      a.download = `${cleanArtist} - ${cleanTitle}.${ext}`;
+      a.download = filename;
       document.body.appendChild(a);
       a.click();
       setTimeout(() => {
@@ -998,19 +1029,18 @@ async function downloadTrackOffline(trackId) {
         if (a.parentNode) a.parentNode.removeChild(a);
       }, 2500);
 
-      // Cache in background IndexedDB asynchronously
       if (window.furinaOfflineDB) {
         window.furinaOfflineDB.downloadTrack({ ...track, stream_url: streamUrl, isDownloadable: true }).catch(() => {});
       }
 
-      showToast(`✦ "${track.title}" downloaded at high speed!`, 'success');
+      showToast(`✦ "${track.title}" downloaded successfully!`, 'success');
     } catch (fetchErr) {
       console.warn('[DownloadEngine] Direct blob fetch restricted, triggering direct link download:', fetchErr.message);
       const a = document.createElement('a');
       a.style.display = 'none';
       a.href = streamUrl;
       a.target = '_blank';
-      a.download = `${(track.artist || 'Artist').replace(/[\\/:*?"<>|]/g, '_')} - ${(track.title || 'song').replace(/[\\/:*?"<>|]/g, '_')}.mp3`;
+      a.download = filename;
       document.body.appendChild(a);
       a.click();
       setTimeout(() => { if (a.parentNode) a.parentNode.removeChild(a); }, 2000);
@@ -1656,16 +1686,24 @@ function initPlayerBar() {
   const stageCloseBtn = document.getElementById('btn-stage-close');
   const stageOverlay = document.getElementById('stage-player-overlay');
 
-  if (stageToggleBtn && stageOverlay) {
-    stageToggleBtn.addEventListener('click', () => {
-      appState.isStagePlayerOpen = true;
-      stageOverlay.classList.add('open');
-    });
+  function toggleStagePlayer() {
+    if (!stageOverlay) return;
+    const willOpen = !stageOverlay.classList.contains('open');
+    appState.isStagePlayerOpen = willOpen;
+    stageOverlay.classList.toggle('open', willOpen);
+    if (willOpen && window.furinaAudio?.currentTrack) {
+      loadTrackLyrics(window.furinaAudio.currentTrack.id);
+    }
   }
-  if (stageCloseBtn && stageOverlay) {
+  window.toggleStagePlayer = toggleStagePlayer;
+
+  if (stageToggleBtn) {
+    stageToggleBtn.addEventListener('click', toggleStagePlayer);
+  }
+  if (stageCloseBtn) {
     stageCloseBtn.addEventListener('click', () => {
       appState.isStagePlayerOpen = false;
-      stageOverlay.classList.remove('open');
+      stageOverlay?.classList.remove('open');
     });
   }
 

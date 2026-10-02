@@ -251,8 +251,10 @@
                     vMap[`${qTitle.toLowerCase().trim()} - ${qArtist.toLowerCase().trim()}`];
       
       if (!videoId) {
+        const fullComboA = `${cleanTitle} - ${cleanArtist}`;
+        const fullComboB = `${cleanArtist} - ${cleanTitle}`;
         for (const [k, v] of Object.entries(vMap)) {
-          if (k === cleanTitle || k.startsWith(cleanTitle) || cleanTitle.includes(k) || k.includes(cleanTitle)) {
+          if (k === cleanTitle || k === fullComboA || k === fullComboB) {
             videoId = v;
             break;
           }

@@ -1176,7 +1176,8 @@
     padding-bottom: 8px;
   }
 
-  .card-item {
+  .shelf-scroll .card-item,
+  .grid-cards .card-item {
     min-width: 135px;
     max-width: 145px;
     padding: 10px;
@@ -1305,7 +1306,8 @@
     display: none;
   }
 
-  .card-item {
+  .shelf-scroll .card-item,
+  .grid-cards .card-item {
     flex: 0 0 124px !important;
     width: 124px !important;
     min-width: 124px !important;
@@ -1444,7 +1446,8 @@
     font-size: 1rem !important;
   }
 
-  .card-item {
+  .shelf-scroll .card-item,
+  .grid-cards .card-item {
     flex: 0 0 114px !important;
     width: 114px !important;
     min-width: 114px !important;
@@ -2041,6 +2044,45 @@
     font-size: 1rem;
   }
 }
+
+/* Mobile Settings & Section Cards Full Width Fix */
+#view-settings .card-item,
+.view-section > .card-item,
+#view-about .card-item,
+#view-spotify-import .card-item {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  flex: 1 1 100% !important;
+  box-sizing: border-box !important;
+}
+
+@media (max-width: 640px) {
+  #view-settings, .view-container {
+    padding: 14px 14px 70px 14px !important;
+  }
+  .bento-vinyl-card {
+    padding: 16px 10px !important;
+  }
+  .vinyl-stage-3d {
+    padding: 8px 0 !important;
+  }
+  .vinyl-record-disc {
+    width: 136px !important;
+    height: 136px !important;
+  }
+  .vinyl-tonearm {
+    width: 36px !important;
+    height: 94px !important;
+    right: 28px !important;
+    top: 6px !important;
+  }
+  .vinyl-center-art {
+    width: 54px !important;
+    height: 54px !important;
+  }
+}
+
 
 
 

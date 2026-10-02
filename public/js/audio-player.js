@@ -359,12 +359,16 @@ class FurinaAudioEngine {
 
     if (state === window.YT.PlayerState.PLAYING) {
       this.isPlaying = true;
+      this.startBackgroundAudioKeeper();
+      if ('mediaSession' in navigator) navigator.mediaSession.playbackState = 'playing';
       this.startYtProgressTimer();
       this.startVisualizer();
       this.emit('statechange', { isPlaying: true });
       if (window.dynamicBgEngine) window.dynamicBgEngine.triggerAudioPulse();
     } else if (state === window.YT.PlayerState.PAUSED) {
       this.isPlaying = false;
+      this.stopBackgroundAudioKeeper();
+      if ('mediaSession' in navigator) navigator.mediaSession.playbackState = 'paused';
       this.stopYtProgressTimer();
       this.stopVisualizer();
       this.emit('statechange', { isPlaying: false });
@@ -601,19 +605,51 @@ class FurinaAudioEngine {
       navigator.mediaSession.setActionHandler('seekto', (details) => {
         if (details.seekTime !== undefined) this.seek(details.seekTime);
       });
+      try {
+        navigator.mediaSession.setActionHandler('seekbackward', (details) => {
+          this.seek(Math.max(0, this.currentTime - (details.seekOffset || 10)));
+        });
+        navigator.mediaSession.setActionHandler('seekforward', (details) => {
+          this.seek(this.currentTime + (details.seekOffset || 10));
+        });
+      } catch (_) {}
     }
+  }
+
+  startBackgroundAudioKeeper() {
+    try {
+      if (!this.bgAudioKeeper) {
+        this.bgAudioKeeper = new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA');
+        this.bgAudioKeeper.loop = true;
+        this.bgAudioKeeper.volume = 0.001;
+      }
+      this.bgAudioKeeper.play().catch(() => {});
+    } catch (_) {}
+  }
+
+  stopBackgroundAudioKeeper() {
+    try {
+      if (this.bgAudioKeeper) {
+        this.bgAudioKeeper.pause();
+      }
+    } catch (_) {}
   }
 
   updateMediaSessionMetadata(track) {
     if ('mediaSession' in navigator && track) {
+      const art = track.coverUrl || track.cover_url || (typeof window.getFallbackArtwork === 'function' ? window.getFallbackArtwork() : 'images/furina_salon_music.jpg');
       navigator.mediaSession.metadata = new MediaMetadata({
         title: track.title,
         artist: track.artist,
         album: track.album || 'Furina Music',
         artwork: [
-          { src: track.coverUrl, sizes: '512x512', type: 'image/jpeg' }
+          { src: art, sizes: '96x96', type: 'image/jpeg' },
+          { src: art, sizes: '128x128', type: 'image/jpeg' },
+          { src: art, sizes: '256x256', type: 'image/jpeg' },
+          { src: art, sizes: '512x512', type: 'image/jpeg' }
         ]
       });
+      navigator.mediaSession.playbackState = this.isPlaying ? 'playing' : 'paused';
     }
   }
 
