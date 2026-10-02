@@ -21,16 +21,16 @@
   <link rel="icon" type="image/jpeg" href="icons/app-icon.jpg" />
   <link rel="manifest" href="manifest.json" />
 
-  <!-- Stylesheets (v7.4 3D Motion System & Aceternity Primitives) -->
-  <link rel="stylesheet" href="css/design-tokens.css?v=7.6.0" />
-  <link rel="stylesheet" href="css/layout.css?v=7.6.0" />
-  <link rel="stylesheet" href="css/animations.css?v=7.6.0" />
-  <link rel="stylesheet" href="css/components.css?v=7.6.0" />
-  <link rel="stylesheet" href="css/player.css?v=7.6.0" />
+  <!-- Stylesheets (v7.7 3D Motion System & Aceternity Primitives) -->
+  <link rel="stylesheet" href="css/design-tokens.css?v=7.7.0" />
+  <link rel="stylesheet" href="css/layout.css?v=7.7.0" />
+  <link rel="stylesheet" href="css/animations.css?v=7.7.0" />
+  <link rel="stylesheet" href="css/components.css?v=7.7.0" />
+  <link rel="stylesheet" href="css/player.css?v=7.7.0" />
   <!-- Core Diagnostic Logger (Loads Early to Intercept All Events) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <script src="js/bug-logger.js?v=7.6.0"></script>
-  <script src="js/audio-effects.js?v=7.6.0"></script>
+  <script src="js/bug-logger.js?v=7.7.0"></script>
+  <script src="js/audio-effects.js?v=7.7.0"></script>
 </head>
 <body>
   <!-- Dynamic Album-Art Reactive Background Mesh & Canvas -->
@@ -46,7 +46,7 @@
       <!-- Furina Music Brand Logo -->
       <div class="sidebar-logo" onclick="switchTab('home')" title="Furina Music">
         <div class="sidebar-avatar-glow">
-          <img src="images/furina_dance.gif" class="sidebar-furina-avatar" alt="Furina" onerror="this.src='images/furina_pure_hydro.jpg'" />
+          <img src="images/furina_logo.jpg" class="sidebar-furina-avatar" alt="Furina" onerror="this.src='icons/app-icon.jpg'" />
           <div class="hydro-orbit-ring"></div>
         </div>
         <div class="sidebar-logo-text-group">
@@ -1070,49 +1070,66 @@
 
   <!-- Multi-User Spotify Account Modal -->
   <div id="spotify-connect-modal" class="modal-overlay" style="display: none;">
-    <div class="modal-content" style="max-width: 500px; background: rgba(10, 18, 36, 0.95); backdrop-filter: blur(24px); border: 1px solid rgba(30, 215, 96, 0.35); box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 40px rgba(30, 215, 96, 0.2);">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <div class="modal-content" style="max-width: 520px; background: rgba(10, 18, 36, 0.96); backdrop-filter: blur(24px); border: 1px solid rgba(30, 215, 96, 0.4); box-shadow: 0 20px 60px rgba(0, 0, 0, 0.85), 0 0 40px rgba(30, 215, 96, 0.25);">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
         <div style="display: flex; align-items: center; gap: 12px;">
-          <div style="width: 42px; height: 42px; border-radius: 50%; background: #1ed760; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 16px rgba(30, 215, 96, 0.4);">
+          <div style="width: 44px; height: 44px; border-radius: 50%; background: #1ed760; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 16px rgba(30, 215, 96, 0.45);">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="#000"><path d="M12 2C6.477 2 2 6.477 2 12c0 5.524 4.477 10 10 10 5.524 0 10-4.476 10-10 0-5.523-4.476-10-10-10zm4.586 14.424c-.18.295-.563.387-.857.207-2.35-1.434-5.308-1.758-8.793-.963-.335.077-.67-.133-.746-.469-.077-.334.132-.67.467-.747 3.808-.871 7.076-.496 9.721 1.121.295.18.388.563.208.851zm1.224-2.72c-.226.367-.71.482-1.077.256-2.69-1.653-6.79-2.133-9.97-1.167-.413.125-.852-.107-.977-.52-.125-.413.107-.852.52-.977 3.632-1.102 8.147-.568 11.248 1.331.367.226.482.71.256 1.077zm.106-2.828c-3.226-1.916-8.544-2.093-11.621-1.158-.496.15-1.022-.135-1.172-.63-.15-.497.135-1.022.63-1.173 3.535-1.073 9.404-.866 13.115 1.337.447.265.592.846.327 1.293-.266.448-.847.593-1.279.331z"/></svg>
           </div>
           <div>
             <h3 style="font-size: 1.2rem; font-weight: 800; color: #fff; margin: 0;">Connect Spotify</h3>
-            <p style="font-size: 0.78rem; color: var(--text-dim); margin: 0;">Multi-User Spotify Isolation & Library Sync</p>
+            <p style="font-size: 0.78rem; color: var(--text-dim); margin: 0;">Spotify Developer API & Instant Library Sync</p>
           </div>
         </div>
         <button class="btn-icon-subtle" onclick="closeSpotifyConnectModal()" style="font-size: 1.4rem;">✕</button>
       </div>
 
-      <div style="margin-bottom: 20px; font-size: 0.86rem; color: var(--text-sub); line-height: 1.5;">
-        Connect your Spotify account to sync your playlists, liked songs, and library into Furina. Different users can log in from their own accounts with dedicated sessions.
+      <!-- Exact Redirect URI Box -->
+      <div style="background: rgba(30, 215, 96, 0.08); border: 1px solid rgba(30, 215, 96, 0.25); border-radius: 8px; padding: 10px 12px; margin-bottom: 14px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+          <span style="font-size: 0.72rem; color: var(--text-sub); text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">Your Exact Redirect URI</span>
+          <button class="btn-subtle" style="padding: 2px 8px; font-size: 0.72rem; color: #4ade80;" onclick="copyRedirectUriToClipboard()">📋 Copy URI</button>
+        </div>
+        <code id="sp-modal-redirect-uri" style="font-size: 0.76rem; color: #4ade80; word-break: break-all; font-family: monospace;">https://junaid355.github.io/</code>
+        <div style="font-size: 0.68rem; color: var(--text-dim); margin-top: 4px;">Add this in Spotify Developer Dashboard ➔ App ➔ Edit Settings ➔ Redirect URIs</div>
       </div>
 
-      <div style="display: flex; flex-direction: column; gap: 12px;">
-        <button class="btn-primary" style="background: #1ed760; color: #000; font-weight: 700; padding: 14px; border-radius: 30px; justify-content: center; font-size: 0.95rem; box-shadow: 0 4px 20px rgba(30, 215, 96, 0.4);" onclick="executeSpotifyOAuthRedirect()">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12c0 5.524 4.477 10 10 10 5.524 0 10-4.476 10-10 0-5.523-4.476-10-10-10zm4.586 14.424c-.18.295-.563.387-.857.207-2.35-1.434-5.308-1.758-8.793-.963-.335.077-.67-.133-.746-.469-.077-.334.132-.67.467-.747 3.808-.871 7.076-.496 9.721 1.121.295.18.388.563.208.851zm1.224-2.72c-.226.367-.71.482-1.077.256-2.69-1.653-6.79-2.133-9.97-1.167-.413.125-.852-.107-.977-.52-.125-.413.107-.852.52-.977 3.632-1.102 8.147-.568 11.248 1.331.367.226.482.71.256 1.077zm.106-2.828c-3.226-1.916-8.544-2.093-11.621-1.158-.496.15-1.022-.135-1.172-.63-.15-.497.135-1.022.63-1.173 3.535-1.073 9.404-.866 13.115 1.337.447.265.592.846.327 1.293-.266.448-.847.593-1.279.331z"/></svg>
-          1-Click Official Spotify Login
-        </button>
-
-        <div style="display: flex; align-items: center; gap: 12px; margin: 8px 0;">
-          <div style="flex: 1; height: 1px; background: var(--border-glass-subtle);"></div>
-          <span style="font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px;">OR DIRECT TOKEN / CLIENT ID</span>
-          <div style="flex: 1; height: 1px; background: var(--border-glass-subtle);"></div>
-        </div>
-
+      <div style="display: flex; flex-direction: column; gap: 10px;">
         <div>
-          <label style="font-size: 0.78rem; color: var(--text-sub); display: block; margin-bottom: 6px;">Paste Spotify OAuth Token (Optional)</label>
-          <input type="text" class="input-field" id="sp-token-input" placeholder="Bearer BQC7..." style="font-size: 0.85rem;" />
-        </div>
-
-        <div>
-          <label style="font-size: 0.78rem; color: var(--text-sub); display: block; margin-bottom: 6px;">Your Spotify App Client ID (Optional)</label>
+          <label style="font-size: 0.78rem; color: var(--text-sub); display: block; margin-bottom: 4px;">SPOTIFY_CLIENT_ID</label>
           <input type="text" class="input-field" id="sp-client-id-input" placeholder="e.g. 32-character hex ID" style="font-size: 0.85rem;" />
         </div>
 
-        <div style="display: flex; gap: 10px; margin-top: 10px;">
-          <button class="btn-secondary" style="flex: 1; justify-content: center;" onclick="saveManualSpotifyAuth()">Save & Sync Profile</button>
-          <button class="btn-subtle" style="color: #f43f5e;" onclick="disconnectSpotify()">Disconnect / Switch</button>
+        <div>
+          <label style="font-size: 0.78rem; color: var(--text-sub); display: block; margin-bottom: 4px;">SPOTIFY_CLIENT_SECRET (For Instant Token Without Redirect)</label>
+          <input type="password" class="input-field" id="sp-client-secret-input" placeholder="e.g. 32-character hex Secret" style="font-size: 0.85rem;" />
+        </div>
+
+        <div style="display: flex; gap: 8px; margin-top: 4px;">
+          <button class="btn-primary" style="flex: 1.2; background: #1ed760; color: #000; font-weight: 700; justify-content: center; font-size: 0.88rem; box-shadow: 0 4px 16px rgba(30, 215, 96, 0.4);" onclick="saveSpotifyCredentialsAndSync()">
+            ⚡ Connect & Sync
+          </button>
+          <button class="btn-secondary" style="flex: 1; justify-content: center; font-size: 0.88rem;" onclick="executeSpotifyOAuthRedirect()">
+            🔑 PKCE Login
+          </button>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 12px; margin: 6px 0;">
+          <div style="flex: 1; height: 1px; background: var(--border-glass-subtle);"></div>
+          <span style="font-size: 0.72rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px;">OR DIRECT TOKEN / GUEST</span>
+          <div style="flex: 1; height: 1px; background: var(--border-glass-subtle);"></div>
+        </div>
+
+        <div>
+          <input type="text" class="input-field" id="sp-token-input" placeholder="Paste Spotify OAuth Token (Optional): BQC7..." style="font-size: 0.85rem;" />
+        </div>
+
+        <button class="btn-subtle" style="justify-content: center; border: 1px dashed rgba(30, 215, 96, 0.4); padding: 10px; color: #4ade80; font-weight: 600; border-radius: 8px;" onclick="window.handleSpotifyInstantDemoSync()">
+          🌟 1-Click Guest Connect (No Developer Setup Needed)
+        </button>
+
+        <div style="display: flex; gap: 10px; margin-top: 4px;">
+          <button class="btn-subtle" style="flex: 1; color: #f43f5e; font-size: 0.82rem; justify-content: center;" onclick="disconnectSpotify()">Disconnect / Clear Session</button>
         </div>
       </div>
     </div>
@@ -1150,16 +1167,16 @@
     <div class="logger-entries-wrap" id="logger-entries-container"></div>
   </aside>
 
-  <!-- Core Application Scripts (v7.6.0 3D Motion, Velvet Haptics, Ad Shield & Fast Engine) -->
-  <script src="js/client-api.js?v=7.6.0"></script>
-  <script src="js/dynamic-bg.js?v=7.6.0"></script>
-  <script src="js/audio-player.js?v=7.6.0"></script>
-  <script src="js/offline-storage.js?v=7.6.0"></script>
-  <script src="js/lyrics-engine.js?v=7.6.0"></script>
-  <script src="js/spotify-client.js?v=7.6.0"></script>
-  <script src="js/marketplace.js?v=7.6.0"></script>
-  <script src="js/motion-3d.js?v=7.6.0"></script>
-  <script src="js/three-scene.js?v=7.6.0"></script>
-  <script src="js/app.js?v=7.6.0"></script>
+  <!-- Core Application Scripts (v7.7.0 3D Motion, Velvet Haptics, Ad Shield & Fast Engine) -->
+  <script src="js/client-api.js?v=7.7.0"></script>
+  <script src="js/dynamic-bg.js?v=7.7.0"></script>
+  <script src="js/audio-player.js?v=7.7.0"></script>
+  <script src="js/offline-storage.js?v=7.7.0"></script>
+  <script src="js/lyrics-engine.js?v=7.7.0"></script>
+  <script src="js/spotify-client.js?v=7.7.0"></script>
+  <script src="js/marketplace.js?v=7.7.0"></script>
+  <script src="js/motion-3d.js?v=7.7.0"></script>
+  <script src="js/three-scene.js?v=7.7.0"></script>
+  <script src="js/app.js?v=7.7.0"></script>
 </body>
 </html>

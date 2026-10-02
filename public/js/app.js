@@ -838,48 +838,32 @@ async function downloadTrackOffline(trackId) {
       const cleanArtist = (track.artist || '').split(/[,&]/)[0].trim();
       const query = encodeURIComponent(`${cleanTitle} ${cleanArtist}`);
 
-      const audiusNodes = [
-        'https://discoveryprovider.audius.co',
-        'https://audius-discovery-1.cultur3stake.com',
-        'https://discoveryprovider3.audius.co',
-        'https://audius-dp.amsterdam.creatorseed.com'
-      ];
-
-      const audiusPromises = audiusNodes.map(node =>
-        fetch(`${node}/v1/tracks/search?query=${query}&app_name=FURINA_MUSIC`, {
-          signal: AbortSignal.timeout(2000)
+      const candidatePromises = [
+        // Audius nodes
+        fetch(`https://discoveryprovider.audius.co/v1/tracks/search?query=${query}&app_name=FURINA_MUSIC`, {
+          signal: AbortSignal.timeout(1200)
         }).then(r => r.ok ? r.json() : Promise.reject())
           .then(d => {
-            if (d.data?.[0]?.id) {
-              return `${node}/v1/tracks/${d.data[0].id}/stream?app_name=FURINA_MUSIC`;
-            }
-            throw new Error('Not found');
+            if (d.data?.[0]?.id) return `https://discoveryprovider.audius.co/v1/tracks/${d.data[0].id}/stream?app_name=FURINA_MUSIC`;
+            throw new Error();
+          }),
+        // Apple iTunes Preview
+        fetch(`https://itunes.apple.com/search?term=${query}&entity=song&limit=1`, {
+          signal: AbortSignal.timeout(1200)
+        }).then(r => r.ok ? r.json() : Promise.reject())
+          .then(d => {
+            if (d.results?.[0]?.previewUrl) return d.results[0].previewUrl;
+            throw new Error();
           })
-      );
+      ];
 
       try {
-        streamUrl = await Promise.any(audiusPromises);
+        streamUrl = await Promise.any(candidatePromises);
         isFullAudio = true;
       } catch (_) {}
     }
 
-    // Check open high-quality master stream via iTunes if still needed
-    if (!streamUrl || streamUrl.includes('p.scdn.co')) {
-      try {
-        const cleanQ = `${(track.title || '').replace(/[\(\[].*?[\)\]]/g, '').trim()} ${(track.artist || '').split(/[,&]/)[0].trim()}`;
-        const itRes = await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(cleanQ)}&entity=song&limit=1`, {
-          signal: AbortSignal.timeout(2000)
-        });
-        if (itRes.ok) {
-          const itData = await itRes.json();
-          if (itData.results?.[0]?.previewUrl) {
-            streamUrl = itData.results[0].previewUrl;
-          }
-        }
-      } catch (_) {}
-    }
-
-    // Never download French opera for pop/third-party music!
+    // Fallback to Fontaine master if local
     if (!streamUrl) {
       if (track.id?.startsWith('furina_') || (track.title || '').toLowerCase().includes('vaguelette')) {
         streamUrl = './audio/la_vaguelette.wav';
@@ -890,39 +874,13 @@ async function downloadTrackOffline(trackId) {
       }
     }
 
-    showToast(`⬇ Downloading "${track.title}" (${isFullAudio ? 'Lossless Master' : 'High Quality Audio'})...`, 'info');
+    showToast(`⬇ Downloading "${track.title}" at turbo speed...`, 'info');
 
     try {
       const res = await fetch(streamUrl);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
-      let blob;
-      // Progressive streaming reader if content-length is present
-      const contentLength = res.headers.get('content-length');
-      if (contentLength && res.body && window.ReadableStream) {
-        const total = parseInt(contentLength, 10);
-        let loaded = 0;
-        const reader = res.body.getReader();
-        const chunks = [];
-        let lastReport = 0;
-
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-          chunks.push(value);
-          loaded += value.length;
-          const percent = Math.round((loaded / total) * 100);
-          const now = Date.now();
-          if (percent - lastReport >= 25 && now - lastReport > 400) {
-            lastReport = percent;
-            showToast(`Downloading "${track.title}" (${percent}%)...`, 'info');
-          }
-        }
-        blob = new Blob(chunks, { type: res.headers.get('content-type') || 'audio/mpeg' });
-      } else {
-        blob = await res.blob();
-      }
-
+      const blob = await res.blob();
       const downloadUrl = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.style.display = 'none';
@@ -1155,26 +1113,69 @@ async function loadSpotifyHub() {
   }
 }
 
+window.copyRedirectUriToClipboard = () => {
+  const uri = window.spotifyClient?.getRedirectUri ? window.spotifyClient.getRedirectUri() : (window.location.protocol === 'file:' ? 'https://junaid355.github.io/' : window.location.origin + window.location.pathname);
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(uri).then(() => {
+      showToast('Copied Redirect URI to clipboard!', 'success');
+    }).catch(() => {
+      showToast(`Redirect URI: ${uri}`, 'info');
+    });
+  } else {
+    showToast(`Redirect URI: ${uri}`, 'info');
+  }
+};
+
 window.showSpotifyConnectModal = () => {
   const m = document.getElementById('spotify-connect-modal');
-  if (m) m.style.display = 'flex';
+  if (m) {
+    m.style.display = 'flex';
+    const uriEl = document.getElementById('sp-modal-redirect-uri');
+    if (uriEl && window.spotifyClient?.getRedirectUri) {
+      uriEl.textContent = window.spotifyClient.getRedirectUri();
+    }
+    const idInput = document.getElementById('sp-client-id-input');
+    if (idInput && !idInput.value) {
+      idInput.value = localStorage.getItem('furina_spotify_client_id') || '';
+    }
+    const secInput = document.getElementById('sp-client-secret-input');
+    if (secInput && !secInput.value) {
+      secInput.value = localStorage.getItem('furina_spotify_client_secret') || '';
+    }
+  }
 };
+
 window.closeSpotifyConnectModal = () => {
   const m = document.getElementById('spotify-connect-modal');
   if (m) m.style.display = 'none';
 };
+
 window.openSpotifyLogin = () => {
   window.showSpotifyConnectModal();
 };
+
 window.executeSpotifyOAuthRedirect = () => {
   window.spotifyClient.login();
 };
-window.saveManualSpotifyAuth = async () => {
-  const token = document.getElementById('sp-token-input')?.value?.trim();
+
+window.saveSpotifyCredentialsAndSync = async () => {
   const clientId = document.getElementById('sp-client-id-input')?.value?.trim();
-  if (clientId) {
-    localStorage.setItem('furina_spotify_client_id', clientId);
+  const clientSecret = document.getElementById('sp-client-secret-input')?.value?.trim();
+  const token = document.getElementById('sp-token-input')?.value?.trim();
+
+  if (clientId) localStorage.setItem('furina_spotify_client_id', clientId);
+  if (clientSecret) localStorage.setItem('furina_spotify_client_secret', clientSecret);
+
+  if (clientId && clientSecret) {
+    const success = await window.spotifyClient.loginWithClientCredentials(clientId, clientSecret);
+    if (success) {
+      window.closeSpotifyConnectModal();
+      if (appState.currentTab === 'spotify-hub') loadSpotifyHub();
+      if (appState.currentTab === 'library') loadLibrary();
+      return;
+    }
   }
+
   if (token) {
     window.spotifyClient.setToken(token.replace(/^Bearer\s+/i, ''));
     showToast('Spotify Token applied! Loading profile...', 'success');
@@ -1183,12 +1184,19 @@ window.saveManualSpotifyAuth = async () => {
     await window.spotifyClient.fetchUserPlaylists();
     if (appState.currentTab === 'spotify-hub') loadSpotifyHub();
     if (appState.currentTab === 'library') loadLibrary();
-  } else if (clientId) {
-    showToast('Saved Client ID! Launching login...', 'success');
-    window.spotifyClient.login(clientId);
-  } else {
-    showToast('Please enter a valid Spotify token or Client ID.');
+    return;
   }
+
+  if (clientId) {
+    window.spotifyClient.login(clientId);
+    return;
+  }
+
+  showToast('Please enter your Spotify Client ID or connect via Guest.', 'warning');
+};
+
+window.saveManualSpotifyAuth = async () => {
+  return window.saveSpotifyCredentialsAndSync();
 };
 window.disconnectSpotify = () => {
   window.spotifyClient.clearToken();

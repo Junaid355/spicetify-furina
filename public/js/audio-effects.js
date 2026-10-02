@@ -1,7 +1,7 @@
 /**
- * Furina Music — Ultra-Cozy Acoustic Haptic & Sound Effects Engine
- * Produces velvet micro-taps and soothing crystalline Fontaine marimba droplets
- * via native Web Audio API (zero external audio files needed).
+ * Furina Music — Velvet Fontaine Acoustic Feedback Engine
+ * Whisper-soft tactile click & ambient raindrop droplets via native Web Audio API.
+ * Defaults to subtle/quiet, never harsh or intrusive.
  */
 
 (function () {
@@ -10,9 +10,9 @@
   class FurinaAudioEffects {
     constructor() {
       this.ctx = null;
-      this.isEnabled = localStorage.getItem('furina_cozy_sounds') !== 'false';
-      // Pleasant, gentle whisper volume default (0.12)
-      this.volume = parseFloat(localStorage.getItem('furina_cozy_volume') || '0.12');
+      // Default to OFF or very subtle so user is not annoyed by repetitive clicks
+      this.isEnabled = localStorage.getItem('furina_cozy_sounds') === 'true';
+      this.volume = parseFloat(localStorage.getItem('furina_cozy_volume') || '0.04');
       this.lastPlayTime = 0;
 
       this.initEventListeners();
@@ -30,7 +30,7 @@
       }
     }
 
-    // Soothing Fontaine Crystal Drop (Acoustic Kalimba / Warm Water Marimba)
+    // Gentle Velvet Raindrop (Subtle, organic water droplet feel)
     playHydroChime(pitch = 1.0) {
       if (!this.isEnabled) return;
       try {
@@ -38,45 +38,34 @@
         if (!this.ctx) return;
 
         const now = this.ctx.currentTime;
-        if (now - this.lastPlayTime < 0.06) return; // Debounce rapid triggers
+        if (now - this.lastPlayTime < 0.1) return;
         this.lastPlayTime = now;
 
         const osc = this.ctx.createOscillator();
-        const subOsc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
         const filter = this.ctx.createBiquadFilter();
 
-        const baseFreq = 440 * pitch; // Warm concert A4
         osc.type = 'sine';
-        osc.frequency.setValueAtTime(baseFreq, now);
+        osc.frequency.setValueAtTime(520 * pitch, now);
+        osc.frequency.exponentialRampToValueAtTime(340 * pitch, now + 0.06);
 
-        subOsc.type = 'triangle';
-        subOsc.frequency.setValueAtTime(baseFreq * 0.5, now);
-
-        // Warm acoustic low-pass filtering
         filter.type = 'lowpass';
-        filter.frequency.setValueAtTime(1100, now);
-        filter.frequency.exponentialRampToValueAtTime(320, now + 0.12);
-        filter.Q.setValueAtTime(1.5, now);
+        filter.frequency.setValueAtTime(600, now);
 
-        // Smooth velvet envelope
         gain.gain.setValueAtTime(0.0001, now);
-        gain.gain.linearRampToValueAtTime(this.volume * 0.15, now + 0.008);
-        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.14);
+        gain.gain.linearRampToValueAtTime(this.volume * 0.4, now + 0.005);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.07);
 
         osc.connect(filter);
-        subOsc.connect(filter);
         filter.connect(gain);
         gain.connect(this.ctx.destination);
 
         osc.start(now);
-        subOsc.start(now);
-        osc.stop(now + 0.15);
-        subOsc.stop(now + 0.15);
+        osc.stop(now + 0.08);
       } catch (_) {}
     }
 
-    // Ultra-Delicate Haptic Micro-Tap (Tactile Key Feel, Zero Harshness)
+    // Whisper-Soft Micro-Haptic Tap (Extremely quiet mechanical thud, zero pitch beep)
     playTactileClick() {
       if (!this.isEnabled) return;
       try {
@@ -84,68 +73,37 @@
         if (!this.ctx) return;
 
         const now = this.ctx.currentTime;
-        if (now - this.lastPlayTime < 0.04) return; // Debounce rapid clicks
+        if (now - this.lastPlayTime < 0.08) return;
         this.lastPlayTime = now;
 
+        // Use low-frequency shaped envelope for subtle cushion feel
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
         const filter = this.ctx.createBiquadFilter();
 
         osc.type = 'sine';
-        osc.frequency.setValueAtTime(175, now);
-        osc.frequency.exponentialRampToValueAtTime(75, now + 0.022);
+        osc.frequency.setValueAtTime(110, now);
+        osc.frequency.exponentialRampToValueAtTime(45, now + 0.015);
 
         filter.type = 'lowpass';
-        filter.frequency.setValueAtTime(450, now);
+        filter.frequency.setValueAtTime(250, now);
 
         gain.gain.setValueAtTime(0.0001, now);
-        gain.gain.linearRampToValueAtTime(this.volume * 0.12, now + 0.003);
-        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.025);
+        gain.gain.linearRampToValueAtTime(this.volume * 0.35, now + 0.002);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.018);
 
         osc.connect(filter);
         filter.connect(gain);
         gain.connect(this.ctx.destination);
 
         osc.start(now);
-        osc.stop(now + 0.03);
+        osc.stop(now + 0.02);
       } catch (_) {}
     }
 
-    // Gentle Warm Two-Note Harmony on Play/Pause
     playChord(action = 'play') {
       if (!this.isEnabled) return;
-      try {
-        this.initContext();
-        if (!this.ctx) return;
-
-        const now = this.ctx.currentTime;
-        const notes = action === 'play' ? [329.63, 493.88] : [493.88, 329.63]; // E4 + B4 (Pure Fifth)
-
-        notes.forEach((freq, idx) => {
-          const osc = this.ctx.createOscillator();
-          const gain = this.ctx.createGain();
-          const filter = this.ctx.createBiquadFilter();
-
-          const startTime = now + idx * 0.035;
-
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(freq, startTime);
-
-          filter.type = 'lowpass';
-          filter.frequency.setValueAtTime(800, startTime);
-
-          gain.gain.setValueAtTime(0.0001, startTime);
-          gain.gain.linearRampToValueAtTime(this.volume * 0.1, startTime + 0.01);
-          gain.gain.exponentialRampToValueAtTime(0.0001, startTime + 0.16);
-
-          osc.connect(filter);
-          filter.connect(gain);
-          gain.connect(this.ctx.destination);
-
-          osc.start(startTime);
-          osc.stop(startTime + 0.18);
-        });
-      } catch (_) {}
+      this.playHydroChime(action === 'play' ? 1.0 : 0.85);
     }
 
     toggle(enabled = null) {
@@ -156,21 +114,21 @@
     }
 
     setVolume(val) {
-      this.volume = Math.max(0, Math.min(1, parseFloat(val) || 0.12));
+      this.volume = Math.max(0, Math.min(1, parseFloat(val) || 0.04));
       localStorage.setItem('furina_cozy_volume', String(this.volume));
     }
 
     initEventListeners() {
-      // Delegate gentle haptic feedback across interactive elements
+      // Only listen on main navigation items when enabled, never on all buttons
       document.addEventListener('click', (e) => {
-        const target = e.target.closest('button, .nav-item, .card-item, .theme-option, .search-pill, .control-btn, .logger-filter-pill, .logger-btn-action, .sidebar-pl-link');
-        if (!target) return;
-
-        if (target.classList.contains('control-btn') || target.classList.contains('btn-play-hero')) {
-          this.playChord('play');
-        } else if (target.classList.contains('nav-item') || target.classList.contains('theme-option') || target.classList.contains('search-pill')) {
-          this.playHydroChime(1.05);
-        } else {
+        if (!this.isEnabled) return;
+        const nav = e.target.closest('.nav-item');
+        if (nav) {
+          this.playHydroChime(1.0);
+          return;
+        }
+        const playBtn = e.target.closest('.control-btn-play, .btn-play-hero');
+        if (playBtn) {
           this.playTactileClick();
         }
       }, { passive: true });

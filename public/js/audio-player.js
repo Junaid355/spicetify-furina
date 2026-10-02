@@ -85,7 +85,7 @@ class FurinaAudioEngine {
       if (this.ytPlayer || !window.YT || !window.YT.Player) return;
       try {
         this.ytPlayer = new window.YT.Player('furina-yt-streamer', {
-          host: 'https://www.youtube.com',
+          host: 'https://www.youtube-nocookie.com',
           height: '200',
           width: '300',
           playerVars: {
@@ -196,34 +196,39 @@ class FurinaAudioEngine {
 
         // Active Real-Time Ad-Shield & Auto-Skipper
         try {
+          const rawDur = typeof this.ytPlayer.getDuration === 'function' ? this.ytPlayer.getDuration() : 0;
           const videoData = typeof this.ytPlayer.getVideoData === 'function' ? this.ytPlayer.getVideoData() : null;
           const trackExpectedSec = (this.currentTrack?.durationMs || this.currentTrack?.duration_ms || 180000) / 1000;
-          const isShortAdDuration = dur > 0 && dur <= 45 && trackExpectedSec > 50;
-          const isMismatchedVideoId = videoData && videoData.video_id && this.currentTrackVideoId && videoData.video_id !== this.currentTrackVideoId;
-          const isAdTitle = videoData && videoData.title && (videoData.title.toLowerCase().startsWith('ad ') || videoData.author === 'YouTube');
-          const isAdPlaying = isShortAdDuration || isMismatchedVideoId || isAdTitle;
 
-          if (isAdPlaying) {
-            // An advertisement is detected: mute immediately so user never hears ads
+          const isShortAd = rawDur > 0 && rawDur <= 45 && trackExpectedSec > 50;
+          const isMismatched = videoData?.video_id && this.currentTrackVideoId && videoData.video_id !== this.currentTrackVideoId;
+          const isAdTitle = videoData?.title && (/^ad\b/i.test(videoData.title) || /advertisement/i.test(videoData.title) || videoData.author === 'YouTube');
+          const isStillBufferingMeta = !videoData || !videoData.video_id || rawDur <= 0;
+
+          const isAdPlaying = isShortAd || isMismatched || isAdTitle;
+
+          if (isAdPlaying || isStillBufferingMeta) {
+            // Keep strictly muted so advertisements are 100% silent
             if (typeof this.ytPlayer.mute === 'function') {
               this.ytPlayer.mute();
             }
-            // Turbo skip: accelerate playback rate to max supported
-            try {
-              if (typeof this.ytPlayer.setPlaybackRate === 'function') {
-                const rates = this.ytPlayer.getAvailablePlaybackRates?.() || [1, 1.5, 2];
-                const maxRate = Math.max(...rates);
-                this.ytPlayer.setPlaybackRate(maxRate);
-              }
-            } catch (_) {}
-            // Fast-forward past ad
-            if (typeof this.ytPlayer.seekTo === 'function') {
-              this.ytPlayer.seekTo(dur + 1, true);
+            if (typeof this.ytPlayer.setVolume === 'function') {
+              this.ytPlayer.setVolume(0);
             }
-            this.isAdSuppressed = true;
-            this.emit('adstatus', { isAd: true, message: 'Ad Shield Active — Skipping commercial...' });
+            if (isAdPlaying) {
+              this.isAdSuppressed = true;
+              this.emit('adstatus', { isAd: true, message: 'Ad Shield Active — Suppressing commercial...' });
+              try {
+                if (typeof this.ytPlayer.setPlaybackRate === 'function') {
+                  this.ytPlayer.setPlaybackRate(2.0);
+                }
+                if (typeof this.ytPlayer.seekTo === 'function' && rawDur > 0) {
+                  this.ytPlayer.seekTo(rawDur + 1, true);
+                }
+              } catch (_) {}
+            }
           } else {
-            // Real song is playing: restore playback rate & volume
+            // Verified genuine music track: restore unmuted audio
             if (this.isAdSuppressed) {
               this.isAdSuppressed = false;
               this.emit('adstatus', { isAd: false, message: 'Ad-free protected' });
@@ -432,60 +437,60 @@ class FurinaAudioEngine {
 
     if (this.videoMap[fullKey]) return this.videoMap[fullKey];
     if (this.videoMap[`${cleanTitle} - ${cleanArtist}`]) return this.videoMap[`${cleanTitle} - ${cleanArtist}`];
+    if (this.videoMap[`${cleanArtist} - ${cleanTitle}`]) return this.videoMap[`${cleanArtist} - ${cleanTitle}`];
     if (this.videoMap[cleanTitle]) return this.videoMap[cleanTitle];
     if (this.videoMap[title.toLowerCase().trim()]) return this.videoMap[title.toLowerCase().trim()];
 
-    // Fuzzy matching for requested titles
-    if (cleanTitle.includes('funk do bounce') || cleanTitle.includes('bounce')) {
-      return this.videoMap['funk do bounce (slowed)'] || '8uKG7A6U7PY';
-    }
-    if (cleanTitle.includes('brazilian phonk') || cleanTitle.includes('phonk')) {
-      return this.videoMap['brazilian phonk night racing pulse'] || 'TtN5-mZPUts';
-    }
-    if (cleanTitle.includes('montagem')) {
-      return this.videoMap['montagem'] || 'ak0twEnVG2M';
-    }
-    if (cleanTitle.includes('7 weeks')) {
-      return this.videoMap['7 weeks & 3 days (slowed)'] || '1e8XUqH-7rU';
-    }
-    if (cleanTitle.includes('baby girl') || cleanTitle.includes('baby boy')) {
-      return this.videoMap['oh my little baby boy'] || 'SkFAV5MXa0I';
-    }
-    if (cleanTitle.includes('golden hour')) {
-      return this.videoMap['golden hour'] || 'UsR08cY8k0A';
-    }
-    if (cleanTitle.includes('lover girl')) {
-      return this.videoMap['lover girl'] || 'q3BEA3ew77Y';
-    }
-    if (cleanTitle === 'her' || cleanTitle.startsWith('her ') || cleanTitle.includes('her')) {
-      const lowTitle = (track.title || '').toLowerCase();
-      if (lowTitle.includes('annika') && lowTitle.includes('kaden')) return 'A_rDJ-ckxqA';
-      if (lowTitle.includes('annika')) return 'ZxE0QzE2K9o';
-      if (lowTitle.includes('zvc')) return 'y2ecafXmnIY';
-      if (lowTitle.includes('john michael howell') || lowTitle.includes('howell')) return 'rLELllb8fBA';
-      if (lowTitle.includes('forrest') || lowTitle.includes('christmas')) return '9wdtjreefrw';
-      if (lowTitle === 'her' || cleanTitle === 'her') return 'f5-IY_Ja1RM';
+    // Strict exact word/title matching (Never use loose .includes() that hijack unrelated songs)
+    const lowTitle = (track.title || '').toLowerCase();
+    const lowArtist = (track.artist || '').toLowerCase();
+
+    if (cleanTitle === 'greed') {
+      if (lowArtist.includes('daughter')) return 'i9pX4r4x1Yk';
+      return 'Af9nqVCKb-o'; // Marino - Greed
     }
 
-    if (cleanTitle.includes('thousand years')) {
-      const lowArtist = (track.artist || '').toLowerCase();
-      if (lowArtist.includes('howell') || lowArtist.includes('jvke')) return '5ptdEemGjrQ';
-      return 'rtOvBOTyX00';
+    if (cleanTitle === 'greedy') {
+      return '8AtiHCDGZ8c'; // Tate McRae - greedy
     }
 
-    if (cleanTitle === 'lust' || cleanTitle.includes('lust')) {
-      const lowArtist = (track.artist || '').toLowerCase();
+    if (cleanTitle === 'lust') {
       if (lowArtist.includes('marino') || lowArtist.includes('alexandria')) return 'sr_qh33LsKQ';
       if (lowArtist.includes('kendrick')) return '2g811Eo7K8U';
       if (lowArtist.includes('lil skies')) return '7N3py3yZ-bQ';
-      return this.videoMap['lust'] || 'sr_qh33LsKQ';
+      return 'sr_qh33LsKQ'; // Marino - Lust
     }
 
-    if (cleanTitle === 'greed' || cleanTitle.includes('greed')) {
-      const lowArtist = (track.artist || '').toLowerCase();
-      if (lowArtist.includes('marino')) return 'Af9nqVCKb-o';
-      if (lowArtist.includes('daughter')) return 'i9pX4r4x1Yk';
-      return this.videoMap['greed - marino'] || 'Af9nqVCKb-o';
+    if (cleanTitle === 'her') {
+      if (lowArtist.includes('annika') && lowArtist.includes('kaden')) return 'A_rDJ-ckxqA';
+      if (lowArtist.includes('annika')) return 'ZxE0QzE2K9o';
+      if (lowArtist.includes('zvc')) return 'y2ecafXmnIY';
+      if (lowArtist.includes('howell')) return 'rLELllb8fBA';
+      if (lowArtist.includes('forrest')) return '9wdtjreefrw';
+      return 'f5-IY_Ja1RM'; // Her - eery
+    }
+
+    if (cleanTitle === 'funk do bounce' || cleanTitle === 'funk do bounce (slowed)') {
+      return this.videoMap['funk do bounce (slowed)'] || '8uKG7A6U7PY';
+    }
+    if (cleanTitle === 'brazilian phonk night racing pulse' || (cleanTitle === 'brazilian phonk' && lowArtist.includes('night racing'))) {
+      return this.videoMap['brazilian phonk night racing pulse'] || 'TtN5-mZPUts';
+    }
+    if (cleanTitle === '7 weeks & 3 days' || cleanTitle === '7 weeks & 3 days (slowed)') {
+      return this.videoMap['7 weeks & 3 days (slowed)'] || '1e8XUqH-7rU';
+    }
+    if (cleanTitle === 'oh my little baby boy') {
+      return this.videoMap['oh my little baby boy'] || 'SkFAV5MXa0I';
+    }
+    if (cleanTitle === 'golden hour' && (lowArtist.includes('jvke') || lowArtist.includes('golden'))) {
+      return this.videoMap['golden hour'] || 'UsR08cY8k0A';
+    }
+    if (cleanTitle === 'lover girl' || cleanTitle === 'lovergirl') {
+      return this.videoMap['lover girl'] || 'q3BEA3ew77Y';
+    }
+    if (cleanTitle === 'a thousand years' || cleanTitle === 'thousand years') {
+      if (lowArtist.includes('howell') || lowArtist.includes('jvke')) return '5ptdEemGjrQ';
+      return 'rtOvBOTyX00';
     }
 
     return null;
@@ -607,8 +612,11 @@ class FurinaAudioEngine {
 
     if (!videoId) {
       try {
-        const res = await fetch(`/api/catalog/resolve-audio?title=${encodeURIComponent(track.title)}&artist=${encodeURIComponent(track.artist || '')}`);
-        if (res.ok) {
+        const res = await Promise.race([
+          fetch(`/api/catalog/resolve-audio?title=${encodeURIComponent(track.title)}&artist=${encodeURIComponent(track.artist || '')}`),
+          new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 800))
+        ]);
+        if (res && res.ok) {
           const data = await res.json();
           if (data.videoId) {
             videoId = data.videoId;
@@ -619,55 +627,6 @@ class FurinaAudioEngine {
           }
         }
       } catch (_) {}
-    }
-
-    // Direct Audius full-length search if videoId not yet resolved
-    if (!videoId && (!stream || stream.includes('itunes') || stream.includes('apple.com'))) {
-      try {
-        const cleanTitle = (track.title || '').replace(/\(.*?\)/g, '').replace(/\[.*?\]/g, '').trim();
-        const cleanArtist = (track.artist || '').split(/[,&]/)[0].trim();
-        const audRes = await fetch(`https://discoveryprovider.audius.co/v1/tracks/search?query=${encodeURIComponent(`${cleanTitle} ${cleanArtist}`)}&app_name=FURINA_MUSIC`);
-        if (audRes.ok) {
-          const audData = await audRes.json();
-          const match = audData.data?.[0];
-          if (match && match.id) {
-            stream = `https://discoveryprovider.audius.co/v1/tracks/${match.id}/stream?app_name=FURINA_MUSIC`;
-            track.streamUrl = stream;
-            track.stream_url = stream;
-            console.log(`[FullStreamEngine] Audius full song resolved on the fly: ${track.title} => ${stream}`);
-          }
-        }
-      } catch (_) {}
-    }
-
-    // Direct Piped public API search for YouTube videoId if still unmapped
-    if (!videoId && (!stream || stream.includes('itunes') || stream.includes('apple.com'))) {
-      const pipedInstances = [
-        'https://pipedapi.kavin.rocks',
-        'https://api.piped.private.coffee'
-      ];
-      for (const inst of pipedInstances) {
-        try {
-          const cleanTitle = (track.title || '').replace(/\(.*?\)/g, '').replace(/\[.*?\]/g, '').trim();
-          const cleanArtist = (track.artist || '').split(/[,&]/)[0].trim();
-          const pipedRes = await fetch(`${inst}/search?q=${encodeURIComponent(`${cleanTitle} ${cleanArtist}`)}&filter=all`, {
-            signal: AbortSignal.timeout(3000)
-          });
-          if (pipedRes.ok) {
-            const pipedData = await pipedRes.json();
-            const firstItem = (pipedData.items || []).find(it => it.url && it.url.includes('watch?v='));
-            if (firstItem) {
-              const matchedVid = firstItem.url.replace(/.*watch\?v=/, '').split('&')[0];
-              if (matchedVid && matchedVid.length === 11) {
-                videoId = matchedVid;
-                this.videoMap[track.id] = videoId;
-                this.videoMap[cleanTitle.toLowerCase()] = videoId;
-                break;
-              }
-            }
-          }
-        } catch (_) {}
-      }
     }
 
     // Play via YouTube Streamer if videoId available
@@ -836,26 +795,28 @@ class FurinaAudioEngine {
       'https://pipedapi.kavin.rocks',
       'https://api.piped.private.coffee'
     ];
-    for (const inst of pipedInstances) {
-      try {
+    try {
+      const searchPromises = pipedInstances.map(async (inst) => {
         const res = await fetch(`${inst}/search?q=${encodeURIComponent(`${cleanTitle} ${cleanArtist}`)}&filter=all`, {
-          signal: AbortSignal.timeout(1800)
+          signal: AbortSignal.timeout(800)
         });
-        if (res.ok) {
-          const data = await res.json();
-          const it = (data.items || []).find(item => item.url && item.url.includes('watch?v='));
-          if (it) {
-            const vid = it.url.replace(/.*watch\?v=/, '').split('&')[0];
-            if (vid && vid.length === 11) {
-              this.videoMap[track.id] = vid;
-              this.videoMap[cleanTitle.toLowerCase()] = vid;
-              this.executeYouTubePlay(vid, track);
-              return;
-            }
-          }
+        if (!res.ok) throw new Error('Failed');
+        const data = await res.json();
+        const it = (data.items || []).find(item => item.url && item.url.includes('watch?v='));
+        if (it) {
+          const vid = it.url.replace(/.*watch\?v=/, '').split('&')[0];
+          if (vid && vid.length === 11) return vid;
         }
-      } catch (_) {}
-    }
+        throw new Error('No video');
+      });
+      const resolvedVid = await Promise.any(searchPromises);
+      if (resolvedVid) {
+        this.videoMap[track.id] = resolvedVid;
+        this.videoMap[cleanTitle.toLowerCase()] = resolvedVid;
+        this.executeYouTubePlay(resolvedVid, track);
+        return;
+      }
+    } catch (_) {}
 
     try {
       if (this.ytPlayer && typeof this.ytPlayer.loadPlaylist === 'function') {

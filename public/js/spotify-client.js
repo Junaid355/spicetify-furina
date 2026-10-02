@@ -76,7 +76,7 @@ class SpotifyClient {
       console.log('[SpotifyClient] Detected Spotify authorization code in URL. Exchanging via PKCE...');
       const verifier = localStorage.getItem('furina_spotify_code_verifier');
       const clientId = localStorage.getItem('furina_spotify_client_id') || 'd71465e9bf7b409d9361adce60ee1f33';
-      const redirectUri = localStorage.getItem('furina_spotify_redirect_uri') || (window.location.origin + window.location.pathname);
+      const redirectUri = localStorage.getItem('furina_spotify_redirect_uri') || this.getRedirectUri();
 
       if (verifier && clientId) {
         try {
@@ -133,6 +133,61 @@ class SpotifyClient {
     }
   }
 
+  getRedirectUri() {
+    if (window.location.protocol === 'file:') {
+      return 'https://junaid355.github.io/';
+    }
+    const origin = window.location.origin;
+    let path = window.location.pathname;
+    if (path.endsWith('index.html')) {
+      path = path.slice(0, -'index.html'.length);
+    }
+    if (!path.endsWith('/')) {
+      path += '/';
+    }
+    return origin + path;
+  }
+
+  async loginWithClientCredentials(clientId, clientSecret) {
+    if (!clientId || !clientSecret) return false;
+    try {
+      if (window.showToast) window.showToast('Authenticating with Spotify API...', 'info');
+      localStorage.setItem('furina_spotify_client_id', clientId);
+      localStorage.setItem('furina_spotify_client_secret', clientSecret);
+
+      const authHeader = 'Basic ' + btoa(`${clientId}:${clientSecret}`);
+      const body = new URLSearchParams({ grant_type: 'client_credentials' });
+
+      const res = await fetch('https://accounts.spotify.com/api/token', {
+        method: 'POST',
+        headers: {
+          'Authorization': authHeader,
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: body.toString()
+      });
+
+      if (!res.ok) {
+        const errText = await res.text();
+        console.error('[SpotifyClient] Token exchange error:', res.status, errText);
+        if (window.showToast) window.showToast(`Spotify Auth error: ${res.status} (verify Client ID & Secret)`, 'warning');
+        return false;
+      }
+
+      const data = await res.json();
+      if (data.access_token) {
+        this.setToken(data.access_token, data.expires_in || 3600);
+        localStorage.setItem('furina_spotify_custom_user', 'Spotify Developer');
+        if (window.showToast) window.showToast('Connected to Spotify via Developer API!', 'success');
+        return true;
+      }
+    } catch (e) {
+      console.error('[SpotifyClient] Credentials request error:', e);
+      if (window.showToast) window.showToast(`Spotify API error: ${e.message}`, 'warning');
+    }
+    return false;
+  }
+
   // Initiate Spotify OAuth Login with official PKCE Flow
   async login(customClientId = null) {
     const domClientId = document.getElementById('sp-client-id-input')?.value?.trim() || 
@@ -151,7 +206,7 @@ class SpotifyClient {
       return;
     }
 
-    const redirectUri = window.location.origin + window.location.pathname;
+    const redirectUri = this.getRedirectUri();
     const scopes = [
       'user-read-private',
       'user-read-email',

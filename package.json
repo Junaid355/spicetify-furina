@@ -2,11 +2,16 @@
   "name": "furina-music",
   "version": "1.0.0",
   "description": "High-Fidelity Fontaine Music Platform with Lossless Streaming, Spotify Integration, and Synced Lyrics",
-  "main": "server/index.js",
+  "main": "electron/main.js",
+  "homepage": "https://junaid355.github.io/",
   "scripts": {
     "start": "node server/index.js",
     "test": "node tests/server.test.js",
-    "desktop": "electron desktop/electron-main.js"
+    "desktop": "electron electron/main.js",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder",
+    "build:win": "electron-builder --win",
+    "build:exe": "node build_exe.js"
   },
   "keywords": [
     "furina",
@@ -15,7 +20,8 @@
     "lossless",
     "spotify-integration",
     "pwa",
-    "electron"
+    "electron",
+    "windows-exe"
   ],
   "author": "Furina Music Team",
   "license": "MIT",
@@ -24,5 +30,51 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "sqlite3": "^6.0.1"
+  },
+  "devDependencies": {
+    "electron": "28.2.0",
+    "electron-builder": "^24.9.1",
+    "electron-updater": "^6.1.7"
+  },
+  "build": {
+    "appId": "com.furinamusic.desktop",
+    "electronVersion": "28.2.0",
+    "productName": "Furina Music",
+    "copyright": "Copyright © 2026 Furina Music Fontaine",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "public/**/*",
+      "electron/**/*",
+      "package.json"
+    ],
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "Junaid355",
+        "repo": "spicetify-furina"
+      }
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        },
+        {
+          "target": "portable",
+          "arch": ["x64"]
+        }
+      ],
+      "icon": "public/icons/app-icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Furina Music"
+    }
   }
 }

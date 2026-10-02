@@ -776,17 +776,44 @@
       return jsonResponse(newPl);
     }
 
-    // 5d. Direct Spotify Auth Token Connect
-    if (pathname === '/api/auth/spotify/connect') {
+    // 5c. Spotify Custom Config (Client ID & Secret)
+    if (pathname === '/api/auth/spotify/config') {
       let body = {};
       try { body = typeof init?.body === 'string' ? JSON.parse(init.body) : (init?.body || {}); } catch (_) {}
-      if (body.accessToken) {
-        localStorage.setItem('furina_spotify_access_token', body.accessToken);
+      if (body.clientId) {
+        localStorage.setItem('furina_spotify_client_id', body.clientId);
+      }
+      if (body.clientSecret) {
+        localStorage.setItem('furina_spotify_client_secret', body.clientSecret);
+      }
+      return jsonResponse({ success: true, clientId: body.clientId, message: 'Spotify credentials saved successfully!' });
+    }
+
+    // 5d. Direct Spotify Auth Token Connect
+    if (pathname === '/api/auth/spotify/token' || pathname === '/api/auth/spotify/connect') {
+      let body = {};
+      try { body = typeof init?.body === 'string' ? JSON.parse(init.body) : (init?.body || {}); } catch (_) {}
+      const token = body.accessToken || body.token;
+      if (token) {
+        localStorage.setItem('furina_spotify_access_token', token);
+        localStorage.setItem('spotify_access_token', token);
+        if (window.spotifyClient) {
+          window.spotifyClient.accessToken = token;
+        }
         if (body.profile) {
           localStorage.setItem('furina_spotify_profile', JSON.stringify(body.profile));
         }
       }
-      return jsonResponse({ success: true, connected: true });
+      return jsonResponse({
+        success: true,
+        connected: true,
+        profile: {
+          display_name: 'Spotify Premium User',
+          email: 'user@spotify.com',
+          product: 'premium',
+          images: [{ url: './images/furina_logo.jpg' }]
+        }
+      });
     }
 
     // 5e. Disconnect Spotify Account
