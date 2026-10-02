@@ -232,8 +232,8 @@
       document.addEventListener('click', (e) => {
         if (!this.isEnabled || this.soundMode === 'off') return;
 
-        // Subtle click on navigation pills, tabs, and primary controls
-        const trigger = e.target.closest('.nav-item, .dock-item, .btn-primary, .control-btn-play, .search-pill, .bento-card');
+        // Subtle cozy acoustic click on all navigation pills, tabs, mobile dock, dice, and controls
+        const trigger = e.target.closest('.nav-item, .dock-item, .btn-primary, .control-btn-play, .search-pill, .bento-card, .spring-click, .btn-ctrl, .magic-shimmer-btn, .btn-random-repertoire, .mobile-nav-item, .card-item, .track-row, .btn-secondary, .btn-subtle, button, .theme-pill-dropdown-btn');
         if (trigger) {
           this.playClick();
         }

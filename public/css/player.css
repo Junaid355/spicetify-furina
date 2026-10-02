@@ -548,7 +548,7 @@
   .app-player-bar {
     height: var(--player-height);
     padding: 0 10px;
-    bottom: 58px; /* Sits cleanly above mobile navbar */
+    bottom: calc(58px + env(safe-area-inset-bottom, 0px)); /* Sits cleanly above mobile navbar */
     left: 8px;
     right: 8px;
     width: auto;

@@ -66,10 +66,34 @@ assert(layoutCss.includes('.app-sidebar'), 'layout.css must reference .app-sideb
 assert(layoutCss.includes('display: none !important'), 'layout.css must disable .app-sidebar');
 assert(layoutCss.includes('.header-brand-island'), 'layout.css must define .header-brand-island');
 
+// Ensure dead 76px sidebar rail is removed
+assert(!layoutCss.includes('width: 76px'), 'layout.css must NOT contain legacy 76px rail sidebar width');
+console.log('  [PASS] CSS layout 100% stage width and dead sidebar rail eliminated');
+
+// 8. Verify Responsive Breakpoint Harmony (No navigation void between 641px and 768px)
+assert(layoutCss.includes('@media (max-width: 768px)'), 'layout.css must define @media (max-width: 768px)');
+const mobileNavMatch = layoutCss.match(/@media\s*\(max-width:\s*768px\)[\s\S]*?\.mobile-navbar\s*\{[\s\S]*?display:\s*flex\s*!important/);
+assert(mobileNavMatch, 'mobile-navbar must be enabled at max-width: 768px in layout.css');
+console.log('  [PASS] Responsive breakpoint harmony verified (no 641-768px navigation blackout)');
+
+// 9. Verify Audio Effects Click Listener Coverage
+assert(audioEffects.includes('.mobile-nav-item'), 'audio-effects.js must bind to .mobile-nav-item');
+assert(audioEffects.includes('.btn-ctrl'), 'audio-effects.js must bind to .btn-ctrl');
+assert(audioEffects.includes('.spring-click'), 'audio-effects.js must bind to .spring-click');
+console.log('  [PASS] Cozy acoustic haptic click verified across all buttons, player controls, and mobile nav');
+
+// 10. Verify iPhone Safe-Area & Touch Parallax
+const playerCss = fs.readFileSync(path.join(baseDir, 'public/css/player.css'), 'utf-8');
+assert(playerCss.includes('safe-area-inset-bottom'), 'player.css must support env(safe-area-inset-bottom)');
+
+const threeSceneJs = fs.readFileSync(path.join(baseDir, 'public/js/three-scene.js'), 'utf-8');
+assert(threeSceneJs.includes('touchmove'), 'three-scene.js must handle touchmove for mobile 3D parallax');
+assert(threeSceneJs.includes('onTouchMove'), 'three-scene.js must define onTouchMove');
+console.log('  [PASS] iPhone safe-area padding and mobile touch 3D parallax verified');
+
 const compCss = fs.readFileSync(path.join(baseDir, 'public/css/components.css'), 'utf-8');
 assert(compCss.includes('.btn-random-repertoire'), 'components.css must define .btn-random-repertoire');
 assert(compCss.includes('.dock-separator'), 'components.css must define .dock-separator');
 
-console.log('  [PASS] CSS layout 100% stage width and components verified');
-
 console.log('\n🎉 ALL NEW UI & RANDOM ENGINE VERIFICATION CHECKS PASSED 100%!');
+

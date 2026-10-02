@@ -98,6 +98,7 @@
       // 7. Event Listeners
       window.addEventListener('resize', () => this.onWindowResize());
       window.addEventListener('mousemove', (e) => this.onMouseMove(e));
+      window.addEventListener('touchmove', (e) => this.onTouchMove(e), { passive: true });
 
       // 8. Start Render Loop
       this.animate();
@@ -174,6 +175,13 @@
     onMouseMove(e) {
       this.mouse.targetX = (e.clientX / window.innerWidth) * 2 - 1;
       this.mouse.targetY = -(e.clientY / window.innerHeight) * 2 + 1;
+    }
+
+    onTouchMove(e) {
+      if (e.touches && e.touches[0]) {
+        this.mouse.targetX = (e.touches[0].clientX / window.innerWidth) * 2 - 1;
+        this.mouse.targetY = -(e.touches[0].clientY / window.innerHeight) * 2 + 1;
+      }
     }
 
     onWindowResize() {

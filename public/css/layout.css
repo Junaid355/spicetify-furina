@@ -671,47 +671,18 @@ body {
   display: none;
 }
 
-/* Responsive Rules — High Polish Spicetify Desktop & Rail */
-@media (max-width: 1080px) and (min-width: 641px) {
-  .app-sidebar {
-    width: 76px;
-    padding: 20px 10px;
-    align-items: center;
-  }
-  .sidebar-logo {
-    padding: 0 0 18px 0;
-    justify-content: center;
-  }
-  .sidebar-logo-text,
-  .sidebar-logo-badge,
-  .sidebar-section-title,
-  .sidebar-playlists,
-  .sidebar-provider-card,
-  .nav-item-text {
-    display: none !important;
-  }
-  .nav-item {
-    justify-content: center;
-    padding: 12px;
-    border-radius: 12px;
-  }
-  .nav-item svg {
-    margin: 0;
-    width: 22px;
-    height: 22px;
-  }
-  .sidebar-divider {
-    margin: 14px 0;
-    width: 100%;
-  }
+/* Responsive Master Layout — 100% Stage Width & Responsive Dock / Mobile Bar */
+@media (max-width: 1080px) {
   .view-container {
-    padding: 20px 24px 80px 24px;
+    padding: 18px 20px 80px 20px;
   }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   .app-sidebar {
     display: none !important;
+    width: 0 !important;
+    height: 0 !important;
   }
   .mobile-navbar {
     display: flex !important;
@@ -721,12 +692,17 @@ body {
     max-width: 100vw;
   }
   .app-header {
-    padding: 0 12px;
-    height: 48px;
+    padding: 8px 14px;
+    min-height: 52px;
+    height: auto;
+    gap: 8px;
+    overflow-x: hidden;
   }
   .app-container {
-    height: calc(100vh - 112px);
-    height: calc(100dvh - 112px);
+    height: calc(100vh - var(--player-height) - 54px) !important;
+    height: calc(100dvh - var(--player-height) - 54px) !important;
+    max-height: calc(100vh - var(--player-height) - 54px) !important;
+    max-height: calc(100dvh - var(--player-height) - 54px) !important;
   }
   .header-search-quick {
     display: none !important;
@@ -735,10 +711,46 @@ body {
     display: none !important;
   }
   .user-profile-name {
+    display: none !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .app-header {
+    padding: 6px 10px;
+    gap: 6px;
+  }
+  .header-brand-island {
+    padding: 3px 8px;
+    gap: 6px;
+  }
+  .brand-title {
+    font-size: 0.88rem;
+  }
+  .brand-avatar-wrapper {
+    width: 32px;
+    height: 32px;
+  }
+  .brand-furina-avatar {
+    width: 32px;
+    height: 32px;
+  }
+  .companion-note-bubble,
+  .brand-badge-pill,
+  .companion-status-line {
+    display: none !important;
+  }
+  .header-right-island {
+    gap: 4px;
+  }
+  .theme-pill-dropdown-btn span:not(.theme-color-dot) {
     display: none;
   }
-  .header-right {
-    gap: 6px;
+  .theme-pill-dropdown-btn {
+    padding: 6px 8px;
+  }
+  .user-profile-badge {
+    padding: 2px;
   }
 }
 

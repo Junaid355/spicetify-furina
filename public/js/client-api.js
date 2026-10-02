@@ -943,7 +943,7 @@
     }
 
     // 7. Live Music Search (Federated iTunes API + Catalog)
-    if (pathname === '/api/search') {
+    if (pathname === '/api/search' || pathname === '/api/catalog/search') {
       const query = urlObj.searchParams.get('q') || '';
       const filter = urlObj.searchParams.get('provider') || 'all';
 

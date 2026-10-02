@@ -342,44 +342,66 @@ async function playRandomTrackFromCatalog() {
   }
   try {
     let allTracks = [];
-    if (appState.homeData && Array.isArray(appState.homeData.tracks) && appState.homeData.tracks.length > 0) {
-      allTracks = [...appState.homeData.tracks];
-    }
-    if (allTracks.length === 0) {
-      try {
-        const res = await fetch('/api/catalog/search?q=');
-        if (res.ok) {
-          const data = await res.json();
-          allTracks = data.tracks || [];
-        }
-      } catch (_) {}
-    }
-    if (allTracks.length === 0) {
-      try {
-        const res = await fetch('data/catalog.json');
-        if (res.ok) {
-          const data = await res.json();
-          allTracks = data.tracks || [];
-        }
-      } catch (_) {}
-    }
+
+    // 1. Gather all tracks from catalog.json (both tracks and playlistTracks for full 450+ repertoire)
+    try {
+      const candidates = ['./data/catalog.json', 'data/catalog.json', '/data/catalog.json'];
+      for (const cand of candidates) {
+        try {
+          const res = await fetch(cand);
+          if (res.ok) {
+            const data = await res.json();
+            const pool = [...(data.tracks || []), ...(data.playlistTracks || [])];
+            if (pool.length > 0) {
+              allTracks = pool;
+              break;
+            }
+          }
+        } catch (_) {}
+      }
+    } catch (_) {}
+
+    // 2. Fallback to appState if fetch unavailable
     if (allTracks.length === 0 && appState.homeData) {
       allTracks = [
+        ...(appState.homeData.tracks || []),
         ...(appState.homeData.globalTrending || []),
         ...(appState.homeData.trending || []),
         ...(appState.homeData.spotlightTracks || [])
       ];
     }
 
-    const validTracks = allTracks.filter(t => t && (t.id || t.track_id) && t.title);
-    if (validTracks.length === 0) {
+    // 3. Fallback to search API if running on server
+    if (allTracks.length === 0) {
+      try {
+        const res = await fetch('/api/search?q=');
+        if (res.ok) {
+          const data = await res.json();
+          allTracks = data.tracks || [];
+        }
+      } catch (_) {}
+    }
+
+    // Filter valid tracks and deduplicate by normalized title + artist
+    const seen = new Set();
+    const uniquePool = [];
+    for (const t of allTracks) {
+      if (!t || !t.title) continue;
+      const key = `${t.title.toLowerCase().trim()}::${(t.artist || '').toLowerCase().trim()}`;
+      if (!seen.has(key)) {
+        seen.add(key);
+        uniquePool.push(t);
+      }
+    }
+
+    if (uniquePool.length === 0) {
       showToast('No tracks found to shuffle', 'info');
       return;
     }
 
     const currentId = window.furinaAudio?.currentTrack?.id;
-    let pool = validTracks.filter(t => t.id !== currentId && t.track_id !== currentId);
-    if (pool.length === 0) pool = validTracks;
+    let pool = uniquePool.filter(t => t.id !== currentId && t.track_id !== currentId);
+    if (pool.length === 0) pool = uniquePool;
 
     const randomTrack = pool[Math.floor(Math.random() * pool.length)];
     const remaining = pool.filter(t => (t.id || t.track_id) !== (randomTrack.id || randomTrack.track_id));
@@ -391,8 +413,8 @@ async function playRandomTrackFromCatalog() {
 
     window.furinaAudio.playTrack(randomTrack, shuffledQueue);
 
-    // Visual feedback for dice animation
-    document.querySelectorAll('.btn-ctrl-random, #btn-hero-random, #btn-player-random, .dock-random-btn').forEach(btn => {
+    // Visual feedback for dice animation across all dice buttons and icons
+    document.querySelectorAll('.btn-ctrl-random, #btn-hero-random, #btn-player-random, .dock-random-btn, .btn-random-repertoire, .btn-dice-icon').forEach(btn => {
       btn.classList.add('dice-spinning');
       setTimeout(() => btn.classList.remove('dice-spinning'), 800);
     });

@@ -2009,11 +2009,11 @@
   }
 
   .floating-glass-dock {
-    display: none; /* Mobile uses .mobile-navbar fixed at bottom */
+    display: none !important; /* Mobile uses .mobile-navbar fixed at bottom */
   }
 
   .header-brand-island .companion-status-line {
-    display: none;
+    display: none !important;
   }
 
   .header-brand-island {
@@ -2023,7 +2023,22 @@
   .header-right-island .btn-text-responsive,
   .header-right-island #header-cozy-sound-pill,
   .header-right-island #header-spotify-badge {
-    display: none;
+    display: none !important;
+  }
+
+  .mobile-navbar {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    height: calc(54px + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+@media (max-width: 480px) {
+  .btn-random-repertoire {
+    padding: 6px 12px;
+    font-size: 0.78rem;
+  }
+  .btn-dice-icon {
+    font-size: 1rem;
   }
 }
 
