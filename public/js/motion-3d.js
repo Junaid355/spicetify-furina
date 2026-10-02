@@ -1,7 +1,8 @@
 /**
- * Furina Music — Aceternity UI, Magic UI & Motion Primitives 3D Engine
+ * Furina Music — Aceternity UI, Magic UI & Motion Primitives 3D Engine (v8.0)
  * Provides interactive 3D perspective tilt, dynamic spotlight glare,
- * 3D audio-reactive ocean grid, spring physics, and vinyl turntable deck.
+ * macOS-style floating dock spring magnification, 3D vinyl turntable deck,
+ * and audio-reactive particle waves.
  */
 
 (function () {
@@ -10,13 +11,15 @@
   class FurinaMotion3D {
     constructor() {
       this.initTiltCards();
+      this.initDockMagnification();
       this.init3DOceanGrid();
       this.initSpringButtons();
+      this.initBentoAudioSync();
       this.initStageVinyl3D();
       this.observeDynamicContent();
     }
 
-    // 1. Aceternity UI 3D Card Tilt with Specular Glare
+    // 1. Aceternity UI 3D Card Tilt with Specular Glare & Spotlight
     initTiltCards() {
       const attachTilt = (el) => {
         if (el.dataset.tiltInitialized) return;
@@ -29,32 +32,110 @@
           const centerX = rect.width / 2;
           const centerY = rect.height / 2;
 
-          const rotX = ((y - centerY) / centerY) * -10; // max 10 deg
-          const rotY = ((x - centerX) / centerX) * 10;  // max 10 deg
+          const rotX = ((y - centerY) / centerY) * -8; // max 8 deg
+          const rotY = ((x - centerX) / centerX) * 8;  // max 8 deg
 
-          el.style.transform = `perspective(900px) rotateX(${rotX.toFixed(2)}deg) rotateY(${rotY.toFixed(2)}deg) translateZ(8px)`;
+          el.style.transform = `perspective(900px) rotateX(${rotX.toFixed(2)}deg) rotateY(${rotY.toFixed(2)}deg) translateZ(6px)`;
           el.style.setProperty('--mouse-x', `${x}px`);
           el.style.setProperty('--mouse-y', `${y}px`);
         });
 
         el.addEventListener('mouseleave', () => {
           el.style.transform = 'perspective(900px) rotateX(0deg) rotateY(0deg) translateZ(0)';
-          el.style.transition = 'transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+          el.style.transition = 'transform 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
           setTimeout(() => {
             el.style.transition = '';
-          }, 500);
+          }, 450);
         });
 
         el.addEventListener('mouseenter', () => {
-          el.style.transition = 'transform 0.1s ease-out';
+          el.style.transition = 'transform 0.08s ease-out';
         });
       };
 
-      const selectors = '.card-item, .bento-card, .furina-companion-card, .stage-artwork-card, .playlist-hero-card';
+      const selectors = '.card-item, .bento-card, .furina-companion-card, .stage-artwork-card, .playlist-hero-card, .category-bento-card';
       document.querySelectorAll(selectors).forEach(attachTilt);
     }
 
-    // 2. Magic UI & Three-Dimensional Perspective Grid Canvas
+    // 2. Magic UI macOS-Style Floating Dock Magnification
+    initDockMagnification() {
+      const dock = document.querySelector('.floating-glass-dock');
+      if (!dock) return;
+
+      const items = Array.from(dock.querySelectorAll('.dock-item'));
+      const maxDistance = 120;
+      const baseScale = 1.0;
+      const maxScale = 1.32;
+
+      dock.addEventListener('mousemove', (e) => {
+        const mouseX = e.clientX;
+        items.forEach((item) => {
+          const rect = item.getBoundingClientRect();
+          const itemCenter = rect.left + rect.width / 2;
+          const distance = Math.abs(mouseX - itemCenter);
+
+          if (distance < maxDistance) {
+            const factor = 1 - distance / maxDistance;
+            const scale = baseScale + (maxScale - baseScale) * Math.sin((factor * Math.PI) / 2);
+            item.style.transform = `scale(${scale.toFixed(3)}) translateY(-${(factor * 6).toFixed(1)}px)`;
+          } else {
+            item.style.transform = `scale(${baseScale}) translateY(0)`;
+          }
+        });
+      });
+
+      dock.addEventListener('mouseleave', () => {
+        items.forEach((item) => {
+          item.style.transform = `scale(${baseScale}) translateY(0)`;
+          item.style.transition = 'transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+          setTimeout(() => { item.style.transition = ''; }, 300);
+        });
+      });
+    }
+
+    // 3. Aceternity Vinyl Turntable & Tonearm Live Playback Synchronization
+    initBentoAudioSync() {
+      const updateVinylState = (isPlaying) => {
+        const vinyls = document.querySelectorAll('.vinyl-record-disc, .stage-vinyl-disc');
+        const tonearms = document.querySelectorAll('.vinyl-tonearm');
+
+        vinyls.forEach(v => {
+          if (isPlaying) {
+            v.classList.add('vinyl-spinning');
+          } else {
+            v.classList.remove('vinyl-spinning');
+          }
+        });
+
+        tonearms.forEach(t => {
+          if (isPlaying) {
+            t.classList.add('active');
+          } else {
+            t.classList.remove('active');
+          }
+        });
+      };
+
+      // Listen to master audio engine events
+      if (window.furinaAudio) {
+        window.furinaAudio.on('statechange', ({ isPlaying }) => {
+          updateVinylState(isPlaying);
+        });
+      }
+
+      // Also poll current state safely on track loads
+      document.addEventListener('furina:trackchange', (e) => {
+        const track = e.detail?.track;
+        if (track?.coverUrl || track?.cover_url) {
+          const centerArts = document.querySelectorAll('.vinyl-center-art');
+          centerArts.forEach(img => {
+            img.src = track.coverUrl || track.cover_url;
+          });
+        }
+      });
+    }
+
+    // 4. Magic UI & Three-Dimensional Perspective Grid Canvas
     init3DOceanGrid() {
       const canvas = document.getElementById('ocean-ripple-canvas');
       if (!canvas) return;
@@ -77,9 +158,9 @@
         particles.push({
           x: Math.random() * width,
           y: Math.random() * height,
-          size: Math.random() * 2.5 + 1,
-          speedY: Math.random() * 0.6 + 0.2,
-          speedX: (Math.random() - 0.5) * 0.4,
+          size: Math.random() * 2.2 + 1,
+          speedY: Math.random() * 0.5 + 0.2,
+          speedX: (Math.random() - 0.5) * 0.35,
           opacity: Math.random() * 0.7 + 0.2,
           pulse: Math.random() * Math.PI * 2
         });
@@ -91,7 +172,7 @@
         // Draw 3D Perspective Lines receding towards horizon
         const horizonY = height * 0.65;
         const vanishX = width * 0.5;
-        ctx.strokeStyle = 'rgba(0, 242, 254, 0.05)';
+        ctx.strokeStyle = 'rgba(0, 242, 254, 0.04)';
         ctx.lineWidth = 1;
 
         // Perspective Rays
@@ -147,13 +228,13 @@
       requestAnimationFrame(render);
     }
 
-    // 3. Motion Primitives Spring Click & Tactile Physics
+    // 5. Motion Primitives Spring Click & Tactile Physics
     initSpringButtons() {
-      const springSelectors = '.btn-primary, .btn-secondary, .btn-icon, .nav-item, .mobile-nav-btn, .btn-play-hero, .btn-icon-subtle';
+      const springSelectors = '.btn-primary, .magic-shimmer-btn, .btn-secondary, .btn-icon, .nav-item, .dock-item, .btn-play-hero, .btn-icon-subtle';
       document.addEventListener('mousedown', (e) => {
         const btn = e.target.closest(springSelectors);
         if (btn) {
-          btn.style.transform = 'scale(0.92)';
+          btn.style.transform = 'scale(0.94)';
           btn.style.transition = 'transform 0.08s cubic-bezier(0.4, 0, 0.2, 1)';
         }
       });
@@ -161,7 +242,7 @@
       document.addEventListener('mouseup', (e) => {
         const btn = e.target.closest(springSelectors);
         if (btn) {
-          btn.style.transform = 'scale(1.04)';
+          btn.style.transform = 'scale(1.03)';
           btn.style.transition = 'transform 0.22s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
           setTimeout(() => {
             btn.style.transform = '';
@@ -171,7 +252,7 @@
       });
     }
 
-    // 4. 3D Stage Vinyl Record Deck
+    // 6. 3D Stage Vinyl Record Deck
     initStageVinyl3D() {
       const stage = document.getElementById('stage-player-overlay');
       if (!stage) return;
@@ -193,6 +274,7 @@
     observeDynamicContent() {
       const observer = new MutationObserver(() => {
         this.initTiltCards();
+        this.initDockMagnification();
       });
 
       const mainContent = document.querySelector('.main-content') || document.body;

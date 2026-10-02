@@ -21,16 +21,16 @@
   <link rel="icon" type="image/jpeg" href="icons/app-icon.jpg" />
   <link rel="manifest" href="manifest.json" />
 
-  <!-- Stylesheets (v7.7 3D Motion System & Aceternity Primitives) -->
-  <link rel="stylesheet" href="css/design-tokens.css?v=7.7.0" />
-  <link rel="stylesheet" href="css/layout.css?v=7.7.0" />
-  <link rel="stylesheet" href="css/animations.css?v=7.7.0" />
-  <link rel="stylesheet" href="css/components.css?v=7.7.0" />
-  <link rel="stylesheet" href="css/player.css?v=7.7.0" />
+  <!-- Stylesheets (v7.8 3D Motion System & Aceternity Primitives) -->
+  <link rel="stylesheet" href="css/design-tokens.css?v=7.8.0" />
+  <link rel="stylesheet" href="css/layout.css?v=7.8.0" />
+  <link rel="stylesheet" href="css/animations.css?v=7.8.0" />
+  <link rel="stylesheet" href="css/components.css?v=7.8.0" />
+  <link rel="stylesheet" href="css/player.css?v=7.8.0" />
   <!-- Core Diagnostic Logger (Loads Early to Intercept All Events) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <script src="js/bug-logger.js?v=7.7.0"></script>
-  <script src="js/audio-effects.js?v=7.7.0"></script>
+  <script src="js/bug-logger.js?v=7.8.0"></script>
+  <script src="js/audio-effects.js?v=7.8.0"></script>
 </head>
 <body>
   <!-- Dynamic Album-Art Reactive Background Mesh & Canvas -->
@@ -184,6 +184,11 @@
             </div>
           </div>
 
+          <!-- Velvet Audio Haptics Mode Selector Pill -->
+          <button class="badge-pill spring-click" id="header-cozy-sound-pill" onclick="cycleSoundProfile()" title="Sound Feedback Mode: Velvet Haptic / Crystal Chime / Soothing Droplet / Off" style="cursor: pointer; border: 1px solid var(--accent-cyan); background: rgba(56, 189, 248, 0.12); color: #fff;">
+            <span id="sound-icon-indicator">🎧</span> <span id="sound-mode-label">Haptic: Velvet</span>
+          </button>
+
           <!-- Spotify Connection Status Button / Pill -->
           <button class="badge-pill" id="header-spotify-badge" onclick="openSpotifyConnectModal()" title="Connect & Sync Spotify Account" style="cursor: pointer; border: 1px solid rgba(30, 215, 96, 0.4); background: rgba(30, 215, 96, 0.12); color: #fff;">
             <span style="color: #1ed760;">●</span> Connect Spotify
@@ -221,7 +226,56 @@
 
         <!-- 1. Home View -->
         <section class="view-section active" id="view-home">
-          <div id="home-hero-banner" class="hero-banner"></div>
+          <!-- Aceternity 3D Bento Grid Master Stage -->
+          <div class="aceternity-bento-grid">
+            <!-- Bento Item 1: Fontaine Grand Opera Hero Card -->
+            <div class="bento-card bento-hero-card magic-border-beam">
+              <img src="images/media_1790683175532.jpg" class="bento-hero-bg" alt="Fontaine Opera" />
+              <div class="bento-hero-content">
+                <div>
+                  <div class="hero-badge">✦ All The World's A Stage</div>
+                  <h1 class="hero-title text-shimmer-hydro" style="font-size: 2.2rem; font-weight: 800; margin-bottom: 8px;">Fontaine Grand Opera</h1>
+                  <p class="hero-subtitle" style="font-size: 0.95rem; color: var(--text-sub); max-width: 540px; line-height: 1.5;">
+                    Experience lossless Fontaine acoustics, zero-ad full songs, live synchronized lyrics, and WebGL audio-reactive 3D waves.
+                  </p>
+                </div>
+                <div class="hero-actions" style="margin-top: 24px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+                  <button class="magic-shimmer-btn" onclick="playHeroTrack()" title="Play Fontaine Master Repertoire">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                    <span>Play Opera Suite</span>
+                  </button>
+                  <button class="btn-secondary" onclick="switchTab('search')" style="border-radius: var(--radius-full); padding: 12px 24px; font-weight: 700;">
+                    <span>Explore Library</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Bento Item 2: Furina 3D Vinyl Turntable Deck -->
+            <div class="bento-card bento-vinyl-card" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
+              <div style="font-size: 0.78rem; font-weight: 800; color: var(--accent-gold); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 8px;">
+                ✦ Live Fontaine Turntable
+              </div>
+              <div class="vinyl-stage-3d" onclick="toggleStagePlayer()" style="cursor: pointer;" title="Click to open Fullscreen 3D Stage">
+                <div class="vinyl-record-disc vinyl-spinning" id="bento-vinyl-disc">
+                  <img src="images/furina_opera_tears.jpg" class="vinyl-center-art" id="bento-vinyl-art" alt="Vinyl Disc" onerror="this.src='icons/app-icon.jpg'" />
+                  <div class="vinyl-spindle-hole"></div>
+                </div>
+                <svg class="vinyl-tonearm active" id="bento-tonearm" viewBox="0 0 45 120" fill="none">
+                  <circle cx="36" cy="12" r="10" fill="#38bdf8" fill-opacity="0.3" stroke="#38bdf8" stroke-width="2"/>
+                  <circle cx="36" cy="12" r="4" fill="#ffd166"/>
+                  <line x1="36" y1="16" x2="14" y2="95" stroke="#f6d89b" stroke-width="3" stroke-linecap="round"/>
+                  <rect x="8" y="95" width="12" height="18" rx="2" fill="#38bdf8" transform="rotate(12 8 95)"/>
+                </svg>
+              </div>
+              <div style="margin-top: 12px; font-size: 0.84rem; font-weight: 700; color: #fff;">
+                <span id="bento-vinyl-status">La Vaguelette — Furina</span>
+              </div>
+              <div style="font-size: 0.72rem; color: var(--accent-cyan); margin-top: 2px;">
+                ✦ 3D Audio-Reactive Vinyl • Click to Expand
+              </div>
+            </div>
+          </div>
 
           <div class="section-header">
             <h2 class="section-title">
@@ -1167,16 +1221,16 @@
     <div class="logger-entries-wrap" id="logger-entries-container"></div>
   </aside>
 
-  <!-- Core Application Scripts (v7.7.0 3D Motion, Velvet Haptics, Ad Shield & Fast Engine) -->
-  <script src="js/client-api.js?v=7.7.0"></script>
-  <script src="js/dynamic-bg.js?v=7.7.0"></script>
-  <script src="js/audio-player.js?v=7.7.0"></script>
-  <script src="js/offline-storage.js?v=7.7.0"></script>
-  <script src="js/lyrics-engine.js?v=7.7.0"></script>
-  <script src="js/spotify-client.js?v=7.7.0"></script>
-  <script src="js/marketplace.js?v=7.7.0"></script>
-  <script src="js/motion-3d.js?v=7.7.0"></script>
-  <script src="js/three-scene.js?v=7.7.0"></script>
-  <script src="js/app.js?v=7.7.0"></script>
+  <!-- Core Application Scripts (v7.8.0 3D Motion, Velvet Haptics, Ad Shield & Fast Engine) -->
+  <script src="js/client-api.js?v=7.8.0"></script>
+  <script src="js/dynamic-bg.js?v=7.8.0"></script>
+  <script src="js/audio-player.js?v=7.8.0"></script>
+  <script src="js/offline-storage.js?v=7.8.0"></script>
+  <script src="js/lyrics-engine.js?v=7.8.0"></script>
+  <script src="js/spotify-client.js?v=7.8.0"></script>
+  <script src="js/marketplace.js?v=7.8.0"></script>
+  <script src="js/motion-3d.js?v=7.8.0"></script>
+  <script src="js/three-scene.js?v=7.8.0"></script>
+  <script src="js/app.js?v=7.8.0"></script>
 </body>
 </html>

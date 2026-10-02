@@ -839,20 +839,20 @@ async function downloadTrackOffline(trackId) {
       const query = encodeURIComponent(`${cleanTitle} ${cleanArtist}`);
 
       const candidatePromises = [
-        // Audius nodes
-        fetch(`https://discoveryprovider.audius.co/v1/tracks/search?query=${query}&app_name=FURINA_MUSIC`, {
-          signal: AbortSignal.timeout(1200)
-        }).then(r => r.ok ? r.json() : Promise.reject())
-          .then(d => {
-            if (d.data?.[0]?.id) return `https://discoveryprovider.audius.co/v1/tracks/${d.data[0].id}/stream?app_name=FURINA_MUSIC`;
-            throw new Error();
-          }),
-        // Apple iTunes Preview
+        // Fast iTunes audio endpoint
         fetch(`https://itunes.apple.com/search?term=${query}&entity=song&limit=1`, {
-          signal: AbortSignal.timeout(1200)
+          signal: AbortSignal.timeout(600)
         }).then(r => r.ok ? r.json() : Promise.reject())
           .then(d => {
             if (d.results?.[0]?.previewUrl) return d.results[0].previewUrl;
+            throw new Error();
+          }),
+        // Audius nodes
+        fetch(`https://discoveryprovider.audius.co/v1/tracks/search?query=${query}&app_name=FURINA_MUSIC`, {
+          signal: AbortSignal.timeout(600)
+        }).then(r => r.ok ? r.json() : Promise.reject())
+          .then(d => {
+            if (d.data?.[0]?.id) return `https://discoveryprovider.audius.co/v1/tracks/${d.data[0].id}/stream?app_name=FURINA_MUSIC`;
             throw new Error();
           })
       ];
@@ -2375,6 +2375,82 @@ function triggerPWAInstall() {
 }
 window.triggerPWAInstall = triggerPWAInstall;
 
+// Sound Feedback Modes: 'haptic' | 'crystal' | 'droplet' | 'off'
+function updateSoundProfileUI() {
+  const mode = localStorage.getItem('furina_sound_profile') || 'haptic';
+  const isEnabled = localStorage.getItem('furina_cozy_sounds') === 'true';
+  const label = document.getElementById('sound-mode-label');
+  const icon = document.getElementById('sound-icon-indicator');
+  const pill = document.getElementById('header-cozy-sound-pill');
+
+  if (!label || !icon) return;
+
+  if (!isEnabled || mode === 'off') {
+    label.textContent = 'Muted';
+    icon.textContent = '🔇';
+    if (pill) pill.style.borderColor = 'rgba(255, 255, 255, 0.15)';
+  } else if (mode === 'crystal') {
+    label.textContent = 'Crystal Chime';
+    icon.textContent = '🔔';
+    if (pill) pill.style.borderColor = 'var(--accent-gold)';
+  } else if (mode === 'droplet') {
+    label.textContent = 'Hydro Drop';
+    icon.textContent = '💧';
+    if (pill) pill.style.borderColor = 'var(--accent-cyan)';
+  } else {
+    label.textContent = 'Velvet Haptic';
+    icon.textContent = '🎧';
+    if (pill) pill.style.borderColor = 'var(--accent-cyan)';
+  }
+}
+window.updateSoundProfileUI = updateSoundProfileUI;
+
+function cycleSoundProfile() {
+  const modes = ['haptic', 'crystal', 'droplet', 'off'];
+  const current = localStorage.getItem('furina_sound_profile') || 'haptic';
+  const isEnabled = localStorage.getItem('furina_cozy_sounds') === 'true';
+
+  let nextIdx = (modes.indexOf(isEnabled ? current : 'off') + 1) % modes.length;
+  let nextMode = modes[nextIdx];
+
+  if (window.furinaAudioEffects) {
+    window.furinaAudioEffects.setSoundMode(nextMode);
+  } else {
+    localStorage.setItem('furina_sound_profile', nextMode);
+    localStorage.setItem('furina_cozy_sounds', nextMode !== 'off' ? 'true' : 'false');
+  }
+
+  updateSoundProfileUI();
+  const readable = nextMode === 'off' ? 'Muted' : (nextMode === 'crystal' ? 'Crystal Chime' : (nextMode === 'droplet' ? 'Hydro Drop' : 'Velvet Haptic'));
+  showToast(`✦ Sound Feedback: ${readable}`, 'info');
+}
+window.cycleSoundProfile = cycleSoundProfile;
+
+function playHeroTrack() {
+  if (window.furinaAudio?.currentTrack) {
+    if (!window.furinaAudio.isPlaying) {
+      window.furinaAudio.resume();
+    } else {
+      window.toggleStagePlayer();
+    }
+    return;
+  }
+  const heroTrack = {
+    id: 'furina_master_vaguelette',
+    title: 'La Vaguelette',
+    artist: 'Furina de Fontaine',
+    album: 'Fontaine Grand Opera',
+    coverUrl: 'images/furina_opera_tears.jpg',
+    streamUrl: './audio/la_vaguelette.wav',
+    provider: 'furina',
+    isDownloadable: true
+  };
+  if (window.furinaAudio) {
+    window.furinaAudio.play(heroTrack);
+  }
+}
+window.playHeroTrack = playHeroTrack;
+
 // App Initialization
 document.addEventListener('DOMContentLoaded', () => {
   sanitizeStoredPlaylists();
@@ -2383,6 +2459,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   checkOAuthRedirectParams();
   updateHeaderSpotifyBadge();
+  updateSoundProfileUI();
   initSearch();
   initPlayerBar();
   initKeyboardShortcuts();
