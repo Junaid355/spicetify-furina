@@ -1792,6 +1792,11 @@ function updateNowPlayingUI(track) {
     stageArt.src = cover;
     stageArt.onerror = () => { stageArt.src = fallback; };
   }
+  const stageVinylCenter = document.getElementById('stage-vinyl-center-art');
+  if (stageVinylCenter) {
+    stageVinylCenter.src = cover;
+    stageVinylCenter.onerror = () => { stageVinylCenter.src = fallback; };
+  }
   const stageTitle = document.getElementById('stage-track-title');
   if (stageTitle) stageTitle.textContent = track.title;
   const stageArtist = document.getElementById('stage-track-artist');

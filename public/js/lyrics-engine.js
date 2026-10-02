@@ -70,6 +70,38 @@ class FurinaLyricsEngine {
 
       this.container.appendChild(el);
     });
+
+    // Initial 3D depth distribution
+    this.apply3DPerspective(0);
+  }
+
+  apply3DPerspective(activeIndex) {
+    if (!this.container) return;
+    const lines = Array.from(this.container.children).filter(c => c.classList.contains('lyric-line'));
+    lines.forEach((lineEl, i) => {
+      if (i === activeIndex) {
+        lineEl.classList.add('active');
+        lineEl.style.transform = 'perspective(600px) translateZ(32px) scale(1.1) rotateX(0deg)';
+        lineEl.style.opacity = '1';
+        lineEl.style.filter = 'blur(0px)';
+      } else {
+        lineEl.classList.remove('active');
+        const dist = Math.abs(i - activeIndex);
+        if (dist === 1) {
+          lineEl.style.transform = `perspective(600px) translateZ(4px) scale(0.98) rotateX(${i < activeIndex ? -2 : 2}deg)`;
+          lineEl.style.opacity = '0.55';
+          lineEl.style.filter = 'blur(0.2px)';
+        } else if (dist === 2) {
+          lineEl.style.transform = `perspective(600px) translateZ(-6px) scale(0.95) rotateX(${i < activeIndex ? -4 : 4}deg)`;
+          lineEl.style.opacity = '0.35';
+          lineEl.style.filter = 'blur(0.4px)';
+        } else {
+          lineEl.style.transform = `perspective(600px) translateZ(-14px) scale(0.92) rotateX(${i < activeIndex ? -6 : 6}deg)`;
+          lineEl.style.opacity = '0.18';
+          lineEl.style.filter = 'blur(0.6px)';
+        }
+      }
+    });
   }
 
   update(currentTime) {
@@ -85,15 +117,12 @@ class FurinaLyricsEngine {
     }
 
     if (activeIndex !== this.currentLineIndex) {
-      const oldActive = this.container.querySelector('.lyric-line.active');
-      if (oldActive) oldActive.classList.remove('active');
-
       this.currentLineIndex = activeIndex;
+      this.apply3DPerspective(activeIndex);
 
       if (activeIndex >= 0) {
         const newActive = this.container.children[activeIndex];
         if (newActive) {
-          newActive.classList.add('active');
           // Smooth scroll to center
           const containerHeight = this.container.clientHeight;
           const lineOffset = newActive.offsetTop;

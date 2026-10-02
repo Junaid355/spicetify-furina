@@ -761,23 +761,40 @@ button:active {
   display: flex;
   justify-content: center;
   align-items: center;
+  transform-style: preserve-3d;
 }
 
 .stage-vinyl-disc {
   position: absolute;
-  width: 260px;
-  height: 260px;
+  top: 50%;
+  left: 50%;
+  width: 270px;
+  height: 270px;
   border-radius: 50%;
-  background: radial-gradient(circle, #0a0a0a 0%, #151515 45%, #050505 50%, #1a1a1a 70%, #000 100%);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.9), inset 0 0 10px rgba(255, 255, 255, 0.1);
-  right: -30px;
-  z-index: -1;
-  transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  background: radial-gradient(circle at center, #0a0a0a 0%, #171717 24%, #0a0a0a 26%, #222 45%, #080808 50%, #1c1c1c 72%, #050505 100%);
+  box-shadow: 0 16px 45px rgba(0, 0, 0, 0.95), inset 0 0 12px rgba(255, 255, 255, 0.12), 0 0 25px rgba(56, 189, 248, 0.15);
+  transform: translateY(-50%) translateX(-25%);
+  z-index: 1;
+  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
 }
 
+.stage-artwork-container.playing .stage-vinyl-disc,
 .playing .stage-vinyl-disc {
-  transform: translateX(45px) rotate(360deg);
-  animation: vinylSpin 6s linear infinite;
+  transform: translateY(-50%) translateX(24%);
+  animation: stageVinylSpin 7s linear infinite;
+}
+
+@keyframes stageVinylSpin {
+  from {
+    transform: translateY(-50%) translateX(24%) rotate(0deg);
+  }
+  to {
+    transform: translateY(-50%) translateX(24%) rotate(360deg);
+  }
 }
 
 .vinyl-groove-ring {
@@ -786,14 +803,40 @@ button:active {
   border-radius: 50%;
   border: 1px dashed rgba(255, 255, 255, 0.08);
   box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.8);
+  pointer-events: none;
 }
 
 .vinyl-groove-ring::after {
   content: '';
   position: absolute;
-  inset: 40px;
+  inset: 38px;
   border-radius: 50%;
   border: 1px solid rgba(0, 242, 254, 0.15);
+  pointer-events: none;
 }
+
+.stage-vinyl-center-art {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 0 0 14px rgba(0, 0, 0, 0.9);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.stage-spindle-hole {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #020617;
+  border: 2px solid rgba(246, 216, 155, 0.85);
+  box-shadow: inset 0 0 4px #000;
+  z-index: 3;
+  pointer-events: none;
+}
+
 
 

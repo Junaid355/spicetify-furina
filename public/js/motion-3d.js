@@ -134,7 +134,7 @@
       document.addEventListener('furina:trackchange', (e) => {
         const track = e.detail?.track;
         if (track?.coverUrl || track?.cover_url) {
-          const centerArts = document.querySelectorAll('.vinyl-center-art');
+          const centerArts = document.querySelectorAll('.vinyl-center-art, .stage-vinyl-center-art');
           centerArts.forEach(img => {
             img.src = track.coverUrl || track.cover_url;
           });
@@ -259,22 +259,34 @@
       });
     }
 
-    // 6. 3D Stage Vinyl Record Deck
+    // 6. 3D Stage Vinyl Record Deck & Perspective Tilt
     initStageVinyl3D() {
-      const stage = document.getElementById('stage-player-overlay');
-      if (!stage) return;
+      const container = document.querySelector('.stage-artwork-container');
+      if (!container || container.dataset.vinyl3dReady) return;
+      container.dataset.vinyl3dReady = 'true';
 
-      const artContainer = stage.querySelector('.stage-cover-frame');
-      if (!artContainer) return;
+      container.addEventListener('mousemove', (e) => {
+        const rect = container.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
 
-      if (!artContainer.querySelector('.stage-vinyl-disc')) {
-        const vinylDisc = document.createElement('div');
-        vinylDisc.className = 'stage-vinyl-disc';
-        const innerGroove = document.createElement('div');
-        innerGroove.className = 'vinyl-groove-ring';
-        vinylDisc.appendChild(innerGroove);
-        artContainer.appendChild(vinylDisc);
-      }
+        const rotX = ((y - centerY) / centerY) * -12;
+        const rotY = ((x - centerX) / centerX) * 12;
+
+        container.style.transform = `perspective(1200px) rotateX(${rotX.toFixed(2)}deg) rotateY(${rotY.toFixed(2)}deg)`;
+      });
+
+      container.addEventListener('mouseleave', () => {
+        container.style.transform = 'perspective(1200px) rotateX(0deg) rotateY(0deg)';
+        container.style.transition = 'transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+        setTimeout(() => { container.style.transition = ''; }, 500);
+      });
+
+      container.addEventListener('mouseenter', () => {
+        container.style.transition = 'transform 0.1s ease-out';
+      });
     }
 
     // Dynamic Observer for injected elements (Search results, playlist changes)
