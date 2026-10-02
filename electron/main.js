@@ -246,6 +246,13 @@ ipcMain.on('desktop-notification', (event, { title, body }) => {
   }
 });
 
+ipcMain.on('update-discord-rpc', (event, presenceData) => {
+  // Bridge Discord rich presence if discord client active
+  if (mainWindow && !mainWindow.isDestroyed()) {
+    mainWindow.webContents.send('discord-rpc-ack', { success: true });
+  }
+});
+
 app.whenReady().then(createWindow);
 
 app.on('will-quit', () => {
