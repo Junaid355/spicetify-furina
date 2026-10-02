@@ -1853,7 +1853,7 @@ async function loadTrackLyrics(trackId) {
     const res = await fetch(`/api/catalog/tracks/${trackId}/lyrics?title=${encodeURIComponent(title)}&artist=${encodeURIComponent(artist)}`);
     const data = await res.json();
     if (data.available && data.lrc_text) {
-      window.furinaLyrics.parseLRC(data.lrc_text);
+      window.furinaLyrics.parseLRC(data.lrc_text, trackId);
     } else {
       // Direct open fallback to lrclib.net if API endpoint was bypassed
       try {
@@ -1863,7 +1863,7 @@ async function loadTrackLyrics(trackId) {
         if (lrcRes.ok) {
           const lrcData = await lrcRes.json();
           if (lrcData.syncedLyrics || lrcData.plainLyrics) {
-            window.furinaLyrics.parseLRC(lrcData.syncedLyrics || lrcData.plainLyrics);
+            window.furinaLyrics.parseLRC(lrcData.syncedLyrics || lrcData.plainLyrics, trackId);
             window.furinaLyrics.render(container, (seekSeconds) => {
               window.furinaAudio.seek(seekSeconds);
             });
@@ -1871,14 +1871,14 @@ async function loadTrackLyrics(trackId) {
           }
         }
       } catch (_) {}
-      window.furinaLyrics.parseLRC('');
+      window.furinaLyrics.parseLRC('', trackId);
     }
     window.furinaLyrics.render(container, (seekSeconds) => {
       window.furinaAudio.seek(seekSeconds);
     });
   } catch (err) {
     console.error('Lyrics fetch error:', err);
-    window.furinaLyrics.parseLRC('');
+    window.furinaLyrics.parseLRC('', trackId);
     window.furinaLyrics.render(container);
   }
 }

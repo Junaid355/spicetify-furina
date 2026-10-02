@@ -684,6 +684,12 @@ class FurinaAudioEngine {
     const lowArtist = (track.artist || '').toLowerCase();
 
     // 2. Exact Title Guardrails (Disambiguates artist collision before generic title fallback)
+    if (cleanTitle === 'love story') {
+      if (lowArtist.includes('indila')) return 'DF3XjEhJ40Y'; // Indila - Love Story (Official)
+      if (lowArtist.includes('taylor') || lowArtist.includes('swift')) return '8xg3vE8Ie_E'; // Taylor Swift - Love Story
+      return 'DF3XjEhJ40Y';
+    }
+
     if (cleanTitle === 'lover') {
       if (lowArtist.includes('laufey')) return 'q3BEA3ew77Y';
       if (lowArtist.includes('buckley')) return 'hXe1SEVysLQ';

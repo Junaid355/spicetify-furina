@@ -774,7 +774,13 @@
   <div class="stage-player-overlay" id="stage-player-overlay">
     <div class="stage-top-bar">
       <div class="stage-title-indicator">✦ Fontaine Opera Epiclese Stage ✦</div>
-      <button class="btn-icon-subtle" id="btn-stage-close" style="font-size: 1.5rem;">✕</button>
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <button class="stage-tool-pill" id="btn-toggle-translation" onclick="window.furinaLyrics.toggleTranslation()" title="Toggle English Lyrics Translation">
+          <span style="font-size: 0.95rem;">🌐</span>
+          <span id="btn-translation-label">Translate (EN)</span>
+        </button>
+        <button class="btn-icon-subtle" id="btn-stage-close" style="font-size: 1.5rem;">✕</button>
+      </div>
     </div>
     <div class="stage-content-body">
       <div class="stage-visual-column">

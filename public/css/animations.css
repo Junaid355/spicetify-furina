@@ -768,14 +768,14 @@ button:active {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 270px;
-  height: 270px;
+  width: 256px;
+  height: 256px;
   border-radius: 50%;
   background: radial-gradient(circle at center, #0a0a0a 0%, #171717 24%, #0a0a0a 26%, #222 45%, #080808 50%, #1c1c1c 72%, #050505 100%);
   box-shadow: 0 16px 45px rgba(0, 0, 0, 0.95), inset 0 0 12px rgba(255, 255, 255, 0.12), 0 0 25px rgba(56, 189, 248, 0.15);
-  transform: translateY(-50%) translateX(-25%);
+  transform: translateY(-50%) translateX(-50%);
   z-index: 1;
-  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -784,16 +784,16 @@ button:active {
 
 .stage-artwork-container.playing .stage-vinyl-disc,
 .playing .stage-vinyl-disc {
-  transform: translateY(-50%) translateX(24%);
-  animation: stageVinylSpin 7s linear infinite;
+  transform: translateY(-50%) translateX(calc(-50% + 46px));
+  animation: stageVinylSpin 8s linear infinite;
 }
 
 @keyframes stageVinylSpin {
   from {
-    transform: translateY(-50%) translateX(24%) rotate(0deg);
+    transform: translateY(-50%) translateX(calc(-50% + 46px)) rotate(0deg);
   }
   to {
-    transform: translateY(-50%) translateX(24%) rotate(360deg);
+    transform: translateY(-50%) translateX(calc(-50% + 46px)) rotate(360deg);
   }
 }
 
