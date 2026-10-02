@@ -30,7 +30,7 @@
   <!-- Core Diagnostic Logger (Loads Early to Intercept All Events) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="js/bug-logger.js?v=7.8.0"></script>
-  <script src="js/audio-effects.js?v=7.8.0"></script>
+  <script src="js/audio-effects.js?v=8.6.1"></script>
 </head>
 <body>
   <!-- Dynamic Album-Art Reactive Background Mesh & Canvas -->
@@ -144,7 +144,7 @@
           </div>
 
           <!-- Velvet Audio Haptics Mode Selector Pill -->
-          <button class="badge-pill spring-click" id="header-cozy-sound-pill" onclick="cycleSoundProfile()" title="Sound Feedback Mode: Velvet Haptic / Crystal Chime / Soothing Droplet / Off" style="cursor: pointer; border: 1px solid var(--accent-cyan); background: rgba(56, 189, 248, 0.12); color: #fff;">
+          <button class="badge-pill spring-click" id="header-cozy-sound-pill" onclick="window.cycleSoundProfile ? window.cycleSoundProfile() : null" title="Sound Feedback Mode: Velvet Haptic / Crystal Chime / Soothing Droplet / Off" style="cursor: pointer; border: 1px solid var(--accent-cyan); background: rgba(56, 189, 248, 0.12); color: #fff;">
             <span id="sound-icon-indicator">🎧</span> <span id="sound-mode-label">Haptic: Velvet</span>
           </button>
 

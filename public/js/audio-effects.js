@@ -242,4 +242,56 @@
   }
 
   window.furinaAudioEffects = new FurinaAudioEffects();
+
+  window.updateSoundProfileUI = function () {
+    const pill = document.getElementById('header-cozy-sound-pill');
+    const label = document.getElementById('cozy-sound-label');
+    const icon = document.getElementById('cozy-sound-icon');
+    const isEnabled = localStorage.getItem('furina_cozy_sounds') !== 'false';
+    const profile = localStorage.getItem('furina_sound_profile') || 'haptic';
+
+    if (!isEnabled || profile === 'off') {
+      if (label) label.textContent = 'Muted';
+      if (icon) icon.textContent = '🔇';
+      if (pill) pill.style.borderColor = 'rgba(255, 255, 255, 0.15)';
+    } else {
+      if (profile === 'crystal') {
+        if (label) label.textContent = 'Crystal Chime';
+        if (icon) icon.textContent = '🎐';
+      } else if (profile === 'droplet') {
+        if (label) label.textContent = 'Hydro Drop';
+        if (icon) icon.textContent = '💧';
+      } else {
+        if (label) label.textContent = 'Velvet Haptic';
+        if (icon) icon.textContent = '✦';
+      }
+      if (pill) pill.style.borderColor = 'var(--accent-cyan)';
+    }
+  };
+
+  window.cycleSoundProfile = function () {
+    const modes = ['haptic', 'crystal', 'droplet', 'off'];
+    const current = localStorage.getItem('furina_sound_profile') || 'haptic';
+    const isEnabled = localStorage.getItem('furina_cozy_sounds') !== 'false';
+
+    let nextIdx = (modes.indexOf(isEnabled ? current : 'off') + 1) % modes.length;
+    let nextMode = modes[nextIdx];
+
+    if (window.furinaAudioEffects) {
+      window.furinaAudioEffects.setSoundMode(nextMode);
+    } else {
+      localStorage.setItem('furina_sound_profile', nextMode);
+      localStorage.setItem('furina_cozy_sounds', nextMode !== 'off' ? 'true' : 'false');
+    }
+
+    window.updateSoundProfileUI();
+    const readable = nextMode === 'off' ? 'Muted' : (nextMode === 'crystal' ? 'Crystal Chime' : (nextMode === 'droplet' ? 'Hydro Drop' : 'Velvet Haptic'));
+    if (typeof showToast === 'function') {
+      showToast(`✦ Sound Feedback: ${readable}`, 'info');
+    }
+  };
+
+  document.addEventListener('DOMContentLoaded', () => {
+    window.updateSoundProfileUI();
+  });
 })();
