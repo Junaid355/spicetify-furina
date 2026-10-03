@@ -182,12 +182,10 @@ class FurinaDiscordActivity {
     if (navigator.clipboard) {
       navigator.clipboard.writeText(shareText).then(() => {
         if (typeof showToast === 'function') {
-          showToast('Status copied! Paste into Discord status or chat', 'success');
+          showToast('Status copied to clipboard!', 'success');
         }
       });
     }
-
-    window.open('https://discord.com/app', '_blank', 'width=1000,height=700');
   }
 }
 
