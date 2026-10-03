@@ -1,17 +1,19 @@
 /**
  * Furina Music — Discord Activity & Rich Presence Engine
- * Supports Discord Embedded App SDK for voice channels, Electron RPC, and Web Activity sharing.
+ * Supports Native Local IPC Bridge (port 3550), Discord Embedded App SDK, and Electron IPC.
  */
 
 class FurinaDiscordActivity {
   constructor() {
-    this.clientId = '1298492817294827520'; // Registered Furina Music Discord Application ID
+    this.clientId = '383226320970055681';
     this.isEmbeddedActivity = false;
     this.discordSdk = null;
-    this.isConnected = false;
+    this.isBridgeConnected = false;
+    this.discordUser = null;
     this.currentTrack = null;
 
     this.checkEnvironment();
+    this.checkLocalBridge();
     this.bindAudioEvents();
   }
 
@@ -23,6 +25,21 @@ class FurinaDiscordActivity {
       console.log('[DiscordActivity] Running inside Discord Embedded App container.');
       this.initEmbeddedSDK();
     }
+  }
+
+  async checkLocalBridge() {
+    try {
+      const res = await fetch('http://127.0.0.1:3550/status', { signal: AbortSignal.timeout(1500) });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.connected) {
+          this.isBridgeConnected = true;
+          this.discordUser = data.user;
+          console.log('[DiscordActivity] Connected to Discord RPC Bridge for:', data.user?.global_name || data.user?.username);
+          this.updatePresenceBadge(true);
+        }
+      }
+    } catch (_) {}
   }
 
   async initEmbeddedSDK() {
@@ -40,8 +57,6 @@ class FurinaDiscordActivity {
       if (window.DiscordSDK) {
         this.discordSdk = new window.DiscordSDK.DiscordSDK(this.clientId);
         await this.discordSdk.ready();
-        this.isConnected = true;
-        console.log('[DiscordActivity] Discord Embedded SDK ready & channel synced.');
         this.updatePresenceBadge(true);
       }
     } catch (err) {
@@ -69,19 +84,41 @@ class FurinaDiscordActivity {
     }
   }
 
-  updateDiscordPresence(track, isPlaying) {
+  async updateDiscordPresence(track, isPlaying) {
     if (!track) return;
     const title = track.title || 'Fontaine Melodies';
     const artist = track.artist || 'Furina';
     const coverUrl = track.cover_url || track.coverUrl || 'https://junaid355.github.io/icons/app-icon.jpg';
 
-    // 1. Electron Desktop IPC Bridge
+    // 1. Send to Native Local Discord IPC Bridge (Real-Time Profile Presence)
+    try {
+      const res = await fetch('http://127.0.0.1:3550/rpc', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title,
+          artist,
+          isPlaying
+        }),
+        signal: AbortSignal.timeout(1500)
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.connected) {
+          this.isBridgeConnected = true;
+          this.discordUser = data.user;
+          this.updatePresenceBadge(true);
+        }
+      }
+    } catch (_) {}
+
+    // 2. Electron Desktop IPC Bridge
     if (window.electronAPI && typeof window.electronAPI.updateDiscordRPC === 'function') {
       window.electronAPI.updateDiscordRPC({
-        details: `Listening to ${title}`,
-        state: `by ${artist}`,
+        details: title,
+        state: `by ${artist} — Furina Music`,
         largeImageKey: coverUrl,
-        largeImageText: 'Furina Music',
+        largeImageText: 'Furina Music (Fontaine Opera)',
         smallImageKey: isPlaying ? 'play' : 'pause',
         smallImageText: isPlaying ? 'Playing' : 'Paused',
         instance: false,
@@ -91,8 +128,8 @@ class FurinaDiscordActivity {
       });
     }
 
-    // 2. Embedded App SDK Activity State
-    if (this.discordSdk && this.isConnected) {
+    // 3. Embedded App SDK Activity State
+    if (this.discordSdk) {
       try {
         this.discordSdk.commands.setActivity({
           activity: {
@@ -101,18 +138,18 @@ class FurinaDiscordActivity {
             state: `by ${artist}`,
             assets: {
               large_image: coverUrl,
-              large_text: 'Furina Music (Fontaine)'
+              large_text: 'Furina Music'
             }
           }
         });
       } catch (_) {}
     }
 
-    // Update Activity Badge in UI
     const badge = document.getElementById('discord-activity-pill');
     if (badge) {
       badge.classList.toggle('active', isPlaying);
-      badge.title = `Discord Activity: ${title} — ${artist}`;
+      const userTag = this.discordUser ? ` (${this.discordUser.global_name || this.discordUser.username})` : '';
+      badge.title = `Discord Rich Presence Active${userTag}: Listening to ${title} — ${artist}`;
     }
   }
 
@@ -121,27 +158,36 @@ class FurinaDiscordActivity {
     if (badge) {
       badge.style.display = 'inline-flex';
       badge.classList.toggle('active', connected);
+      if (connected) {
+        badge.style.color = '#5865F2';
+        badge.style.boxShadow = '0 0 12px rgba(88, 101, 242, 0.4)';
+      }
     }
   }
 
   shareActivityToDiscord() {
     const cur = window.furinaAudio?.currentTrack;
-    const title = cur?.title || 'Furina Music Repertoire';
-    const artist = cur?.artist || 'Furina de Fontaine';
+    const title = cur?.title || 'Furina Music';
+    const artist = cur?.artist || 'Furina';
     const webUrl = 'https://junaid355.github.io/';
     const shareText = `🎵 Listening to **${title}** by **${artist}** on Furina Music ✦ ${webUrl}`;
+
+    if (this.isBridgeConnected && this.discordUser) {
+      if (typeof showToast === 'function') {
+        showToast(`✦ Discord Presence live on @${this.discordUser.username}'s profile!`, 'success');
+      }
+      return;
+    }
 
     if (navigator.clipboard) {
       navigator.clipboard.writeText(shareText).then(() => {
         if (typeof showToast === 'function') {
-          showToast('Discord status copied! Paste into Discord channel or status', 'success');
+          showToast('Status copied! Paste into Discord status or chat', 'success');
         }
       });
     }
 
-    // Open Discord Web / App Share
-    const discordIntentUrl = `https://discord.com/app`;
-    window.open(discordIntentUrl, '_blank', 'width=1000,height=700');
+    window.open('https://discord.com/app', '_blank', 'width=1000,height=700');
   }
 }
 

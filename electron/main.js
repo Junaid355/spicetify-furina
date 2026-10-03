@@ -246,14 +246,81 @@ ipcMain.on('desktop-notification', (event, { title, body }) => {
   }
 });
 
-ipcMain.on('update-discord-rpc', (event, presenceData) => {
-  // Bridge Discord rich presence if discord client active
-  if (mainWindow && !mainWindow.isDestroyed()) {
-    mainWindow.webContents.send('discord-rpc-ack', { success: true });
+let discordIpcClient = null;
+let discordIpcReady = false;
+
+function initDiscordIPC() {
+  const net = require('net');
+  try {
+    if (discordIpcClient) {
+      try { discordIpcClient.destroy(); } catch (_) {}
+    }
+    discordIpcReady = false;
+    discordIpcClient = net.connect('\\\\?\\pipe\\discord-ipc-0');
+
+    function encodePacket(op, data) {
+      const json = Buffer.from(JSON.stringify(data));
+      const header = Buffer.alloc(8);
+      header.writeInt32LE(op, 0);
+      header.writeInt32LE(json.length, 4);
+      return Buffer.concat([header, json]);
+    }
+
+    discordIpcClient.on('connect', () => {
+      discordIpcClient.write(encodePacket(0, { v: 1, client_id: '383226320970055681' }));
+    });
+
+    discordIpcClient.on('data', (buf) => {
+      try {
+        const len = buf.readInt32LE(4);
+        const data = JSON.parse(buf.slice(8, 8 + len).toString());
+        if (data.evt === 'READY') {
+          discordIpcReady = true;
+          console.log('[Electron] Discord IPC connected for:', data.data?.user?.username);
+        }
+      } catch (_) {}
+    });
+
+    discordIpcClient.on('error', () => {
+      discordIpcReady = false;
+      setTimeout(initDiscordIPC, 10000);
+    });
+  } catch (_) {}
+}
+
+ipcMain.on('update-discord-rpc', (event, act) => {
+  if (discordIpcClient && discordIpcReady && act) {
+    try {
+      const payload = {
+        cmd: 'SET_ACTIVITY',
+        args: {
+          pid: process.pid,
+          activity: {
+            type: 2,
+            details: (act.details || 'Fontaine Melodies').slice(0, 128),
+            state: (act.state || 'Furina Music').slice(0, 128),
+            timestamps: { start: Math.floor(Date.now() / 1000) },
+            assets: {
+              large_image: 'furina',
+              large_text: 'Furina Music (Fontaine Opera)'
+            }
+          }
+        },
+        nonce: String(Date.now())
+      };
+      const json = Buffer.from(JSON.stringify(payload));
+      const header = Buffer.alloc(8);
+      header.writeInt32LE(1, 0);
+      header.writeInt32LE(json.length, 4);
+      discordIpcClient.write(Buffer.concat([header, json]));
+    } catch (_) {}
   }
 });
 
-app.whenReady().then(createWindow);
+app.whenReady().then(() => {
+  createWindow();
+  initDiscordIPC();
+});
 
 app.on('will-quit', () => {
   globalShortcut.unregisterAll();
