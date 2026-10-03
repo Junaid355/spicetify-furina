@@ -1,6 +1,7 @@
 /**
  * Furina Music — Discord Activity & Rich Presence Engine
- * Supports Native Local IPC Bridge (port 3550), Discord Embedded App SDK, and Electron IPC.
+ * Supports Native WebSocket Bridge (ws://127.0.0.1:3550), HTTP IPC fallback,
+ * Discord Embedded App SDK, and Electron IPC.
  */
 
 class FurinaDiscordActivity {
@@ -11,9 +12,11 @@ class FurinaDiscordActivity {
     this.isBridgeConnected = false;
     this.discordUser = null;
     this.currentTrack = null;
+    this.ws = null;
+    this.wsReconnectTimer = null;
 
     this.checkEnvironment();
-    this.checkLocalBridge();
+    this.initWebSocketBridge();
     this.bindAudioEvents();
   }
 
@@ -27,19 +30,80 @@ class FurinaDiscordActivity {
     }
   }
 
-  async checkLocalBridge() {
+  initWebSocketBridge() {
+    if (this.ws && (this.ws.readyState === WebSocket.OPEN || this.ws.readyState === WebSocket.CONNECTING)) {
+      return;
+    }
+
     try {
-      const res = await fetch('http://127.0.0.1:3550/status', { signal: AbortSignal.timeout(1500) });
-      if (res.ok) {
-        const data = await res.json();
-        if (data.connected) {
-          this.isBridgeConnected = true;
-          this.discordUser = data.user;
-          console.log('[DiscordActivity] Connected to Discord RPC Bridge for:', data.user?.global_name || data.user?.username);
-          this.updatePresenceBadge(true);
+      // Connect over WebSocket — works seamlessly from HTTPS pages to local machine
+      this.ws = new WebSocket('ws://127.0.0.1:3550');
+
+      this.ws.onopen = () => {
+        console.log('[DiscordActivity] Connected to local Discord WebSocket Bridge.');
+        this.isBridgeConnected = true;
+        this.updatePresenceBadge(true);
+        // If track is already playing, broadcast immediately
+        if (this.currentTrack) {
+          const isPlaying = window.furinaAudio ? window.furinaAudio.isPlaying : true;
+          this.sendWsActivity(this.currentTrack, isPlaying);
         }
+      };
+
+      this.ws.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          if (data.user) {
+            this.discordUser = data.user;
+            this.isBridgeConnected = true;
+            this.updatePresenceBadge(true);
+          } else if (data.type === 'disconnect') {
+            this.isBridgeConnected = false;
+            this.updatePresenceBadge(false);
+          }
+        } catch (_) {}
+      };
+
+      this.ws.onerror = () => {
+        this.isBridgeConnected = false;
+      };
+
+      this.ws.onclose = () => {
+        this.isBridgeConnected = false;
+        this.updatePresenceBadge(false);
+        this.ws = null;
+        if (!this.wsReconnectTimer) {
+          this.wsReconnectTimer = setTimeout(() => {
+            this.wsReconnectTimer = null;
+            this.initWebSocketBridge();
+          }, 4000);
+        }
+      };
+    } catch (e) {
+      console.debug('[DiscordActivity] WS Bridge init error:', e.message);
+      if (!this.wsReconnectTimer) {
+        this.wsReconnectTimer = setTimeout(() => {
+          this.wsReconnectTimer = null;
+          this.initWebSocketBridge();
+        }, 5000);
       }
-    } catch (_) {}
+    }
+  }
+
+  sendWsActivity(track, isPlaying) {
+    if (!this.ws || this.ws.readyState !== WebSocket.OPEN) return false;
+    const title = track.title || 'Fontaine Melodies';
+    const artist = track.artist || 'Furina';
+    const coverUrl = track.cover_url || track.coverUrl || 'https://raw.githubusercontent.com/Junaid355/spicetify-furina/main/public/icons/app-icon.jpg';
+
+    this.ws.send(JSON.stringify({
+      type: isPlaying ? 'play' : 'pause',
+      title,
+      artist,
+      isPlaying,
+      coverUrl
+    }));
+    return true;
   }
 
   async initEmbeddedSDK() {
@@ -69,7 +133,7 @@ class FurinaDiscordActivity {
       window.furinaAudio.on('trackchange', (track) => this.onTrackChange(track));
       window.furinaAudio.on('statechange', ({ isPlaying }) => this.onStateChange(isPlaying));
     } else {
-      setTimeout(() => this.bindAudioEvents(), 500);
+      setTimeout(() => this.bindAudioEvents(), 400);
     }
   }
 
@@ -86,34 +150,27 @@ class FurinaDiscordActivity {
 
   async updateDiscordPresence(track, isPlaying) {
     if (!track) return;
+    this.currentTrack = track;
     const title = track.title || 'Fontaine Melodies';
     const artist = track.artist || 'Furina';
-    const coverUrl = track.cover_url || track.coverUrl || 'https://junaid355.github.io/icons/app-icon.jpg';
+    const coverUrl = track.cover_url || track.coverUrl || 'https://raw.githubusercontent.com/Junaid355/spicetify-furina/main/public/icons/app-icon.jpg';
 
-    // 1. Send to Native Local Discord IPC Bridge (Real-Time Profile Presence)
-    try {
-      const res = await fetch('http://127.0.0.1:3550/rpc', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          title,
-          artist,
-          isPlaying,
-          coverUrl
-        }),
-        signal: AbortSignal.timeout(1500)
-      });
-      if (res.ok) {
-        const data = await res.json();
-        if (data.connected) {
-          this.isBridgeConnected = true;
-          this.discordUser = data.user;
-          this.updatePresenceBadge(true);
-        }
-      }
-    } catch (_) {}
+    // 1. High-Priority: WebSocket Bridge to local Discord client
+    const sentWs = this.sendWsActivity(track, isPlaying);
 
-    // 2. Electron Desktop IPC Bridge
+    // 2. HTTP Fallback / Beacon (for Electron or localhost)
+    if (!sentWs) {
+      try {
+        fetch('http://127.0.0.1:3550/rpc', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ title, artist, isPlaying, coverUrl }),
+          signal: AbortSignal.timeout(1000)
+        }).catch(() => {});
+      } catch (_) {}
+    }
+
+    // 3. Electron Desktop IPC Bridge
     if (window.electronAPI && typeof window.electronAPI.updateDiscordRPC === 'function') {
       window.electronAPI.updateDiscordRPC({
         details: title,
@@ -129,7 +186,7 @@ class FurinaDiscordActivity {
       });
     }
 
-    // 3. Embedded App SDK Activity State
+    // 4. Embedded App SDK Activity State
     if (this.discordSdk) {
       try {
         this.discordSdk.commands.setActivity({
