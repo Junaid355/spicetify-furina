@@ -148,8 +148,8 @@ const FURINA_CANONICAL_VIDEOS = {
   'brazilian phonk night racing pulse': 'TtN5-mZPUts',
   'montagem phonk': 'ak0twEnVG2M',
   'montagem - phonk': 'ak0twEnVG2M',
-  '7 weeks & 3 days': '1e8XUqH-7rU',
-  '7 weeks & 3 days (slowed)': '1e8XUqH-7rU',
+  '7 weeks & 3 days': 'EAokPKuax4E',
+  '7 weeks & 3 days (slowed)': 'EAokPKuax4E',
 
   // Indian / South Asian trending songs
   'tum jo aaye': 'g0sR_L4W72Q',
@@ -802,7 +802,7 @@ class FurinaAudioEngine {
       return this.videoMap['brazilian phonk night racing pulse'] || 'TtN5-mZPUts';
     }
     if (cleanTitle === '7 weeks & 3 days' || cleanTitle === '7 weeks & 3 days (slowed)') {
-      return this.videoMap['7 weeks & 3 days (slowed)'] || '1e8XUqH-7rU';
+      return this.videoMap['7 weeks & 3 days (slowed)'] || 'EAokPKuax4E';
     }
     if (cleanTitle === 'oh my little baby boy') {
       return this.videoMap['oh my little baby boy'] || 'SkFAV5MXa0I';

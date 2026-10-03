@@ -98,7 +98,8 @@ class FurinaDiscordActivity {
         body: JSON.stringify({
           title,
           artist,
-          isPlaying
+          isPlaying,
+          coverUrl
         }),
         signal: AbortSignal.timeout(1500)
       });

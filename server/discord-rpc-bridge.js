@@ -105,7 +105,7 @@ const server = http.createServer((req, res) => {
     req.on('data', chunk => body += chunk);
     req.on('end', () => {
       try {
-        const { title, artist, isPlaying } = JSON.parse(body);
+        const { title, artist, isPlaying, coverUrl } = JSON.parse(body);
         if (!isPlaying || !title) {
           // Clear activity
           sendActivity(null);
@@ -119,7 +119,7 @@ const server = http.createServer((req, res) => {
               start: Math.floor(Date.now() / 1000)
             },
             assets: {
-              large_image: 'furina',
+              large_image: coverUrl || 'https://raw.githubusercontent.com/Junaid355/spicetify-furina/main/public/icons/app-icon.jpg',
               large_text: 'Furina Music (Fontaine Opera)'
             }
           };
