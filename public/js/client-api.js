@@ -949,11 +949,13 @@
       const query = urlObj.searchParams.get('q') || '';
       const filter = urlObj.searchParams.get('provider') || 'all';
 
-      // 1. Catalog matches
-      const catalogMatches = (catalog?.tracks || []).filter(t => 
-        t.title.toLowerCase().includes(query.toLowerCase()) || 
-        t.artist.toLowerCase().includes(query.toLowerCase())
-      ).map(t => ({
+      // 1. Catalog matches with Unicode Search Normalization (Source: rootscripts/riff)
+      const normQ = window.normalizeSearch ? window.normalizeSearch(query) : query.toLowerCase().trim();
+      const catalogMatches = (catalog?.tracks || []).filter(t => {
+        const normTitle = window.normalizeSearch ? window.normalizeSearch(t.title) : (t.title || '').toLowerCase();
+        const normArtist = window.normalizeSearch ? window.normalizeSearch(t.artist) : (t.artist || '').toLowerCase();
+        return normTitle.includes(normQ) || normArtist.includes(normQ);
+      }).map(t => ({
         id: t.id,
         title: t.title,
         artist: t.artist,

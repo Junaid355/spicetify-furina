@@ -4,6 +4,20 @@
  * provides live multilingual-to-English translation, and supports instant song version switching.
  */
 
+// RTL Language Detection (Source: rootscripts/riff)
+const RTL_RE = /[\u0590-\u08FF\uFB1D-\uFDFF\uFE70-\uFEFF]/;
+const LETTER_RE = /\p{L}/u;
+
+function isRtlText(text) {
+  const clean = String(text || '').replace(/<[^>]*>/g, '');
+  for (const ch of clean) {
+    if (!LETTER_RE.test(ch)) continue;
+    return RTL_RE.test(ch);
+  }
+  return false;
+}
+window.isRtlText = isRtlText;
+
 const BUNDLED_CANONICAL_LYRICS = {
   indila_love_story: `[00:00.00] ♪
 [00:15.26] L'âme en peine, il vit mais parle à peine
@@ -201,6 +215,11 @@ class FurinaLyricsEngine {
       el.className = 'lyric-line';
       el.dataset.index = index;
       el.dataset.time = item.time;
+
+      if (isRtlText(item.text)) {
+        el.classList.add('rtl-lyric');
+        el.setAttribute('dir', 'rtl');
+      }
 
       const origEl = document.createElement('div');
       origEl.className = 'lyric-original';

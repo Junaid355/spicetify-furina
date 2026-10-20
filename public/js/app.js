@@ -768,21 +768,43 @@ function renderPlaylistTracksTable(tracks) {
   }
 }
 
+let currentPlaylistSortMode = 'default';
+
 function handleFilterPlaylistTracks(query) {
-  const q = query.toLowerCase().trim();
+  const norm = window.normalizeSearch ? window.normalizeSearch(query) : query.toLowerCase().trim();
   const all = appState.currentPlaylistTracks || [];
-  if (!q) {
-    renderPlaylistTracksTable(all);
+  if (!norm) {
+    const sorted = window.sortTracks ? window.sortTracks(all, currentPlaylistSortMode) : all;
+    renderPlaylistTracksTable(sorted);
     return;
   }
-  const filtered = all.filter(t => 
-    (t.title && t.title.toLowerCase().includes(q)) ||
-    (t.artist && t.artist.toLowerCase().includes(q)) ||
-    (t.album && t.album.toLowerCase().includes(q))
-  );
-  renderPlaylistTracksTable(filtered);
+  const filtered = all.filter(t => {
+    const tTitle = window.normalizeSearch ? window.normalizeSearch(t.title) : (t.title || '').toLowerCase();
+    const tArtist = window.normalizeSearch ? window.normalizeSearch(t.artist) : (t.artist || '').toLowerCase();
+    const tAlbum = window.normalizeSearch ? window.normalizeSearch(t.album) : (t.album || '').toLowerCase();
+    return tTitle.includes(norm) || tArtist.includes(norm) || tAlbum.includes(norm);
+  });
+  const sorted = window.sortTracks ? window.sortTracks(filtered, currentPlaylistSortMode) : filtered;
+  renderPlaylistTracksTable(sorted);
 }
 window.handleFilterPlaylistTracks = handleFilterPlaylistTracks;
+
+function handleSortPlaylistTracks(mode) {
+  currentPlaylistSortMode = mode;
+  const all = appState.currentPlaylistTracks || [];
+  const filterInput = document.getElementById('playlist-filter-input');
+  if (filterInput && filterInput.value) {
+    handleFilterPlaylistTracks(filterInput.value);
+  } else {
+    const sorted = window.sortTracks ? window.sortTracks(all, mode) : all;
+    renderPlaylistTracksTable(sorted);
+  }
+  if (typeof showToast === 'function') {
+    const label = mode === 'default' ? 'Default Order' : mode.replace('-', ' ').toUpperCase();
+    showToast(`⚡ Repertoire Sorted: ${label}`, 'info');
+  }
+}
+window.handleSortPlaylistTracks = handleSortPlaylistTracks;
 
 async function loadPlaylistDetail(playlistId) {
   appState.activePlaylistId = playlistId;
@@ -1109,6 +1131,21 @@ async function showTrackQualityInspector(trackId) {
               </div>
             </div>
           </div>
+
+          <!-- Riff Studio Equalizer Engine (Source: rootscripts/riff) -->
+          <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-glass-subtle); border-radius: var(--radius-md); padding: 14px;">
+            <div style="font-size: 0.82rem; font-weight: 700; color: #fff; margin-bottom: 2px; display: flex; align-items: center; gap: 6px;">
+              <span>🎛️</span> Riff Studio Equalizer Presets
+            </div>
+            <div style="font-size: 0.72rem; color: var(--text-dim); margin-bottom: 10px;">Hardware-accelerated frequency curves inspired by rootscripts/riff</div>
+            <div class="hq-presets-container">
+              <button class="hq-preset-chip active" onclick="setPresetAndHighlight(this, 'flat')">🎵 Flat</button>
+              <button class="hq-preset-chip" onclick="setPresetAndHighlight(this, 'bass_boost')">🔊 Bass Boost</button>
+              <button class="hq-preset-chip" onclick="setPresetAndHighlight(this, 'opera_vocal')">🎙️ Vocal Clarity</button>
+              <button class="hq-preset-chip" onclick="setPresetAndHighlight(this, 'classical')">🎻 Fontaine Symphony</button>
+              <button class="hq-preset-chip" onclick="setPresetAndHighlight(this, 'acoustic')">🎸 Acoustic Reverie</button>
+            </div>
+          </div>
         </div>
       `;
       openModal('modal-audio-inspector');
@@ -1118,6 +1155,18 @@ async function showTrackQualityInspector(trackId) {
   }
 }
 window.showTrackQualityInspector = showTrackQualityInspector;
+
+window.setPresetAndHighlight = function(btn, preset) {
+  document.querySelectorAll('.hq-preset-chip').forEach(c => c.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  if (window.furinaAudio) {
+    window.furinaAudio.applyEqualizerPreset(preset);
+  }
+  if (typeof showToast === 'function') {
+    const formatted = preset.replace('_', ' ').toUpperCase();
+    showToast(`🎛️ Applied Equalizer Preset: ${formatted}`, 'info');
+  }
+};
 
 // 6. SPOTIFY HUB & DIAGNOSTICS (Prompt Sections 14, 15, 17, 18, 20)
 async function loadSpotifyHub() {

@@ -2086,3 +2086,81 @@
 
 
 
+
+/* Riff Track Sort Selector & Audio Presets (Source: rootscripts/riff) */
+.riff-sort-wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.riff-sort-select {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border-glass-subtle);
+  border-radius: var(--radius-full);
+  color: var(--text-main);
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 6px 12px;
+  outline: none;
+  cursor: pointer;
+  backdrop-filter: blur(12px);
+  transition: all 0.2s ease;
+}
+
+.riff-sort-select:hover,
+.riff-sort-select:focus {
+  border-color: var(--accent-cyan);
+  background: rgba(56, 189, 248, 0.1);
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.25);
+}
+
+.riff-sort-select option {
+  background: #091224;
+  color: #fff;
+  padding: 6px;
+}
+
+/* Riff HQ Equalizer Preset Chips */
+.hq-presets-container {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.hq-preset-chip {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-sub);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.hq-preset-chip:hover {
+  background: rgba(56, 189, 248, 0.15);
+  border-color: rgba(56, 189, 248, 0.4);
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.hq-preset-chip.active {
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.25), rgba(2, 132, 199, 0.35));
+  border-color: var(--accent-cyan);
+  color: #38bdf8;
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.4);
+}
+
+/* RTL Lyrics Direction */
+.lyric-line.rtl-lyric {
+  direction: rtl;
+  text-align: right;
+  font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+}
