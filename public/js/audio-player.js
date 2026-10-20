@@ -486,6 +486,16 @@ class FurinaAudioEngine {
   }
 
   initAudioContext() {
+    if (!this.riffEngine && window.RiffAudioEngine && this.audioElement) {
+      try {
+        this.riffEngine = new window.RiffAudioEngine();
+        this.riffEngine.init(this.audioElement);
+        this.riffEngine.setHqEnabled(true);
+        window.riffEngine = this.riffEngine;
+      } catch (err) {
+        console.debug('[AudioPlayer] RiffAudioEngine initialization notice:', err.message);
+      }
+    }
     if (!this.audioContext) {
       const AudioCtx = window.AudioContext || window.webkitAudioContext;
       if (AudioCtx) {
@@ -505,6 +515,11 @@ class FurinaAudioEngine {
     if (this.eqFilters[index]) {
       this.eqFilters[index].gain.value = gainDb;
     }
+    if (this.riffEngine && Array.isArray(this.riffEngine.audioSettings?.eqBands)) {
+      const bands = [...this.riffEngine.audioSettings.eqBands];
+      bands[index] = gainDb;
+      this.riffEngine.setEqBands(bands);
+    }
   }
 
   applyEqualizerPreset(presetName) {
@@ -513,10 +528,14 @@ class FurinaAudioEngine {
       bass_boost: [6, 5, 4, 2, 0, 0, 0, 0, 1, 2],
       opera_vocal: [-2, -1, 0, 2, 4, 5, 4, 2, 1, 0],
       classical: [3, 2, 1, 0, 0, 1, 2, 3, 3, 2],
-      acoustic: [1, 2, 2, 1, 2, 3, 2, 2, 1, 1]
+      acoustic: [1, 2, 2, 1, 2, 3, 2, 2, 1, 1],
+      fontaine_symphony: [4, 3, 2, 1, 2, 3, 4, 5, 4, 3]
     };
     const gains = presets[presetName] || presets.flat;
     gains.forEach((g, i) => this.setEqualizerBand(i, g));
+    if (this.riffEngine) {
+      this.riffEngine.setEqBands(gains);
+    }
     return gains;
   }
 

@@ -180,10 +180,7 @@ class FurinaDiscordActivity {
         largeImageText: 'Furina Music (Fontaine Opera)',
         smallImageKey: isPlaying ? 'play' : 'pause',
         smallImageText: isPlaying ? 'Playing' : 'Paused',
-        instance: false,
-        buttons: [
-          { label: '🎵 Listen on Web', url: 'https://junaid355.github.io/' }
-        ]
+        instance: false
       });
     }
 

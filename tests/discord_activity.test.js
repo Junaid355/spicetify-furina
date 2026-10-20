@@ -8,11 +8,9 @@ const indexHtml = fs.readFileSync(path.join(__dirname, '../public/index.html'), 
 const discordJs = fs.readFileSync(path.join(__dirname, '../public/js/discord-activity.js'), 'utf8');
 const electronMain = fs.readFileSync(path.join(__dirname, '../electron/main.js'), 'utf8');
 
-// 1. Verify Discord Button & Script in HTML
-assert.ok(indexHtml.includes('id="discord-activity-pill"'), 'Discord activity button present in index.html');
-assert.ok(indexHtml.includes('window.furinaDiscord.shareActivityToDiscord()'), 'Discord activity onclick handler wired');
+// 1. Verify Script in HTML & Clean UI (Discord button removed per user request)
 assert.ok(indexHtml.includes('js/discord-activity.js'), 'discord-activity.js script loaded');
-console.log('  [PASS] Discord activity button and script registered in index.html');
+console.log('  [PASS] Discord activity script registered in index.html');
 
 // 2. Verify Discord Activity Engine
 assert.ok(discordJs.includes('FurinaDiscordActivity'), 'FurinaDiscordActivity class defined');

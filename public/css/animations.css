@@ -838,5 +838,110 @@ button:active {
   pointer-events: none;
 }
 
+/* 9. Liquid Motion Surface Physics (Source: rootscripts/riff) */
+:root {
+  --liquid-open-dur: 480ms;
+  --liquid-close-dur: 300ms;
+  --liquid-content-delay: 180ms;
+  --liquid-content-dur: 180ms;
+  --liquid-content-stagger: 20ms;
+  --liquid-anchor-x: 0px;
+  --liquid-anchor-y: 50%;
+  --liquid-spring-ease: cubic-bezier(0.2, 0, 0, 1);
+  --liquid-retract-ease: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.liquid-surface {
+  transform-origin: var(--liquid-anchor-x, 0px) var(--liquid-anchor-y, 50%);
+  will-change: transform, opacity, border-radius;
+}
+
+@keyframes liquidPullX {
+  0% {
+    transform: scale(0.05, 0.2);
+    border-radius: 9999px;
+    opacity: 0;
+  }
+  70% {
+    transform: scale(0.92, 0.96);
+    border-radius: var(--liquid-end-radius, var(--liquid-target-radius, 16px));
+  }
+  100% {
+    transform: scale(1, 1);
+    border-radius: var(--liquid-end-radius, var(--liquid-target-radius, 16px));
+    opacity: 1;
+  }
+}
+
+@keyframes liquidRetractX {
+  0% {
+    transform: scale(1, 1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.05, 0.2);
+    border-radius: 9999px;
+    opacity: 0;
+  }
+}
+
+@keyframes liquidPullY {
+  0% {
+    transform: scale(0.3, 0.05);
+    border-radius: 9999px;
+    opacity: 0;
+  }
+  70% {
+    transform: scale(0.96, 0.92);
+    border-radius: var(--liquid-target-radius, 16px);
+  }
+  100% {
+    transform: scale(1, 1);
+    border-radius: var(--liquid-target-radius, 16px);
+    opacity: 1;
+  }
+}
+
+@keyframes liquidRetractY {
+  0% {
+    transform: scale(1, 1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.3, 0.05);
+    border-radius: 9999px;
+    opacity: 0;
+  }
+}
+
+.liquid-surface.liquid-x.liquid-open {
+  animation: liquidPullX var(--liquid-open-dur) var(--liquid-spring-ease) forwards;
+}
+
+.liquid-surface.liquid-x.liquid-closing {
+  animation: liquidRetractX var(--liquid-close-dur) var(--liquid-retract-ease) forwards;
+}
+
+.liquid-surface.liquid-y.liquid-open {
+  animation: liquidPullY var(--liquid-open-dur) var(--liquid-spring-ease) forwards;
+}
+
+.liquid-surface.liquid-y.liquid-closing {
+  animation: liquidRetractY var(--liquid-close-dur) var(--liquid-retract-ease) forwards;
+}
+
+.liquid-content-stagger > * {
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity var(--liquid-content-dur) cubic-bezier(0.2, 0, 0, 1),
+              transform var(--liquid-content-dur) cubic-bezier(0.2, 0, 0, 1);
+}
+
+.liquid-open .liquid-content-stagger > * {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
 
 

@@ -119,10 +119,7 @@ function updateActivityFromTrack({ title, artist, isPlaying, coverUrl, duration 
       assets: {
         large_image: coverUrl || 'https://raw.githubusercontent.com/Junaid355/spicetify-furina/main/public/icons/app-icon.jpg',
         large_text: 'Furina Music (Fontaine Opera)'
-      },
-      buttons: [
-        { label: '🎵 Listen on Web', url: 'https://junaid355.github.io/' }
-      ]
+      }
     };
     if (duration && Number(duration) > 0) {
       act.timestamps.end = startEpoch + Math.floor(Number(duration));

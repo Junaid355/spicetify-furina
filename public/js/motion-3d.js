@@ -301,6 +301,55 @@
     }
   }
 
+  // Material 3 Liquid Motion (Source: rootscripts/riff)
+  const LiquidMotion = {
+    setAnchor(element, triggerEl, axis = 'x') {
+      if (!element) return;
+      if (triggerEl) {
+        const rect = triggerEl.getBoundingClientRect();
+        const parentRect = element.parentElement ? element.parentElement.getBoundingClientRect() : { top: 0, left: 0 };
+        if (axis === 'x') {
+          const anchorY = (rect.top + rect.height / 2) - parentRect.top;
+          element.style.setProperty('--liquid-anchor-y', `${anchorY}px`);
+          element.style.setProperty('--liquid-anchor-x', '0px');
+          element.style.transformOrigin = `0px ${anchorY}px`;
+        } else {
+          const anchorX = (rect.left + rect.width / 2) - parentRect.left;
+          element.style.setProperty('--liquid-anchor-x', `${anchorX}px`);
+          element.style.setProperty('--liquid-anchor-y', '0px');
+          element.style.transformOrigin = `${anchorX}px 0px`;
+        }
+      } else {
+        if (axis === 'x') {
+          element.style.setProperty('--liquid-anchor-y', '50%');
+          element.style.setProperty('--liquid-anchor-x', '0px');
+          element.style.transformOrigin = '0px 50%';
+        } else {
+          element.style.setProperty('--liquid-anchor-x', '50%');
+          element.style.setProperty('--liquid-anchor-y', '0px');
+          element.style.transformOrigin = '50% 0px';
+        }
+      }
+    },
+    open(element, triggerEl, axis = 'x', onDone) {
+      if (!element) return;
+      this.setAnchor(element, triggerEl, axis);
+      element.classList.remove('liquid-closing');
+      element.classList.add('liquid-surface', `liquid-${axis}`, 'liquid-open');
+      if (onDone) setTimeout(onDone, 480);
+    },
+    close(element, onDone) {
+      if (!element) return;
+      element.classList.add('liquid-closing');
+      element.classList.remove('liquid-open');
+      setTimeout(() => {
+        element.classList.remove('liquid-closing', 'liquid-open');
+        if (onDone) onDone();
+      }, 300);
+    }
+  };
+  window.LiquidMotion = LiquidMotion;
+
   // Initialize on DOM ready
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
