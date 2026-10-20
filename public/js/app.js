@@ -1782,10 +1782,45 @@ function initPlayerBar() {
         if (mascotStatus) mascotStatus.textContent = '"Resting between acts..."';
         if (mascotImg) mascotImg.style.borderColor = 'var(--accent-gold)';
       }
+      const stagePlayIcon = document.getElementById('stage-play-icon');
+      if (stagePlayIcon) {
+        stagePlayIcon.innerHTML = isPlaying
+          ? '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>'
+          : '<polygon points="5 3 19 12 5 21 5 3"/>';
+      }
       syncTrackRowsLive();
     }
-    if (event === 'shufflechange') shuffleBtn?.classList.toggle('active', data);
-    if (event === 'repeatchange') repeatBtn?.classList.toggle('active', data !== 'off');
+    if (event === 'shufflechange') {
+      shuffleBtn?.classList.toggle('active', data);
+      document.getElementById('btn-stage-shuffle')?.classList.toggle('active', data);
+    }
+    if (event === 'repeatchange') {
+      const mode = data; // 'off' | 'all' | 'one'
+      const repeatBtn = document.getElementById('btn-player-repeat');
+      const stageRepeatBtn = document.getElementById('btn-stage-repeat');
+
+      [repeatBtn, stageRepeatBtn].forEach(btn => {
+        if (!btn) return;
+        btn.classList.toggle('active-all', mode === 'all');
+        btn.classList.toggle('active-one', mode === 'one');
+        btn.classList.toggle('active', mode !== 'off');
+        if (mode === 'off') {
+          btn.title = 'Loop: Off (Click to Loop All)';
+        } else if (mode === 'all') {
+          btn.title = 'Loop: Entire Playlist 🔁 (Click to Loop Current Track)';
+        } else if (mode === 'one') {
+          btn.title = 'Loop: Current Track 🔂 (Click to Turn Off)';
+        }
+      });
+
+      if (mode === 'all') {
+        if (typeof showToast === 'function') showToast('🔁 Loop: Entire Playlist Active', 'info');
+      } else if (mode === 'one') {
+        if (typeof showToast === 'function') showToast('🔂 Loop: Current Track Active (Infinite Repeat)', 'info');
+      } else {
+        if (typeof showToast === 'function') showToast('➡️ Loop: Off', 'info');
+      }
+    }
     if (event === 'adstatus') {
       const badge = document.getElementById('player-ad-free-badge');
       if (badge) {

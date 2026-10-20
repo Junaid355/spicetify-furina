@@ -6,7 +6,7 @@
 
 class FurinaDiscordActivity {
   constructor() {
-    this.clientId = '383226320970055681';
+    this.clientId = '1520100510877749358';
     this.isEmbeddedActivity = false;
     this.discordSdk = null;
     this.isBridgeConnected = false;
@@ -101,7 +101,8 @@ class FurinaDiscordActivity {
       title,
       artist,
       isPlaying,
-      coverUrl
+      coverUrl,
+      duration: track.duration || 0
     }));
     return true;
   }

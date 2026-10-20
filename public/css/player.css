@@ -156,6 +156,105 @@
   color: var(--accent-cyan);
 }
 
+/* Repeat / Loop Enhanced Styling */
+.btn-repeat-ctrl {
+  position: relative;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-repeat-ctrl.active-all {
+  color: #38bdf8 !important;
+  filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.7));
+}
+
+.btn-repeat-ctrl.active-one {
+  color: #67e8f9 !important;
+  filter: drop-shadow(0 0 12px rgba(103, 232, 249, 0.9));
+}
+
+.repeat-mode-badge {
+  display: none;
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  background: linear-gradient(135deg, #0284c7, #38bdf8);
+  color: #ffffff;
+  font-size: 0.62rem;
+  font-weight: 900;
+  line-height: 1;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 8px rgba(56, 189, 248, 0.95);
+  pointer-events: none;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+}
+
+.btn-repeat-ctrl.active-one .repeat-mode-badge {
+  display: flex;
+  animation: loopBadgePop 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes loopBadgePop {
+  0% { transform: scale(0.3); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* Stage Overlay Controls */
+.stage-ctrl-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.85);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  backdrop-filter: blur(12px);
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.stage-ctrl-btn:hover {
+  background: rgba(255, 255, 255, 0.18);
+  color: #ffffff;
+  transform: scale(1.08);
+  border-color: rgba(56, 189, 248, 0.5);
+}
+
+.stage-ctrl-btn.stage-ctrl-play {
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(135deg, #38bdf8, #0284c7);
+  color: #030712;
+  box-shadow: 0 0 20px rgba(56, 189, 248, 0.6);
+}
+
+.stage-ctrl-btn.stage-ctrl-play:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 28px rgba(56, 189, 248, 0.8);
+}
+
+.stage-ctrl-btn.active-all {
+  color: #38bdf8 !important;
+  border-color: #38bdf8;
+  filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.7));
+}
+
+.stage-ctrl-btn.active-one {
+  color: #67e8f9 !important;
+  border-color: #67e8f9;
+  filter: drop-shadow(0 0 12px rgba(103, 232, 249, 0.9));
+}
+
+.stage-ctrl-btn.active-one .repeat-mode-badge {
+  display: flex;
+}
+
 .btn-ctrl-play {
   width: 40px;
   height: 40px;
@@ -756,9 +855,12 @@
   }
 
   #btn-player-shuffle,
-  #btn-player-repeat,
   #btn-player-stop {
     display: none; /* Secondary controls tucked into full Theater mode */
+  }
+
+  #btn-player-repeat {
+    display: flex !important;
   }
 
   .btn-ctrl {

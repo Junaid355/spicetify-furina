@@ -267,7 +267,7 @@ function initDiscordIPC() {
     }
 
     discordIpcClient.on('connect', () => {
-      discordIpcClient.write(encodePacket(0, { v: 1, client_id: '383226320970055681' }));
+      discordIpcClient.write(encodePacket(0, { v: 1, client_id: '1520100510877749358' }));
     });
 
     discordIpcClient.on('data', (buf) => {

@@ -2,16 +2,32 @@
  * Furina Music — Native Discord RPC IPC Bridge
  * Connects directly to Discord Desktop client via Windows named pipe (\\\\?\\pipe\\discord-ipc-0)
  * and exposes a lightweight local HTTP + WebSocket endpoint for the web app (no mixed content issues).
+ * Uses source patterns from rootscripts/riff.
  */
 const http = require('http');
 const net = require('net');
 const url = require('url');
+const fs = require('fs');
+const path = require('path');
 let WebSocketServer = null;
 try {
   WebSocketServer = require('ws').WebSocketServer;
 } catch (_) {}
 
-const CLIENT_ID = '383226320970055681';
+function getClientId() {
+  if (process.env.DISCORD_CLIENT_ID) return process.env.DISCORD_CLIENT_ID.trim();
+  const cfgPath = path.join(__dirname, 'discord-config.json');
+  if (fs.existsSync(cfgPath)) {
+    try {
+      const cfg = JSON.parse(fs.readFileSync(cfgPath, 'utf8'));
+      if (cfg.clientId) return cfg.clientId.trim();
+    } catch (_) {}
+  }
+  // Default to Riff Music ID (from rootscripts/riff) - removes Visual Studio Code
+  return '1520100510877749358';
+}
+
+let CLIENT_ID = getClientId();
 const PORT = 3550;
 
 let discordPipe = null;
@@ -36,7 +52,7 @@ function connectToDiscord() {
   discordPipe = net.connect('\\\\?\\pipe\\discord-ipc-0');
 
   discordPipe.on('connect', () => {
-    console.log('[DiscordBridge] Connected to Discord IPC pipe, performing handshake...');
+    console.log(`[DiscordBridge] Connected to Discord IPC pipe, performing handshake with client_id: ${CLIENT_ID}...`);
     discordPipe.write(encode(0, { v: 1, client_id: CLIENT_ID }));
   });
 
@@ -49,7 +65,7 @@ function connectToDiscord() {
         isDiscordReady = true;
         currentUser = data.data?.user || null;
         console.log(`[DiscordBridge] Discord Ready for user: ${currentUser?.global_name || currentUser?.username}`);
-        broadcastWs({ type: 'ready', connected: true, user: currentUser });
+        broadcastWs({ type: 'ready', connected: true, user: currentUser, clientId: CLIENT_ID });
         if (currentActivity) {
           sendActivity(currentActivity);
         }
@@ -87,23 +103,31 @@ function sendActivity(act) {
   discordPipe.write(encode(1, payload));
 }
 
-function updateActivityFromTrack({ title, artist, isPlaying, coverUrl }) {
+function updateActivityFromTrack({ title, artist, isPlaying, coverUrl, duration }) {
   if (!isPlaying || !title) {
     sendActivity(null);
     currentActivity = null;
   } else {
-    currentActivity = {
+    const startEpoch = Math.floor(Date.now() / 1000);
+    const act = {
       type: 2, // Listening
       details: String(title).slice(0, 128),
       state: `by ${artist || 'Furina'} — Furina Music`.slice(0, 128),
       timestamps: {
-        start: Math.floor(Date.now() / 1000)
+        start: startEpoch
       },
       assets: {
         large_image: coverUrl || 'https://raw.githubusercontent.com/Junaid355/spicetify-furina/main/public/icons/app-icon.jpg',
         large_text: 'Furina Music (Fontaine Opera)'
-      }
+      },
+      buttons: [
+        { label: '🎵 Listen on Web', url: 'https://junaid355.github.io/' }
+      ]
     };
+    if (duration && Number(duration) > 0) {
+      act.timestamps.end = startEpoch + Math.floor(Number(duration));
+    }
+    currentActivity = act;
     sendActivity(currentActivity);
   }
 }
@@ -128,7 +152,8 @@ const server = http.createServer((req, res) => {
     res.end(JSON.stringify({
       connected: isDiscordReady,
       user: currentUser,
-      activity: currentActivity
+      activity: currentActivity,
+      clientId: CLIENT_ID
     }));
     return;
   }
@@ -139,7 +164,8 @@ const server = http.createServer((req, res) => {
       title: q.title,
       artist: q.artist,
       isPlaying: q.isPlaying === 'true' || q.isPlaying === '1',
-      coverUrl: q.coverUrl
+      coverUrl: q.coverUrl,
+      duration: q.duration
     });
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({ success: true, connected: isDiscordReady, user: currentUser }));
@@ -155,6 +181,32 @@ const server = http.createServer((req, res) => {
         updateActivityFromTrack(payload);
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ success: true, connected: isDiscordReady, user: currentUser }));
+      } catch (e) {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: e.message }));
+      }
+    });
+    return;
+  }
+
+  if (req.method === 'POST' && parsedUrl.pathname === '/set-client-id') {
+    let body = '';
+    req.on('data', chunk => body += chunk);
+    req.on('end', () => {
+      try {
+        const { clientId } = JSON.parse(body);
+        if (clientId && /^\d{17,20}$/.test(clientId.trim())) {
+          CLIENT_ID = clientId.trim();
+          const cfgPath = path.join(__dirname, 'discord-config.json');
+          fs.writeFileSync(cfgPath, JSON.stringify({ clientId: CLIENT_ID }, null, 2));
+          console.log('[DiscordBridge] Updated CLIENT_ID to:', CLIENT_ID);
+          connectToDiscord();
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ success: true, clientId: CLIENT_ID }));
+          return;
+        }
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'Invalid client ID format' }));
       } catch (e) {
         res.writeHead(400, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ error: e.message }));
@@ -189,7 +241,8 @@ if (WebSocketServer) {
       type: 'status',
       connected: isDiscordReady,
       user: currentUser,
-      activity: currentActivity
+      activity: currentActivity,
+      clientId: CLIENT_ID
     }));
 
     ws.on('message', (msg) => {
@@ -199,6 +252,11 @@ if (WebSocketServer) {
           updateActivityFromTrack(data);
         } else if (data.type === 'pause' || data.type === 'stop') {
           updateActivityFromTrack({ isPlaying: false });
+        } else if (data.type === 'set_client_id' && data.clientId) {
+          CLIENT_ID = data.clientId.trim();
+          const cfgPath = path.join(__dirname, 'discord-config.json');
+          fs.writeFileSync(cfgPath, JSON.stringify({ clientId: CLIENT_ID }, null, 2));
+          connectToDiscord();
         }
       } catch (err) {
         console.warn('[DiscordBridge] WS message parse error:', err.message);
