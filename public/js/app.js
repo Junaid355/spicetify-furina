@@ -1833,7 +1833,7 @@ function initPlayerBar() {
       }
       const stagePlayIcon = document.getElementById('stage-play-icon');
       if (stagePlayIcon) {
-        stagePlayIcon.innerHTML = isPlaying
+        stagePlayIcon.innerHTML = data.isPlaying
           ? '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>'
           : '<polygon points="5 3 19 12 5 21 5 3"/>';
       }
